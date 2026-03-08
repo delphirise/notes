@@ -200,21 +200,12 @@
                 <h3 class="text-xl font-semibold text-gray-700 mt-4 mb-2">DATA:</h3>
                 
                 <label class="font-medium text-gray-700 mb-2" for="diagnoses">Diagnoses:</label>
-                <textarea class="p-2 border border-gray-300 rounded-md w-full" id="diagnoses" name="diagnoses" oninput="autoResize(this); updateDarpProgressNote();"></textarea>
+                <textarea placeholder="Enter a diagnosis only if interventions address a diagnosis other than the Primary Diagnosis. If interventions relate only to the Primary Diagnosis, you do not need to enter it here." class="p-2 border border-gray-300 rounded-md w-full" id="diagnoses" name="diagnoses" oninput="autoResize(this); updateDarpProgressNote();"></textarea>
                <label class="font-medium text-gray-700 mb-1" for="problemsAddressed">Session Content and Problems Addressed:</label>
-                <textarea class="p-2 border border-gray-300 rounded-md w-full" id="problemsAddressed" name="problemsAddressed" oninput="autoResize(this); updateDarpProgressNote();"></textarea>
+                <textarea placeholder="Briefly summarize the primary topics discussed. Focus on substance use history since the last session, identified triggers, cravings, or relational stressors. Use specific client quotes to illustrate their perspective on their recovery journey." class="p-2 border border-gray-300 rounded-md w-full" id="problemsAddressed" name="problemsAddressed" oninput="autoResize(this); updateDarpProgressNote();"></textarea>
                 <p class="text-sm text-gray-500 italic mt-1">Remember to include person-centered language and client quotes.</p>
                 
-<div class="flex items-center mt-4 space-x-2">
-    <label class="font-medium text-gray-700">Updates and Progress to Client's Treatment Goals:</label>
-    <input type="date" id="sessionDate" name="sessionDate" class="p-2 border border-gray-300 rounded-md" onchange="syncSessionDateToGoals(this.value)">
-</div>
-                <div id="treatmentGoalsContainer" class="space-y-2">
-                    </div>
-
                 <div class="darp-inline-checkbox mt-2"><input id="toxicologyScreen" name="toxicologyScreen" type="checkbox" onchange="updateDarpProgressNote()"><label for="toxicologyScreen">Client provided a toxicology screen</label></div>
-                <label class="font-medium text-gray-700 mb-2 mt-2" for="additionalNotes">Additional Notes:</label>
-                <textarea class="p-2 border border-gray-300 rounded-md w-full" id="additionalNotes" name="additionalNotes" oninput="autoResize(this); updateDarpProgressNote();"></textarea>
                 
                 <h3 class="text-xl font-semibold text-gray-700 mt-4 mb-2">Interventions Used:</h3>
                 
@@ -236,17 +227,23 @@
                     <!-- Dynamic content will be rendered here -->
                 </div>
                 <h3 class="text-xl font-semibold text-gray-700 mt-4 mb-2">ASSESSMENT:</h3>
-                <label class="font-medium text-gray-700 mb-2" for="mentalStatus">Mental Status Exam:</label>
+                <label class="font-medium text-blue-600 mb-2" for="mentalStatus">Mental Status Exam: <span class="text-sm italic font-normal text-blue-600">(optional)</span></label>
                 <textarea class="p-2 border border-gray-300 rounded-md w-full" id="mentalStatus" name="mentalStatus" oninput="autoResize(this); updateDarpProgressNote();"></textarea>
-                <label class="font-medium text-gray-700 mb-2" for="additionalAssessment">Additional Assessment:</label>
-                <textarea class="p-2 border border-gray-300 rounded-md w-full" id="additionalAssessment" name="additionalAssessment" oninput="autoResize(this); updateDarpProgressNote();"></textarea>
+                <label class="font-medium text-gray-700 mb-2" for="additionalAssessment">Assessment:</label>
+                <textarea placeholder="Provide a clinical interpretation of the session data. Assess the client’s current Stage of Change (Pre-contemplation to Maintenance), level of insight into their addiction, and any new or persistent risk factors (e.g., housing instability or high-risk social circles)." class="p-2 border border-gray-300 rounded-md w-full" id="additionalAssessment" name="additionalAssessment" oninput="autoResize(this); updateDarpProgressNote();"></textarea>
                 <h3 class="text-xl font-semibold text-gray-700 mt-4 mb-2">RESPONSE:</h3>
-                <label class="font-medium text-gray-700 mb-2" for="response">Response:</label>
-                <textarea class="p-2 border border-gray-300 rounded-md w-full" id="response" name="response" oninput="autoResize(this); updateDarpProgressNote();"></textarea>
+                <label class="font-medium text-gray-700 mb-2" for="response">Client Response:</label>
+                <textarea placeholder="Describe how the client reacted specifically to the interventions used today. Note if they were receptive, guarded, or dismissive toward feedback. Did they demonstrate an 'Aha!' moment, or did they express difficulty with a particular recovery concept?" class="p-2 border border-gray-300 rounded-md w-full" id="response" name="response" oninput="autoResize(this); updateDarpProgressNote();"></textarea>
                 <h3 class="text-xl font-semibold text-gray-700 mt-4 mb-2">PLAN:</h3>
                 <label class="font-medium text-gray-700 mb-2" for="plan">Plan:</label>
-                <textarea class="p-2 border border-gray-300 rounded-md w-full" id="plan" name="plan" oninput="autoResize(this); updateDarpProgressNote();"></textarea>
-            
+                <textarea placeholder="Client’s Next Steps: Specific 'homework' or behavioral tasks (e.g., attending recovery meetings, practicing a specific grounding technique when triggered, or completing a craving log).\n\nTherapy Next Steps: The clinical focus for future sessions (e.g., 'continue developing motivation for cessation' or 'support client in building coping skills for triggers identified in today's session')." class="p-2 border border-gray-300 rounded-md w-full" id="plan" name="plan" oninput="autoResize(this); updateDarpProgressNote();"></textarea>
+
+                <h3 class="text-xl font-semibold text-gray-700 mt-4 mb-2">Goal Verification</h3>
+                <div class="darp-inline-checkbox mb-4">
+                    <input id="goalVerification" name="goalVerification" type="checkbox" onchange="updateDarpProgressNote();" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                    <label for="goalVerification" class="font-medium text-gray-700">Verify that the Goals tab of the note has been updated.</label>
+                </div>
+
                 <div id="internInfoSection" class="bg-blue-100 p-4 rounded-md mt-6" style="display:none;">
                     <h3 class="text-lg font-semibold mb-3">Internship Information</h3>
                     <div class="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 items-center">
@@ -641,6 +638,15 @@
     function updateDarpProgressNote() {
         let progressNote = "";
         const isInternNote = document.getElementById('internNoteCheckbox')?.checked;
+        const gv = document.getElementById('goalVerification');
+        if (gv && !gv.checked) {
+            const noteBox = document.getElementById('progressNote');
+            if (noteBox) {
+                noteBox.value = 'Verify Goals have been updated to generate note.';
+                autoResize(noteBox);
+            }
+            return;
+        }
 
         // *** NEW: Prepend intern statement ***
         if (isInternNote) {
@@ -651,23 +657,6 @@
         const mentalStatus = document.getElementById('mentalStatus')?.value || '';
         const problemsAddressed = document.getElementById('problemsAddressed')?.value || '';
         const diagnoses = document.getElementById('diagnoses')?.value || '';
-        
-        let updatesProgressText = "";
-        const goalRows = document.querySelectorAll('#treatmentGoalsContainer .treatment-goal-row');
-        goalRows.forEach((row, index) => {
-            const goalInput = row.querySelector('.treatment-goal-input');
-            const updateInput = row.querySelector('.treatment-goal-update');
-            if (goalInput && updateInput) {
-                const goal = goalInput.value.trim();
-                const update = updateInput.value.trim();
-                if (goal || update) {
-                    updatesProgressText += `Goal: ${goal}\nUpdate: ${update}\n\n`;
-                }
-            }
-        });
-        updatesProgressText = updatesProgressText.trim();
-
-        const additionalNotes = document.getElementById('additionalNotes')?.value || '';
         const additionalAssessment = document.getElementById('additionalAssessment')?.value || '';
         const response = document.getElementById('response')?.value || '';
         const plan = document.getElementById('plan')?.value || '';
@@ -676,9 +665,7 @@
         progressNote += "DATA:\n";
         if (diagnoses) progressNote += `Diagnoses:\n${diagnoses}\n\n`;
         if (problemsAddressed) progressNote += `Problems Addressed in the Counseling Session:\n${problemsAddressed}\n\n`;
-        if (updatesProgressText) progressNote += `Updates and Progress to Client's Treatment Goals:\n${updatesProgressText}\n\n`;
         if (toxicologyScreen) progressNote += `Client provided a toxicology screen.\n\n`;
-        if (additionalNotes) progressNote += `Additional Notes:\n${additionalNotes}\n\n`;
         
         // --- Interventions Logic ---
         let interventionsUsed = "Interventions Used:\n";
@@ -717,7 +704,7 @@
 
         progressNote += "ASSESSMENT:\n";
         if (mentalStatus) progressNote += `Mental Status Exam:\n${mentalStatus}\n\n`;
-        if (additionalAssessment) progressNote += `Additional Assessment:\n${additionalAssessment}\n\n`;
+        if (additionalAssessment) progressNote += `Assessment:\n${additionalAssessment}\n\n`;
 
         progressNote += "RESPONSE:\n";
         if (response) progressNote += `${response}\n\n`;
@@ -744,7 +731,16 @@
     }
 
     function copyDarpToClipboard() {
+        const gv = document.getElementById('goalVerification');
+        if (gv && !gv.checked) {
+            alert('Cannot generate note: please verify that the Goals tab has been updated to proceed.');
+            return;
+        }
         const note = document.getElementById('progressNote');
+        if (!note || !note.value.trim()) {
+            alert('No progress note to copy.');
+            return;
+        }
         note.select();
         document.execCommand("copy");
         alert("Progress note copied to clipboard!");
@@ -1123,8 +1119,6 @@
         if(typeof setScrollTopVisibility === 'function') setScrollTopVisibility('MSE');
         
         // DARP Init
-        if(typeof addTreatmentGoalRow === 'function') addTreatmentGoalRow();
-        
         // Initialize dynamic interventions
         renderInterventions();
         
@@ -1160,19 +1154,6 @@
                 autoResize(mseTextbox);
             });
         }
-        
-        // *** NEW: Pre-populate session date with current date ***
-        const sessionDateInput = document.getElementById('sessionDate');
-        if (sessionDateInput) {
-            const today = new Date();
-            const year = today.getFullYear();
-            const month = String(today.getMonth() + 1).padStart(2, '0');
-            const day = String(today.getDate()).padStart(2, '0');
-            sessionDateInput.value = `${year}-${month}-${day}`;
-            // Sync the date to treatment goals
-            if(typeof syncSessionDateToGoals === 'function') syncSessionDateToGoals(sessionDateInput.value);
-        }
-        // *** END NEW ***
         
         // Final update to ensure note is correct on load
         updateDarpProgressNote();
