@@ -1,4 +1,4 @@
-# Notes App (Reworked)
+# Notes App
 
 This repository contains a full static implementation of a suite of internal tools used by Delphi Rise for generating clinical letters, templates, and documentation.
 
@@ -136,4 +136,5 @@ It explains where the key pieces live, how to edit the letter generator, how to 
 ---
 
 If you need a guided walk-through of any page (especially `letters.html`), just ask—this repo is designed to be handoff-friendly.
+
 
