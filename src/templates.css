@@ -1,0 +1,606 @@
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.6;
+    background-color: #f4f7f9;
+    color: #333;
+    margin: 0;
+    padding: 20px;
+}
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: #ffffff;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+.goal-row-with-quotes {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+.quote-mark {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #333;
+    line-height: 1;
+    min-width: 30px;
+    text-align: center;
+    font-family: 'Times New Roman', serif;
+}
+.goal-input-wrapper {
+    flex: 1;
+}
+.goal-input-wrapper input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    box-sizing: border-box;
+    margin: 0;
+}
+.goal-input-wrapper input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.25);
+}
+.goal-button-wrapper {
+    display: flex;
+    gap: 5px;
+}
+h1, h2, h3 {
+    color: #2c3e50;
+}
+h2 {
+    border-bottom: 2px solid #e0e0e0;
+    padding-bottom: 10px;
+}
+label {
+    display: block;
+    font-weight: bold;
+    margin-top: 15px;
+    margin-bottom: 5px;
+}
+select, textarea, input[type="text"], input[type="date"] {
+    width: 100%;
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    box-sizing: border-box;
+    margin: 10px 0;
+    transition: border-color 0.2s;
+}
+select[multiple] {
+    height: auto;
+    padding: 10px;
+}
+select:focus, textarea:focus, input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.25);
+}
+textarea {
+    resize: vertical;
+    min-height: 100px;
+    overflow-y: hidden;
+}
+optgroup {
+    font-weight: bold;
+    font-style: normal;
+    background-color: #f0f0f0;
+    color: #000;
+}
+option {
+    padding: 5px 15px;
+}
+.note-container p, .note-container div {
+    margin: 0;
+    padding: 0;
+}
+.dynamic-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 5px;
+}
+.dynamic-row select, .dynamic-row input {
+    flex-grow: 1;
+    margin: 0;
+}
+.add-btn, .remove-btn {
+    flex-shrink: 0;
+    width: 38px;
+    height: 38px;
+    font-size: 20px;
+    font-weight: bold;
+    border-radius: 50%;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.2s, border-color 0.2s;
+}
+.add-btn {
+    background-color: #28a745;
+    color: white;
+    border-color: #218838;
+}
+.add-btn:hover {
+    background-color: #218838;
+}
+.remove-btn {
+    background-color: #dc3545;
+    color: white;
+    border-color: #c82333;
+}
+.remove-btn:hover {
+    background-color: #c82333;
+}
+
+.checkbox-container {
+    display: flex;
+    align-items: flex-start;
+    margin: 15px 0;
+    background-color: #e9f5ff;
+    padding: 12px;
+    border-radius: 5px;
+    border: 1px solid #bde0ff;
+}
+.checkbox-container input[type="checkbox"] {
+    margin-right: 12px;
+    margin-top: 5px;
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+}
+.checkbox-container input[type="checkbox"]:disabled + label {
+    color: #999;
+}
+.checkbox-container label, .scenario-label-text {
+    margin: 0;
+    font-weight: normal;
+    line-height: 1.5;
+}
+.scenarios-section {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid #e0e0e0;
+}
+.scenario-group {
+    margin-bottom: 15px;
+    padding-left: 20px; /* This indents the scenario groups */
+}
+.scenario-label {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+.info-box {
+    background-color: #f8f9fa;
+    border: 1px solid #e0e0e0;
+    padding: 15px;
+    margin-top: 5px;
+}
+.copy-area-container {
+    margin-top: 30px;
+}
+#final-note-copy {
+    background-color: #fdfdff;
+    min-height: 200px;
+    color: #333;
+    border: 1px solid #ccc;
+}
+.copy-button, .mse-button {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff;
+    background-color: #28a745;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background-color 0.2s;
+}
+.copy-button:hover, .mse-button:hover {
+    background-color: #218838;
+}
+.copy-button:active, .mse-button:active {
+    background-color: #1e7e34;
+}
+.copy-textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    min-height: 150px;
+    resize: vertical;
+    box-sizing: border-box;
+}
+.mt-12 {
+    margin-top: 12px;
+}
+.mt-20 {
+    margin-top: 20px;
+}
+.hidden {
+        display: none !important;
+}
+.ccc-role-warning {
+    color: #b00020;
+    border: 1px solid #b00020;
+    background: #fff5f5;
+    padding: 8px;
+    width: 100%;
+    max-width: 520px;
+    box-sizing: border-box;
+    border-radius: 4px;
+    margin-top: 8px;
+    font-weight: 600;
+}
+.ccc-blocked {
+    pointer-events: none;
+    opacity: 0.55;
+}
+.inline-form-element {
+    display: inline-block;
+    width: auto;
+    min-width: 150px;
+    margin: 0 5px;
+    vertical-align: baseline;
+}
+.telehealth-text {
+    line-height: 2.5;
+}
+.injection-field-group {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 10px 20px;
+    align-items: center;
+}
+.injection-field-group label {
+    margin: 0;
+    font-weight: normal;
+}
+.injection-field-group input {
+    margin: 0;
+}
+/* Styles for merged form */
+.radio-group label {
+    font-weight: normal;
+    display: inline-block;
+    margin-right: 15px;
+    margin-bottom: 5px;
+}
+.radio-group input[type="radio"] {
+    margin-right: 8px;
+    vertical-align: middle;
+}
+.conditional {
+    /* display: none; <-- REMOVED THIS CONFLICTING STYLE */
+    padding-left: 25px;
+    margin-top: 15px;
+    border-left: 3px solid #007bff;
+}
+.ouds-substance-grid, .auds-substance-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 10px;
+}
+.ouds-substance-grid label, .auds-substance-grid label {
+    margin: 0;
+    font-weight: normal;
+}
+.ouds-substance-grid input, .auds-substance-grid input {
+    margin: 0;
+}
+/* Updated styling for ouds-inline-label to handle short textboxes */
+.ouds-inline-label, .auds-inline-label, .suds-inline-label {
+    display: grid; /* Use grid for alignment */
+    grid-template-columns: 1fr 1fr; /* Create two even columns */
+    align-items: start; /* Align items to the top for wrapped labels */
+    gap: 20px; /* Add more gap for even columns */
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+.ouds-inline-label label, .auds-inline-label label {
+    margin: 0;
+    font-weight: bold; /* Keep labels bold */
+}
+.suds-inline-label label {
+    margin: 0;
+    font-weight: bold; /* Keep labels bold */
+}
+.ouds-inline-label input[type="text"],
+.ouds-inline-label input[type="date"],
+.auds-inline-label input[type="text"],
+.auds-inline-label input[type="date"],
+.suds-inline-label input[type="text"],
+.suds-inline-label input[type="date"] {
+    margin: 0;
+    flex-grow: 1; /* Allow input to grow */
+}
+.ouds-inline-label textarea, .auds-inline-label textarea, .suds-inline-label textarea { /* Textareas should still take full width below label */
+    grid-column: 1 / -1; /* Make textarea span all columns */
+    margin: 0;
+    flex-grow: 1;
+}
+.ouds-inline-label .radio-group, .auds-inline-label .radio-group, .suds-inline-label .radio-group {
+    display: flex;
+    gap: 15px;
+    margin: 0;
+    grid-column: 2; /* Align radio group to the right column */
+    justify-content: flex-start;
+}
+/* Special case for Chief Complaint to remove input field entirely */
+#opioid-use-disorder-short-container #ouds-chief-complaint-display-label,
+#alcohol-use-disorder-short-container #auds-chief-complaint-display-label {
+    grid-column: 1 / -1; /* Make the label span full width */
+    margin-bottom: 10px;
+}
+/* New styles for aligned items in Plan and Time Statement */
+.ouds-aligned-item, .auds-aligned-item, .suds-aligned-item {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    align-items: center;
+    margin: 5px 0;
+}
+
+.ouds-aligned-item > span,
+.ouds-aligned-item > label:first-child,
+.auds-aligned-item > span,
+.auds-aligned-item > label:first-child,
+.suds-aligned-item > span,
+.suds-aligned-item > label:first-child {
+    display: flex;
+    align-items: center;
+    grid-column: 1 / 2;
+}
+
+.ouds-aligned-item > input[type="text"],
+.auds-aligned-item > input[type="text"],
+.suds-aligned-item > input[type="text"] {
+    grid-column: 2 / 3;
+    margin: 0;
+}
+
+.ouds-aligned-item input[type="checkbox"],
+.auds-aligned-item input[type="checkbox"],
+.suds-aligned-item input[type="checkbox"] {
+    margin-right: 12px;
+    margin-top: 0;
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+}
+.ouds-aligned-item label, .auds-aligned-item label, .suds-aligned-item label {
+    font-weight: normal;
+    margin: 0;
+}
+
+/* Styles for MSE Modal */
+.modal {
+    display: none; 
+    position: fixed; 
+    z-index: 1000; 
+    left: 0;
+    top: 0;
+    width: 100%; 
+    height: 100%; 
+    overflow: auto; 
+    background-color: rgba(0,0,0,0.4); 
+}
+.modal-content {
+    background-color: #fefefe;
+    margin: 5% auto; 
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 900px;
+    border-radius: 8px;
+    position: relative;
+}
+.close-btn {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    position: absolute;
+    top: 10px;
+    right: 25px;
+}
+.close-btn:hover,
+.close-btn:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Styles for MSE form from user */
+.mse-form-container {
+    background-color: #ffffff;
+    padding: .25rem;
+    border-radius: 0.25rem;
+}
+.mse-category {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start; /* Align items to the start */
+    gap: .25rem; /* Add some gap between items */
+}
+.mse-category label {
+     display: inline-flex; /* Use flex to align checkbox and text */
+    align-items: center;
+    flex-grow: .25;
+    flex-basis: calc(25% - 1rem); /* Default to 3 columns, adjusting for gap */
+}
+@media (max-width: 768px) {
+    .mse-category label {
+        flex-basis: calc(50% - 1rem); /* 2 columns on medium screens */
+    }
+}
+ @media (max-width: 480px) {
+    .mse-category label {
+        flex-basis: 100%; /* 1 column on small screens */
+    }
+}
+.mse-category input[type="text"] {
+    width: 100%;
+    margin: 1px 0;
+}
+.mse-custom-input {
+    width: 100%; /* Full width for custom input */
+    margin-top: 0.25rem;
+}
+.mse-form-container legend {
+    font-weight: bold;
+    color: #c2410c;
+    font-size: 1.1em;
+    margin-bottom: 0.25rem;
+}
+  /* Corrected spacing for labels above LARGE textareas in OUD Short note */
+#opioid-use-disorder-short-container .ouds-inline-label:has(textarea),
+#alcohol-use-disorder-short-container .auds-inline-label:has(textarea),
+#stimulant-use-disorder-short-container .suds-inline-label:has(textarea) {
+    display: block;      /* Override the grid layout for these specific fields */
+    grid-template-columns: none; /* Remove the column definition */
+    gap: 0;              /* Remove the unwanted gap */
+    margin-top: 20px;    /* Add space above the entire label-textbox unit */
+    margin-bottom: 10px;
+}
+
+#opioid-use-disorder-short-container .ouds-inline-label:has(textarea) > label,
+#alcohol-use-disorder-short-container .auds-inline-label:has(textarea) > label,
+#stimulant-use-disorder-short-container .suds-inline-label:has(textarea) > label {
+    margin-bottom: 0px; /* Reduce space between the label and its textbox */
+    margin-top: 0;
+}
+
+#opioid-use-disorder-short-container .ouds-inline-label:has(textarea) > textarea,
+#alcohol-use-disorder-short-container .auds-inline-label:has(textarea) > textarea,
+#stimulant-use-disorder-short-container .suds-inline-label:has(textarea) > textarea {
+    margin-top: 0; /* Ensure no extra space above the textarea */
+}
+
+/* This rule adds back a small amount of space for textareas that come directly after a main heading (like I-STOP). */
+#opioid-use-disorder-short-container h3 + textarea,
+#alcohol-use-disorder-short-container h3 + textarea,
+#stimulant-use-disorder-short-container h3 + textarea {
+    margin-top: 5px;
+}
+
+/* Styles for Interventions Used - DARP Section */
+.darp-interventions {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin: 15px 0;
+}
+
+.darp-column {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 16px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.darp-column strong {
+    display: block;
+    margin-bottom: 12px;
+    font-size: 1.05em;
+    color: #2c3e50;
+    border-bottom: 2px solid #3498db;
+    padding-bottom: 8px;
+}
+
+.darp-inline-checkbox {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    gap: 8px;
+}
+
+.darp-inline-checkbox input[type="checkbox"] {
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+.darp-inline-checkbox label {
+    margin: 0;
+    cursor: pointer;
+    font-size: 0.95em;
+    color: #333;
+}
+
+.darp-column input[type="text"] {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 0.9em;
+    margin-bottom: 10px;
+}
+
+.controls {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.controls input {
+    flex-grow: 1;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 0.9em;
+}
+
+.controls button {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.controls button:hover {
+    opacity: 0.9;
+    transform: scale(1.05);
+}
+
+#customList {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+#customList > div {
+    background-color: #e8f4f8;
+    padding: 8px 12px;
+    border-radius: 4px;
+    border-left: 3px solid #3498db;
+    font-size: 0.9em;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 768px) {
+    .darp-interventions {
+        grid-template-columns: 1fr;
+    }
+}

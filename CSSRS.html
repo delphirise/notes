@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Columbia-Suicide Severity Rating Scale (C-SSRS)</title>
+    <!-- Tailwind CSS -->
+    <link href="./dist/output.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                },
+            },
+        };
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+        .form-section {
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .form-section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+
+    <div class="container mx-auto max-w-4xl bg-white rounded-xl shadow-2xl p-6 md:p-10 border border-gray-200">
+        <h1 class="text-3xl md:text-4xl font-extrabold text-gray-800 text-center mb-6">C-SSRS Interactive Form</h1>
+        <p class="text-gray-600 text-center mb-8">Select the appropriate answers below. The results will be automatically generated and can be copied for documentation.</p>
+
+        <form id="cssrs-form" class="space-y-6">
+
+            <!-- Suicidal Ideation Section -->
+            <div class="form-section">
+                <h2 class="text-xl md:text-2xl font-bold text-gray-800 mb-4">Suicidal Ideation</h2>
+
+                <!-- Question 1: Wish to be dead? -->
+                <div class="mb-4">
+                    <p class="font-semibold text-gray-700 mb-2">1. Have you wished you were dead or wished you could go to sleep and not wake up?</p>
+                    <div class="flex flex-col md:flex-row md:space-x-4 space-y-2 md:space-y-0">
+                        <label class="flex items-center text-gray-600 cursor-pointer">
+                            <input type="radio" name="q1" value="Yes" data-question="1. Have you wished you were dead or wished you could go to sleep and not wake up?" data-answer="Yes" class="form-radio h-4 w-4 text-blue-600 transition duration-150 ease-in-out">
+                            <span class="ml-2">Yes</span>
+                        </label>
+                        <label class="flex items-center text-gray-600 cursor-pointer">
+                            <input type="radio" name="q1" value="No" data-question="1. Have you wished you were dead or wished you could go to sleep and not wake up?" data-answer="No" class="form-radio h-4 w-4 text-blue-600 transition duration-150 ease-in-out" checked>
+                            <span class="ml-2">No</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Question 2: Non-specific active suicidal thoughts -->
+                <div class="mb-4">
+                    <p class="font-semibold text-gray-700 mb-2">2. Have you had actual thoughts of killing yourself?</p>
+                    <div class="flex flex-col md:flex-row md:space-x-4 space-y-2 md:space-y-0">
+                        <label class="flex items-center text-gray-600 cursor-pointer">
+                            <input type="radio" name="q2" value="Yes" data-question="2. Have you had actual thoughts of killing yourself?" data-answer="Yes" class="form-radio h-4 w-4 text-blue-600 transition duration-150 ease-in-out">
+                            <span class="ml-2">Yes</span>
+                        </label>
+                        <label class="flex items-center text-gray-600 cursor-pointer">
+                            <input type="radio" name="q2" value="No" data-question="2. Have you had actual thoughts of killing yourself?" data-answer="No" class="form-radio h-4 w-4 text-blue-600 transition duration-150 ease-in-out" checked>
+                            <span class="ml-2">No</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Question 3: Active suicidal ideation with method but no plan -->
+                <div class="mb-4">
+                    <p class="font-semibold text-gray-700 mb-2">3. Have you been thinking about how you might kill yourself?</p>
+                    <div class="flex flex-col md:flex-row md:space-x-4 space-y-2 md:space-y-0">
+                        <label class="flex items-center text-gray-600 cursor-pointer">
+                            <input type="radio" name="q3" value="Yes" data-question="3. Have you been thinking about how you might kill yourself?" data-answer="Yes" class="form-radio h-4 w-4 text-blue-600 transition duration-150 ease-in-out">
+                            <span class="ml-2">Yes</span>
+                        </label>
+                        <label class="flex items-center text-gray-600 cursor-pointer">
+                            <input type="radio" name="q3" value="No" data-question="3. Have you been thinking about how you might kill yourself?" data-answer="No" class="form-radio h-4 w-4 text-blue-600 transition duration-150 ease-in-out" checked>
+                            <span class="ml-2">No</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Question 4: Active suicidal ideation with some intent but no plan -->
+                <div class="mb-4">
+                    <p class="font-semibold text-gray-700 mb-2">4. Have you had these thoughts and had some intention of acting on them?</p>
+                    <div class="flex flex-col md:flex-row md:space-x-4 space-y-2 md:space-y-0">
+                        <label class="flex items-center text-gray-600 cursor-pointer">
+                            <input type="radio" name="q4" value="Yes" data-question="4. Have you had these thoughts and had some intention of acting on them?" data-answer="Yes" class="form-radio h-4 w-4 text-blue-600 transition duration-150 ease-in-out">
+                            <span class="ml-2">Yes</span>
+                        </label>
+                        <label class="flex items-center text-gray-600 cursor-pointer">
+                            <input type="radio" name="q4" value="No" data-question="4. Have you had these thoughts and had some intention of acting on them?" data-answer="No" class="form-radio h-4 w-4 text-blue-600 transition duration-150 ease-in-out" checked>
+                            <span class="ml-2">No</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Question 5: Active suicidal ideation with specific plan and intent -->
+                <div class="mb-4">
+                    <p class="font-semibold text-gray-700 mb-2">5. Have you started to work out or worked out the details of how to kill yourself? Do you intend to carry out this plan?</p>
+                    <div class="flex flex-col md:flex-row md:space-x-4 space-y-2 md:space-y-0">
+                        <label class="flex items-center text-gray-600 cursor-pointer">
+                            <input type="radio" name="q5" value="Yes" data-question="5. Have you started to work out or worked out the details of how to kill yourself? Do you intend to carry out this plan?" data-answer="Yes" class="form-radio h-4 w-4 text-blue-600 transition duration-150 ease-in-out">
+                            <span class="ml-2">Yes</span>
+                        </label>
+                        <label class="flex items-center text-gray-600 cursor-pointer">
+                            <input type="radio" name="q5" value="No" data-question="5. Have you started to work out or worked out the details of how to kill yourself? Do you intend to carry out this plan?" data-answer="No" class="form-radio h-4 w-4 text-blue-600 transition duration-150 ease-in-out" checked>
+                            <span class="ml-2">No</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Suicidal Behavior Section -->
+            <div class="form-section">
+                <h2 class="text-xl md:text-2xl font-bold text-gray-800 mb-4">Suicidal Behavior</h2>
+
+                <!-- Question 6: Preparatory Acts or Behavior -->
+                <div class="mb-4">
+                    <p class="font-semibold text-gray-700 mb-2">6. Have you done anything, started to do anything, or prepared to do anything to end your life?</p>
+                    <div class="flex flex-col md:flex-row md:space-x-4 space-y-2 md:space-y-0">
+                        <label class="flex items-center text-gray-600 cursor-pointer">
+                            <input type="radio" name="q6" value="Yes" data-question="6. Have you done anything, started to do anything, or prepared to do anything to end your life?" data-answer="Yes" class="form-radio h-4 w-4 text-blue-600 transition duration-150 ease-in-out">
+                            <span class="ml-2">Yes</span>
+                        </label>
+                        <label class="flex items-center text-gray-600 cursor-pointer">
+                            <input type="radio" name="q6" value="No" data-question="6. Have you done anything, started to do anything, or prepared to do anything to end your life?" data-answer="No" class="form-radio h-4 w-4 text-blue-600 transition duration-150 ease-in-out" checked>
+                            <span class="ml-2">No</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Question 7: Aborted Attempt -->
+                <div class="mb-4">
+                    <p class="font-semibold text-gray-700 mb-2">7. Have you ever done something to end your life, but then stopped yourself before you were able to complete it?</p>
+                    <div class="flex flex-col md:flex-row md:space-x-4 space-y-2 md:space-y-0">
+                        <label class="flex items-center text-gray-600 cursor-pointer">
+                            <input type="radio" name="q7" value="Yes" data-question="7. Have you ever done something to end your life, but then stopped yourself before you were able to complete it?" data-answer="Yes" class="form-radio h-4 w-4 text-blue-600 transition duration-150 ease-in-out">
+                            <span class="ml-2">Yes</span>
+                        </label>
+                        <label class="flex items-center text-gray-600 cursor-pointer">
+                            <input type="radio" name="q7" value="No" data-question="7. Have you ever done something to end your life, but then stopped yourself before you were able to complete it?" data-answer="No" class="form-radio h-4 w-4 text-blue-600 transition duration-150 ease-in-out" checked>
+                            <span class="ml-2">No</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Question 8: Interrupted Attempt -->
+                <div class="mb-4">
+                    <p class="font-semibold text-gray-700 mb-2">8. Have you ever done something to end your life, but were stopped by someone or something else?</p>
+                    <div class="flex flex-col md:flex-row md:space-x-4 space-y-2 md:space-y-0">
+                        <label class="flex items-center text-gray-600 cursor-pointer">
+                            <input type="radio" name="q8" value="Yes" data-question="8. Have you ever done something to end your life, but were stopped by someone or something else?" data-answer="Yes" class="form-radio h-4 w-4 text-blue-600 transition duration-150 ease-in-out">
+                            <span class="ml-2">Yes</span>
+                        </label>
+                        <label class="flex items-center text-gray-600 cursor-pointer">
+                            <input type="radio" name="q8" value="No" data-question="8. Have you ever done something to end your life, but were stopped by someone or something else?" data-answer="No" class="form-radio h-4 w-4 text-blue-600 transition duration-150 ease-in-out" checked>
+                            <span class="ml-2">No</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Question 9: Actual Attempt -->
+                <div class="mb-4">
+                    <p class="font-semibold text-gray-700 mb-2">9. Have you ever done anything to harm yourself with any intent to end your life?</p>
+                    <div class="flex flex-col md:flex-row md:space-x-4 space-y-2 md:space-y-0">
+                        <label class="flex items-center text-gray-600 cursor-pointer">
+                            <input type="radio" name="q9" value="Yes" data-question="9. Have you ever done anything to harm yourself with any intent to end your life?" data-answer="Yes" class="form-radio h-4 w-4 text-blue-600 transition duration-150 ease-in-out">
+                            <span class="ml-2">Yes</span>
+                        </label>
+                        <label class="flex items-center text-gray-600 cursor-pointer">
+                            <input type="radio" name="q9" value="No" data-question="9. Have you ever done anything to harm yourself with any intent to end your life?" data-answer="No" class="form-radio h-4 w-4 text-blue-600 transition duration-150 ease-in-out" checked>
+                            <span class="ml-2">No</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Question 10: Non-suicidal self-injurious behavior -->
+                <div class="mb-4">
+                    <p class="font-semibold text-gray-700 mb-2">10. Have you ever hurt yourself without wanting to end your life?</p>
+                    <div class="flex flex-col md:flex-row md:space-x-4 space-y-2 md:space-y-0">
+                        <label class="flex items-center text-gray-600 cursor-pointer">
+                            <input type="radio" name="q10" value="Yes" data-question="10. Have you ever hurt yourself without wanting to end your life?" data-answer="Yes" class="form-radio h-4 w-4 text-blue-600 transition duration-150 ease-in-out">
+                            <span class="ml-2">Yes</span>
+                        </label>
+                        <label class="flex items-center text-gray-600 cursor-pointer">
+                            <input type="radio" name="q10" value="No" data-question="10. Have you ever hurt yourself without wanting to end your life?" data-answer="No" class="form-radio h-4 w-4 text-blue-600 transition duration-150 ease-in-out" checked>
+                            <span class="ml-2">No</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <!-- Output Section -->
+        <div class="mt-8">
+            <h2 class="text-xl md:text-2xl font-bold text-gray-800 mb-4">Summary of Responses</h2>
+            <textarea id="output" class="w-full h-48 p-4 border border-gray-300 rounded-lg bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300" readonly>Select your answers above to see a summary here.</textarea>
+            
+            <div class="relative mt-4">
+                <button id="copy-btn" class="w-full md:w-auto bg-blue-600 text-white font-semibold py-3 px-6 rounded-full shadow-lg hover:bg-blue-700 transition duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                    Copy to Clipboard
+                </button>
+                <div id="copy-message" class="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 bg-green-500 text-white text-xs font-bold py-1 px-3 rounded-full shadow-md opacity-0 transition-opacity duration-300 pointer-events-none">
+                    Copied!
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('cssrs-form');
+            const outputArea = document.getElementById('output');
+            const copyBtn = document.getElementById('copy-btn');
+            const copyMessage = document.getElementById('copy-message');
+
+            const updateOutput = () => {
+                let outputText = '';
+                const formElements = form.elements;
+
+                // Loop through all radio buttons and get the selected ones
+                for (let i = 0; i < formElements.length; i++) {
+                    const element = formElements[i];
+
+                    // Check for radio buttons that are checked
+                    if (element.type === 'radio' && element.checked) {
+                        const question = element.getAttribute('data-question');
+                        const answer = element.getAttribute('data-answer');
+                        if (question && answer) {
+                            outputText += `${question} Answer: ${answer}\n`;
+                        }
+                    }
+                }
+                
+                if (outputText === '') {
+                    outputArea.value = 'Select your answers above to see a summary here.';
+                } else {
+                    outputArea.value = outputText.trim();
+                }
+            };
+
+            const copyToClipboard = () => {
+                if (outputArea.value === 'Select your answers above to see a summary here.' || outputArea.value === '') {
+                    return; // Don't copy if there's no meaningful text
+                }
+                
+                outputArea.select();
+                outputArea.setSelectionRange(0, 99999); // For mobile devices
+
+                try {
+                    document.execCommand('copy');
+                    
+                    // Show a temporary "Copied!" message
+                    copyMessage.classList.add('opacity-100');
+                    setTimeout(() => {
+                        copyMessage.classList.remove('opacity-100');
+                    }, 2000);
+                } catch (err) {
+                    console.error('Failed to copy text: ', err);
+                    // You could add a more user-friendly error message here
+                }
+            };
+
+            // Add event listeners to all form inputs to trigger the output update
+            form.addEventListener('change', updateOutput);
+            
+            // Add a click listener to the copy button
+            copyBtn.addEventListener('click', (e) => {
+                e.preventDefault(); // Prevent form submission
+                copyToClipboard();
+            });
+
+            // Initial call to set the default output text
+            updateOutput();
+        });
+    </script>
+</body>
+</html>

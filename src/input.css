@@ -1,0 +1,13 @@
+@import "tailwindcss";
+
+@source "./*.html";
+
+/* Override default border colors */
+@layer components {
+  fieldset {
+    @apply border-gray-300;
+  }
+  .darp-column {
+    @apply border-gray-300;
+  }
+}
