@@ -1,0 +1,31 @@
+{
+  "name": "notes-reworked",
+  "version": "1.0.0",
+  "description": "Reworked static notes workspace with full parity to the current toolset.",
+  "main": "index.js",
+  "scripts": {
+    "build": "node ./node_modules/postcss-cli/index.js --config . -o ../app/dist/output.css ../app/src/input.css",
+    "smoke": "powershell -ExecutionPolicy Bypass -File ./smoke-check.ps1",
+    "index:smoke": "node ./tests/run-index-smoke.mjs",
+    "fixtures:sync": "node ./tests/sync-note-fixtures.mjs",
+    "fixtures": "node ./tests/run-note-fixtures.mjs",
+    "serve": "npx http-server -p 8080 -c-1 ..",
+    "test": "echo \"Use npm run smoke and npm run fixtures\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/delphirise/notes-reworked.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.17",
+    "autoprefixer": "^10.4.22",
+    "playwright": "^1.58.2",
+    "postcss": "^8.5.6",
+    "postcss-cli": "^11.0.1",
+    "tailwindcss": "^4.1.17"
+  }
+}
