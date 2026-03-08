@@ -1,0 +1,15 @@
+@import "tailwindcss";
+
+@source "./*.html";
+
+/* Override default border colors */
+@layer components {
+  fieldset {
+    @apply border-gray-300;
+  }
+  .darp-column {
+    @apply border-gray-300;
+  }
+}
+
+/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uL3NyYy9pbnB1dC5jc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUEiLCJmaWxlIjoiaW5wdXQuY3NzIiwic291cmNlc0NvbnRlbnQiOlsiQGltcG9ydCBcInRhaWx3aW5kY3NzXCI7XG5cbkBzb3VyY2UgXCIuLyouaHRtbFwiO1xuXG4vKiBPdmVycmlkZSBkZWZhdWx0IGJvcmRlciBjb2xvcnMgKi9cbkBsYXllciBjb21wb25lbnRzIHtcbiAgZmllbGRzZXQge1xuICAgIEBhcHBseSBib3JkZXItZ3JheS0zMDA7XG4gIH1cbiAgLmRhcnAtY29sdW1uIHtcbiAgICBAYXBwbHkgYm9yZGVyLWdyYXktMzAwO1xuICB9XG59XG4iXX0= */

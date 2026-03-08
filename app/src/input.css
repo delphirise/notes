@@ -1,0 +1,15 @@
+@import "../../tooling/node_modules/tailwindcss/index.css";
+
+@source "../../index.html";
+@source "../pages/**/*.{html,js}";
+@source "./**/*.{js,css}";
+
+/* Override default border colors */
+@layer components {
+  fieldset {
+    @apply border-gray-300;
+  }
+  .darp-column {
+    @apply border-gray-300;
+  }
+}

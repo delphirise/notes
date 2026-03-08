@@ -1,0 +1,41 @@
+[
+  {
+    "id": "alcohol-use-disorder",
+    "name": "Alcohol Use Disorder",
+    "icd": ["F10.10", "F10.20"],
+    "criteria": [
+      "Alcohol used in larger amounts or longer than intended",
+      "Persistent desire or unsuccessful efforts to cut down",
+      "Craving or strong urge to use alcohol",
+      "Continued use despite social or interpersonal problems",
+      "Recurrent use in hazardous situations",
+      "Tolerance or withdrawal symptoms"
+    ]
+  },
+  {
+    "id": "opioid-use-disorder",
+    "name": "Opioid Use Disorder",
+    "icd": ["F11.10", "F11.20"],
+    "criteria": [
+      "Opioids taken in larger amounts or over longer periods than intended",
+      "Unsuccessful efforts to cut down opioid use",
+      "Time spent obtaining, using, or recovering from opioids",
+      "Craving or strong desire to use opioids",
+      "Failure to fulfill major obligations",
+      "Tolerance or withdrawal symptoms"
+    ]
+  },
+  {
+    "id": "stimulant-use-disorder",
+    "name": "Stimulant Use Disorder",
+    "icd": ["F14.10", "F14.20", "F15.10", "F15.20"],
+    "criteria": [
+      "Stimulant use exceeding intended amount or duration",
+      "Persistent desire or failed attempts to reduce use",
+      "Significant time devoted to obtaining or recovering from use",
+      "Craving or urge to use stimulants",
+      "Continued use despite physical or psychological harm",
+      "Tolerance or withdrawal symptoms"
+    ]
+  }
+]

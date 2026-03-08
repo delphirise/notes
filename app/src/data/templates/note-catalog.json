@@ -1,0 +1,54 @@
+[
+  {
+    "id": "telehealth-counseling",
+    "role": "counseling",
+    "label": "Telehealth Counseling",
+    "fields": [
+      { "key": "clientName", "label": "Client name", "type": "text", "placeholder": "Client initials or name" },
+      { "key": "date", "label": "Session date", "type": "date" },
+      { "key": "sessionFocus", "label": "Session focus", "type": "textarea", "rows": 4, "placeholder": "Primary concerns, stressors, or treatment themes" },
+      { "key": "response", "label": "Client response", "type": "textarea", "rows": 4, "placeholder": "How the client responded during session" },
+      { "key": "plan", "label": "Plan", "type": "textarea", "rows": 3, "placeholder": "Next steps and follow-up" }
+    ],
+    "output": "Client {{clientName}} participated in a telehealth counseling session on {{date}}.\n\nSession focus: {{sessionFocus}}\n\nClient response: {{response}}\n\nPlan: {{plan}}"
+  },
+  {
+    "id": "entry-cd",
+    "role": "counseling",
+    "label": "Entry Session - Chemical Dependency",
+    "fields": [
+      { "key": "clientName", "label": "Client name", "type": "text", "placeholder": "Client initials or name" },
+      { "key": "date", "label": "Entry date", "type": "date" },
+      { "key": "presentingProblem", "label": "Presenting problem", "type": "textarea", "rows": 4, "placeholder": "Why the client is seeking services" },
+      { "key": "goals", "label": "Client goals", "type": "textarea", "rows": 4, "placeholder": "Stated or observed goals" },
+      { "key": "recommendations", "label": "Recommendations", "type": "textarea", "rows": 3, "placeholder": "Recommended services or supports" }
+    ],
+    "output": "Entry session completed for {{clientName}} on {{date}}.\n\nPresenting problem: {{presentingProblem}}\n\nClient goals: {{goals}}\n\nRecommendations: {{recommendations}}"
+  },
+  {
+    "id": "med-management-follow-up",
+    "role": "medical",
+    "label": "Medication Management Follow-Up",
+    "fields": [
+      { "key": "clientName", "label": "Client name", "type": "text", "placeholder": "Client initials or name" },
+      { "key": "date", "label": "Follow-up date", "type": "date" },
+      { "key": "medications", "label": "Current medications", "type": "textarea", "rows": 4, "placeholder": "Medication list and adherence" },
+      { "key": "symptoms", "label": "Symptoms reviewed", "type": "textarea", "rows": 4, "placeholder": "Symptoms, side effects, or improvements" },
+      { "key": "plan", "label": "Medication plan", "type": "textarea", "rows": 3, "placeholder": "Adjustments, refills, monitoring" }
+    ],
+    "output": "Medication management follow-up completed for {{clientName}} on {{date}}.\n\nCurrent medications: {{medications}}\n\nSymptoms reviewed: {{symptoms}}\n\nPlan: {{plan}}"
+  },
+  {
+    "id": "psychiatric-follow-up",
+    "role": "psychiatric",
+    "label": "Psychiatric Follow-Up",
+    "fields": [
+      { "key": "clientName", "label": "Client name", "type": "text", "placeholder": "Client initials or name" },
+      { "key": "date", "label": "Encounter date", "type": "date" },
+      { "key": "moodSymptoms", "label": "Mood and symptom update", "type": "textarea", "rows": 4, "placeholder": "Mood symptoms, sleep, anxiety, or psychosis review" },
+      { "key": "riskReview", "label": "Risk review", "type": "textarea", "rows": 3, "placeholder": "SI, HI, psychosis, or acute concerns" },
+      { "key": "plan", "label": "Treatment plan", "type": "textarea", "rows": 3, "placeholder": "Medication and follow-up plan" }
+    ],
+    "output": "Psychiatric follow-up completed for {{clientName}} on {{date}}.\n\nMood and symptom update: {{moodSymptoms}}\n\nRisk review: {{riskReview}}\n\nTreatment plan: {{plan}}"
+  }
+]

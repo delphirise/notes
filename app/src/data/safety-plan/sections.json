@@ -1,0 +1,32 @@
+[
+  {
+    "id": "warningSigns",
+    "label": "Warning signs",
+    "placeholder": "What thoughts, feelings, or situations signal that risk is rising?"
+  },
+  {
+    "id": "internalCoping",
+    "label": "Internal coping strategies",
+    "placeholder": "What can the client do alone to reduce distress?"
+  },
+  {
+    "id": "peoplePlaces",
+    "label": "People and places for distraction",
+    "placeholder": "Who or where can the client go for support or distraction?"
+  },
+  {
+    "id": "trustedContacts",
+    "label": "Trusted contacts",
+    "placeholder": "Who can be called directly for help?"
+  },
+  {
+    "id": "professionalSupports",
+    "label": "Professional supports",
+    "placeholder": "Clinicians, hotlines, urgent care, or emergency resources"
+  },
+  {
+    "id": "meansSafety",
+    "label": "Means safety",
+    "placeholder": "What steps will reduce access to lethal means or substances?"
+  }
+]

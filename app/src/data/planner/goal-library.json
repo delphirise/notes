@@ -1,0 +1,46 @@
+{
+  "domains": [
+    {
+      "id": "recovery-stability",
+      "name": "Recovery Stability",
+      "objectives": [
+        "Maintain abstinence or reduced use for the next review period",
+        "Strengthen use of sober supports",
+        "Identify and interrupt relapse triggers"
+      ],
+      "interventions": [
+        "Review relapse prevention plan each session",
+        "Assign skills practice between sessions",
+        "Coordinate with community supports or recovery meetings"
+      ]
+    },
+    {
+      "id": "mental-health",
+      "name": "Mental Health Regulation",
+      "objectives": [
+        "Reduce frequency or intensity of anxiety symptoms",
+        "Improve mood stability and daily functioning",
+        "Increase use of grounding and self-regulation skills"
+      ],
+      "interventions": [
+        "Teach emotion regulation strategies",
+        "Practice cognitive restructuring",
+        "Monitor sleep, stress, and symptom patterns"
+      ]
+    },
+    {
+      "id": "life-functioning",
+      "name": "Life Functioning",
+      "objectives": [
+        "Improve appointment attendance and follow-through",
+        "Strengthen family or social communication",
+        "Increase stability in work, school, or housing"
+      ],
+      "interventions": [
+        "Use problem-solving around barriers",
+        "Coordinate care with outside providers",
+        "Build a weekly structure and accountability plan"
+      ]
+    }
+  ]
+}

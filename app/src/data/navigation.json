@@ -1,0 +1,50 @@
+[
+  {
+    "route": "dashboard",
+    "label": "Workspace",
+    "eyebrow": "Shell",
+    "description": "Overview of the modular app, migration map, and quick entry points."
+  },
+  {
+    "route": "mse",
+    "label": "MSE",
+    "eyebrow": "Assessment",
+    "description": "JSON-driven mental status exam builder with shared copy workflow."
+  },
+  {
+    "route": "darp",
+    "label": "DARP",
+    "eyebrow": "Progress Note",
+    "description": "Session note composer that shares state and interventions across the app."
+  },
+  {
+    "route": "templates",
+    "label": "Templates",
+    "eyebrow": "Catalog",
+    "description": "Role-based note templates rendered from JSON field definitions."
+  },
+  {
+    "route": "diagnostics",
+    "label": "Diagnostics",
+    "eyebrow": "Reference",
+    "description": "SUD and diagnosis criteria with generated summaries."
+  },
+  {
+    "route": "planner",
+    "label": "Planner",
+    "eyebrow": "Treatment",
+    "description": "Goal domains, objectives, and interventions in structured JSON."
+  },
+  {
+    "route": "letters",
+    "label": "Letters",
+    "eyebrow": "Output",
+    "description": "Letter and referral drafting without a separate iframe application."
+  },
+  {
+    "route": "safety-plan",
+    "label": "Safety Plan",
+    "eyebrow": "Crisis",
+    "description": "Guided safety plan sections with a clean final export view."
+  }
+]

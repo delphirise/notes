@@ -1,0 +1,25 @@
+[
+  {
+    "id": "attendance",
+    "label": "Attendance Verification",
+    "fields": [
+      { "key": "recipient", "label": "Recipient", "type": "text", "placeholder": "To whom it may concern" },
+      { "key": "clientName", "label": "Client name", "type": "text", "placeholder": "Client initials or name" },
+      { "key": "date", "label": "Visit date", "type": "date" },
+      { "key": "reason", "label": "Visit type", "type": "text", "placeholder": "counseling session, medication visit, etc." }
+    ],
+    "body": "{{recipient}}\n\nThis letter verifies that {{clientName}} was seen on {{date}} for a {{reason}}. Please contact the clinic if additional verification is required."
+  },
+  {
+    "id": "referral",
+    "label": "Referral Letter",
+    "fields": [
+      { "key": "recipient", "label": "Recipient", "type": "text", "placeholder": "Receiving provider or agency" },
+      { "key": "clientName", "label": "Client name", "type": "text", "placeholder": "Client initials or name" },
+      { "key": "date", "label": "Referral date", "type": "date" },
+      { "key": "summary", "label": "Clinical summary", "type": "textarea", "rows": 4, "placeholder": "Reason for referral and current concerns" },
+      { "key": "requestedService", "label": "Requested service", "type": "text", "placeholder": "Specific assessment, counseling, case management, etc." }
+    ],
+    "body": "{{recipient}}\n\nThis letter serves as a referral for {{clientName}} dated {{date}}.\n\nClinical summary: {{summary}}\n\nRequested service: {{requestedService}}"
+  }
+]

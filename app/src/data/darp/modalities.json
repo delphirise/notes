@@ -1,0 +1,34 @@
+[
+  {
+    "name": "CBT",
+    "items": [
+      "challenged cognitive distortions",
+      "reviewed triggers and thought patterns",
+      "assigned coping practice between sessions"
+    ]
+  },
+  {
+    "name": "Motivational Interviewing",
+    "items": [
+      "explored ambivalence about change",
+      "reinforced change talk",
+      "scaled readiness and confidence"
+    ]
+  },
+  {
+    "name": "Relapse Prevention",
+    "items": [
+      "identified relapse warning signs",
+      "updated relapse prevention plan",
+      "reviewed sober supports"
+    ]
+  },
+  {
+    "name": "Skills Training",
+    "items": [
+      "practiced grounding skills",
+      "modeled emotion regulation strategy",
+      "rehearsed communication skill"
+    ]
+  }
+]

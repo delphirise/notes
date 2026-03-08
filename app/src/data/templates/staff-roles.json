@@ -1,0 +1,5 @@
+[
+  { "id": "counseling", "label": "Counseling" },
+  { "id": "medical", "label": "Medical" },
+  { "id": "psychiatric", "label": "Psychiatric" }
+]
