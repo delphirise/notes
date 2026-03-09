@@ -1555,6 +1555,14 @@ Rochester, NY
                 <option value="yes">Yes - appointments documented under Services/Needs</option>
                 <option value="no">No - but referrals were provided</option>
             </select>
+            <label for="discharge-overdose-offered-dropdown" style="margin-top: 14px;">Was a overdose prevention education and a Naloxone kit or prescription offered?</label>
+            <select id="discharge-overdose-offered-dropdown">
+                <option value="" selected disabled>Select...</option>
+                <option value="provided">Overdose prevention education and a Naloxone kit were provided.</option>
+                <option value="education-only">Overdose prevention education was provided. Naloxone was declined.</option>
+                <option value="naloxone-only">Overdose prevention education was declined. Naloxone was provided.</option>
+                <option value="declined">Overdose prevention education and Naloxone were declined.</option>
+            </select>
             <div class="discharge-summary-area">
                 <label for="discharge-other-needs-summary">Other needs identified in the comprehensive evaluation or during the course of treatment:</label>
                 <div style="display:flex; gap:12px; align-items:flex-start; margin-top:6px;">

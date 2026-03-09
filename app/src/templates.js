@@ -181,6 +181,7 @@
     const dischargeReferralLocation = document.getElementById('discharge-referral-location');
     const dischargeOverdoseDropdown = document.getElementById('discharge-overdose-dropdown');
     const dischargeContinuingCareDropdown = document.getElementById('discharge-continuing-care-dropdown');
+    const dischargeOverdoseOfferedDropdown = document.getElementById('discharge-overdose-offered-dropdown');
     const dischargeReasonInput = document.getElementById('discharge-reason');
     const dischargeAppointmentsDropdown = document.getElementById('discharge-appointments-dropdown');
     const dischargeSummaryTextbox = document.getElementById('discharge-other-needs-summary');
@@ -678,12 +679,17 @@ function addNurseInterventionRow(isFirstRow = false) {
     }
 
     function updateDischargeOtherNeedsSummary() {
-        const lines = [];
-        lines.push('Other needs identified in the comprehensive evaluation or during the course of treatment:');
+        const parts = [];
+
+        // Reason for discharge
         const reasonValue = dischargeReasonInput?.value.trim();
-        lines.push(`Reason for Discharge: ${reasonValue || '[Describe reason for discharge]'}`);
+        if (reasonValue) {
+            parts.push(`Reason for Discharge: ${reasonValue}`);
+        }
+
+        // Current medications
         if (dischargeMedicationsNoneCheckbox?.checked) {
-            lines.push('Current Medications: Patient is not currently using medications.');
+            parts.push('Current Medications: Patient is not currently using medications.');
         } else {
             const meds = getDischargeMedicationList();
             if (meds.length > 0) {
@@ -694,37 +700,44 @@ function addNurseInterventionRow(isFirstRow = false) {
                     if (med.dose) fragments.push(`Dose: ${med.dose}`);
                     return fragments.length > 0 ? `- ${fragments.join(' | ')}` : '- [Medication details]';
                 });
-                lines.push(`Current Medications:\n${medLines.join('\n')}`);
-            } else {
-                lines.push('Current Medications: [List medications or mark patient as not using medications]');
+                parts.push(`Current Medications:\n${medLines.join('\n')}`);
             }
         }
-        let referralText = '[Select option]';
-        if (dischargeReferralDropdown) {
-            const value = dischargeReferralDropdown.value;
-            if (value) {
-                referralText = value;
-                if (value === 'Yes') {
-                    const location = dischargeReferralLocation?.value.trim();
-                    referralText += location ? ` (Referred to ${location})` : ' (Referred location: [specify])';
-                }
+
+        // Referral for medication management
+        if (dischargeReferralDropdown && dischargeReferralDropdown.value) {
+            let referralText = dischargeReferralDropdown.value;
+            if (dischargeReferralDropdown.value === 'Yes') {
+                const location = dischargeReferralLocation?.value.trim();
+                referralText += location ? ` (Referred to ${location})` : ' (Referred location: [specify])';
             }
+            parts.push(`Referral for Medication Management: ${referralText}`);
         }
-        lines.push(`Referral for Medication Management: ${referralText}`);
 
-        const overdoseValue = dischargeOverdoseDropdown?.value;
-        lines.push(`Overdose prevention education and naloxone kit offered: ${overdoseValue || '[Select option]'}`);
+        // Existing overdose dropdown (legacy field)
+        if (dischargeOverdoseDropdown && dischargeOverdoseDropdown.value) {
+            parts.push(`Overdose prevention education and naloxone kit offered: ${dischargeOverdoseDropdown.value}`);
+        }
 
-        const continuingCareValue = dischargeContinuingCareDropdown?.value;
-        lines.push(`Continuing care discussed and offered: ${continuingCareValue || '[Select option]'}`);
-        let appointmentText = '[Select option]';
+        // Continuing care
+        if (dischargeContinuingCareDropdown && dischargeContinuingCareDropdown.value) {
+            parts.push(`Continuing care discussed and offered: ${dischargeContinuingCareDropdown.value}`);
+        }
+
+        // Scheduled appointments
         if (dischargeAppointmentsDropdown && dischargeAppointmentsDropdown.value) {
             const option = dischargeAppointmentsDropdown.options[dischargeAppointmentsDropdown.selectedIndex];
-            appointmentText = option ? option.text : '[Select option]';
+            const appointmentText = option ? option.text : dischargeAppointmentsDropdown.value;
+            parts.push(`Scheduled appointments with Mental Health, Physical Health, Probation, Parole, Continuing Care, or other providers: ${appointmentText}`);
         }
-        lines.push(`Scheduled appointments with Mental Health, Physical Health, Probation, Parole, Continuing Care, or other providers: ${appointmentText}`);
 
-        const summary = lines.join('\n\n');
+        // New overdose/naloxone offered dropdown
+        if (dischargeOverdoseOfferedDropdown && dischargeOverdoseOfferedDropdown.value) {
+            const opt = dischargeOverdoseOfferedDropdown.options[dischargeOverdoseOfferedDropdown.selectedIndex];
+            if (opt && opt.text) parts.push(opt.text);
+        }
+
+        const summary = parts.length ? parts.join('\n\n') : '';
         if (dischargeSummaryTextbox) {
             dischargeSummaryTextbox.value = summary;
             autoResize(dischargeSummaryTextbox);
@@ -4301,6 +4314,7 @@ let interventions = [];
         updateDischargeOtherNeedsSummary();
         updateFinalNote();
     });
+    dischargeOverdoseOfferedDropdown?.addEventListener('change', updateDischargeOtherNeedsSummary);
 
     // MAT Listeners
     matEducationType.addEventListener('change', () => {
