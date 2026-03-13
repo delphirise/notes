@@ -422,11 +422,10 @@
     </div>
 
     <script src="../vendor/pdf-lib.min.js"></script>
-    <script type="module">
-        import * as pdfjsLib from '../vendor/pdf.mjs';
-
-        const isLocalFileProtocol = window.location.protocol === 'file:';
-        pdfjsLib.GlobalWorkerOptions.workerSrc = '../vendor/pdf.worker.mjs';
+    <script src="../vendor/pdf-legacy.min.js"></script>
+    <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc = '../vendor/pdf.worker-legacy.min.js';
+        const usePdfWorker = false;
 
         const { PDFDocument, StandardFonts, rgb, ParseSpeeds } = PDFLib;
         const SIGNATURE_STORAGE_KEY = 'pdfEditorSavedSignature';
@@ -833,7 +832,7 @@
             const renderBytes = new Uint8Array(arrayBuffer.slice(0));
             state.pdfJsDoc = await pdfjsLib.getDocument({
                 data: renderBytes,
-                disableWorker: isLocalFileProtocol
+                disableWorker: !usePdfWorker
             }).promise;
             state.pageMeta = [];
             state.overlays = [];
