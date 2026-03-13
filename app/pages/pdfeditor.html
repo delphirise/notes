@@ -423,9 +423,10 @@
 
     <script src="../vendor/pdf-lib.min.js"></script>
     <script type="module">
-        import * as pdfjsLib from 'https://cdn.jsdelivr.net/npm/pdfjs-dist@5.5.207/build/pdf.mjs';
+        import * as pdfjsLib from '../vendor/pdf.mjs';
 
-        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@5.5.207/build/pdf.worker.mjs';
+        const isLocalFileProtocol = window.location.protocol === 'file:';
+        pdfjsLib.GlobalWorkerOptions.workerSrc = '../vendor/pdf.worker.mjs';
 
         const { PDFDocument, StandardFonts, rgb, ParseSpeeds } = PDFLib;
         const SIGNATURE_STORAGE_KEY = 'pdfEditorSavedSignature';
@@ -830,7 +831,10 @@
             const arrayBuffer = await file.arrayBuffer();
             state.pdfBytes = new Uint8Array(arrayBuffer.slice(0));
             const renderBytes = new Uint8Array(arrayBuffer.slice(0));
-            state.pdfJsDoc = await pdfjsLib.getDocument({ data: renderBytes }).promise;
+            state.pdfJsDoc = await pdfjsLib.getDocument({
+                data: renderBytes,
+                disableWorker: isLocalFileProtocol
+            }).promise;
             state.pageMeta = [];
             state.overlays = [];
             state.selectedOverlayId = null;
