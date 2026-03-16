@@ -1091,28 +1091,81 @@
 
     <div id="closing-note-admitted-container" class="note-container hidden">
         <h2 style="margin-top: 20px;">Closing Note Details</h2>
-        <p>Client was discharged due to <input type="text" id="closing-reason" placeholder="reason for discharge...">. Treatment recommendations include <input type="text" id="closing-recommendations" placeholder="recommended treatment plan...">. The client 
-        <select id="closing-meds-dropdown">
-            <option value="" selected disabled>Select...</option>
-            <option value="is">is</option>
-            <option value="is not">is not</option>
-        </select>
-        currently prescribed medications most recently prescribed at Delphi.</p>
-        
-        <div id="closing-meds-actions-container" class="hidden">
-            <p>The following actions were taken to support the clients medication management: <input type="text" id="closing-meds-actions" placeholder="describe actions taken..."></p>
+        <div style="margin-bottom: 15px;">
+            <label for="closing-discharge-status">Client was discharged with a status of:</label>
+            <select id="closing-discharge-status" style="margin-left: 8px;">
+                <option value="" selected disabled>Select...</option>
+                <option value="Completed Treatment: All Goals Met">Completed Treatment: All Goals Met</option>
+                <option value="Completed Treatment: All or More Goals Met">Completed Treatment: All or More Goals Met</option>
+                <option value="Treatment Not Completed: Maximum Benefit/Clinical Discharge">Treatment Not Completed: Maximum Benefit/Clinical Discharge</option>
+                <option value="Treatment Not Completed: Some Goals Met">Treatment Not Completed: Some Goals Met</option>
+                <option value="Treatment Not Completed: No Goals Met">Treatment Not Completed: No Goals Met</option>
+            </select>
+        </div>
+        <div style="margin-bottom: 15px;">
+            <label for="closing-disposition">and a disposition of:</label>
+            <select id="closing-disposition" style="margin-left: 8px;">
+                <option value="" selected disabled>Select...</option>
+                <option value="Additional treatment at this level of care no longer necessary">Additional treatment at this level of care no longer necessary</option>
+                <option value="Further treatment at this level unlikely to yield added clinical gains">Further treatment at this level unlikely to yield added clinical gains</option>
+                <option value="Left against clinical advice: Formal referral made/offered">Left against clinical advice: Formal referral made/offered</option>
+                <option value="Left against clinical advice: Lost to contact (no referral possible)">Left against clinical advice: Lost to contact (no referral possible)</option>
+                <option value="Loss of Contact">Loss of Contact</option>
+                <option value="Left against clinical advice: Termination of third party funds">Left against clinical advice: Termination of third party funds</option>
+                <option value="Discharged due to non-compliance: Program rules">Discharged due to non-compliance: Program rules</option>
+                <option value="Discharged due to non-compliance: Violence">Discharged due to non-compliance: Violence</option>
+                <option value="Discharged due to non-compliance: Illegal substance use">Discharged due to non-compliance: Illegal substance use</option>
+                <option value="Discharged due to non-compliance: Possession of contraband">Discharged due to non-compliance: Possession of contraband</option>
+                <option value="Client arrested/incarcerated">Client arrested/incarcerated</option>
+                <option value="Client could no longer participate for medical/psych. reasons">Client could no longer participate for medical/psych. reasons</option>
+                <option value="Client death">Client death</option>
+                <option value="Client relocated">Client relocated</option>
+            </select>
         </div>
 
-        <p>Referrals initiated to support the client post-discharge include: <input type="text" id="closing-referrals" placeholder="list referrals..."></p>
-        <p>The 
-        <select id="closing-offered-to-dropdown">
-            <option value="" selected disabled>Select...</option>
-            <option value="client">client</option>
-            <option value="client and guardian">client and guardian</option>
-        </select>
-        was offered a copy of their discharge plan, a recovery resource handout outlining community resources for urgent support, harm reduction resources, referrals to MAT providers and recovery peer services, and an overdose prevention/Narcan kit.</p>
-        <label for="closing-client-response">Client's Response to Resources Offered at Discharge:</label>
-        <input type="text" id="closing-client-response" placeholder="Enter client's response...">
+        <!-- Regular admission fields -->
+        <div id="closing-admitted-regular-fields">
+            <p>Treatment recommendations include <input type="text" id="closing-recommendations" placeholder="recommended treatment plan...">. The client 
+            <select id="closing-meds-dropdown">
+                <option value="" selected disabled>Select...</option>
+                <option value="is">is</option>
+                <option value="is not">is not</option>
+            </select>
+            currently prescribed medications most recently prescribed at Delphi.</p>
+            
+            <div id="closing-meds-actions-container" class="hidden">
+                <p>The following actions were taken to support the clients medication management: <input type="text" id="closing-meds-actions" placeholder="describe actions taken..."></p>
+            </div>
+
+            <p>Referrals initiated to support the client post-discharge include: <input type="text" id="closing-referrals" placeholder="list referrals..."></p>
+            <p>The 
+            <select id="closing-offered-to-dropdown">
+                <option value="" selected disabled>Select...</option>
+                <option value="client">client</option>
+                <option value="client and guardian">client and guardian</option>
+            </select>
+            was offered a copy of their discharge plan, a recovery resource handout outlining community resources for urgent support, harm reduction resources, referrals to MAT providers and recovery peer services, and an overdose prevention/Narcan kit.</p>
+            <label for="closing-client-response">Client's Response to Resources Offered at Discharge:</label>
+            <input type="text" id="closing-client-response" placeholder="Enter client's response...">
+        </div>
+
+        <!-- Loss of contact fields (shown when that disposition is selected) -->
+        <div id="closing-admitted-loss-of-contact-fields" class="hidden">
+            <div style="margin-bottom:8px;">
+                <label><input type="radio" name="closing-admitted-loss-mode" id="closing-admitted-loss-sessions-radio" value="sessions" checked> Enter number of sessions and date range</label>
+            </div>
+            <div id="closing-admitted-loss-sessions-container" style="margin-left:18px; margin-bottom:10px;">
+                <label>Sessions completed: <input type="number" id="closing-admitted-loss-sessions" min="0" placeholder="0" oninput="updateFinalNote()" style="width:70px;"></label>
+                <label style="margin-left:12px;">Start date: <input type="date" id="closing-admitted-loss-start-date" onchange="updateFinalNote()"></label>
+                <label style="margin-left:12px;">End date: <input type="date" id="closing-admitted-loss-end-date" onchange="updateFinalNote()"></label>
+            </div>
+
+            <div style="margin-bottom:8px;">
+                <label><input type="radio" name="closing-admitted-loss-mode" id="closing-admitted-loss-entry-only" value="entryonly"> Client engaged in their evaluation and entry session only.</label>
+            </div>
+
+            <p>Re-engagement efforts are documented in the chart. A discharge letter was sent to the client's last known address with the reason for their discharge, an invitation to re-engage in treatment when they are ready, and a recovery resource handout outlining community resources for urgent support, harm reduction resources, and referrals to MAT providers and recovery peer services.</p>
+        </div>
     </div>
 
     <div id="closing-note-loss-of-contact-container" class="note-container hidden">

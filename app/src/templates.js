@@ -7,7 +7,6 @@
             counseling: [
                 { value: 'closing-note-admitted', label: 'Closing Note - Admitted' },
                 { value: 'closing-note-non-admitted', label: 'Closing Note - Non-Admitted' },
-                { value: 'closing-note-loss-of-contact', label: 'Closing Note - Loss of Contact' },
                 { value: 'complex-coordination-of-care', label: 'Complex Coordination of Care' },
                 { value: 'discharge-plan', label: 'Discharge Plan' },
                 { value: 'drug-treatment-court-report', label: 'Drug Treatment Court Report' },
@@ -188,7 +187,8 @@
     const dischargeSummaryCopyBtn = document.getElementById('copy-discharge-other-needs-btn');
 
     // Closing Note (Admitted) elements
-    const closingReason = document.getElementById('closing-reason');
+    const closingDischargeStatus = document.getElementById('closing-discharge-status');
+    const closingDisposition = document.getElementById('closing-disposition');
     const closingRecommendations = document.getElementById('closing-recommendations');
     const closingMedsDropdown = document.getElementById('closing-meds-dropdown');
     const closingMedsActionsContainer = document.getElementById('closing-meds-actions-container');
@@ -196,6 +196,15 @@
     const closingReferrals = document.getElementById('closing-referrals');
     const closingOfferedToDropdown = document.getElementById('closing-offered-to-dropdown');
     const closingClientResponse = document.getElementById('closing-client-response');
+    const closingAdmittedRegularFields = document.getElementById('closing-admitted-regular-fields');
+    const closingAdmittedLossOfContactFields = document.getElementById('closing-admitted-loss-of-contact-fields');
+    const closingAdmittedLossSessions = document.getElementById('closing-admitted-loss-sessions');
+    const closingAdmittedLossStartDate = document.getElementById('closing-admitted-loss-start-date');
+    const closingAdmittedLossEndDate = document.getElementById('closing-admitted-loss-end-date');
+    const closingAdmittedLossEntryOnly = document.getElementById('closing-admitted-loss-entry-only');
+    const closingAdmittedLossSessionsRadio = document.getElementById('closing-admitted-loss-sessions-radio');
+    const closingAdmittedLossSessionsContainer = document.getElementById('closing-admitted-loss-sessions-container');
+    
     // Closing Note (Loss of Contact) elements
     const closingLossSessions = document.getElementById('closing-loss-sessions');
     const closingLossStartDate = document.getElementById('closing-loss-start-date');
@@ -215,6 +224,26 @@
         if (closingLossSessionsRadio) closingLossSessionsRadio.addEventListener('change', () => { syncClosingLossVisibility(); updateFinalNote(); });
         // run once on load
         syncClosingLossVisibility();
+    }
+
+    // Sync visibility for closing-note-admitted with loss of contact disposition
+    function syncClosingAdmittedDispositionVisibility() {
+        if (!closingDisposition || !closingAdmittedRegularFields || !closingAdmittedLossOfContactFields) return;
+        const isLostToContact = closingDisposition.value === 'Left against clinical advice: Lost to contact (no referral possible)' || closingDisposition.value === 'Loss of Contact';
+        closingAdmittedRegularFields.classList.toggle('hidden', isLostToContact);
+        closingAdmittedLossOfContactFields.classList.toggle('hidden', !isLostToContact);
+        if (isLostToContact && closingAdmittedLossSessionsContainer) {
+            const showSessions = closingAdmittedLossSessionsRadio.checked;
+            closingAdmittedLossSessionsContainer.classList.toggle('hidden', !showSessions);
+        }
+    }
+    if (closingDisposition) {
+        closingDisposition.addEventListener('change', () => { syncClosingAdmittedDispositionVisibility(); updateFinalNote(); });
+        syncClosingAdmittedDispositionVisibility();
+    }
+    if (closingAdmittedLossEntryOnly || closingAdmittedLossSessionsRadio) {
+        if (closingAdmittedLossEntryOnly) closingAdmittedLossEntryOnly.addEventListener('change', () => { syncClosingAdmittedDispositionVisibility(); updateFinalNote(); });
+        if (closingAdmittedLossSessionsRadio) closingAdmittedLossSessionsRadio.addEventListener('change', () => { syncClosingAdmittedDispositionVisibility(); updateFinalNote(); });
     }
     
     // Closing Note (Non-Admitted) elements
@@ -2412,53 +2441,66 @@ function addNurseInterventionRow(isFirstRow = false) {
             }
 
         } else if (selectedNoteType === 'closing-note-admitted') {
-            let noteParts = [];
-            const reason = closingReason.value || '[reason for discharge]';
-            noteParts.push(`Client was discharged due to ${reason}`);
-
-            const recommendations = closingRecommendations.value || '[recommended treatment plan or next steps]';
-            noteParts.push(`Treatment recommendations include ${recommendations}`);
-
-            const meds = closingMedsDropdown.value;
-            if (meds) {
-                let medsSentence = `The client ${meds} currently prescribed medications most recently prescribed at Delphi`;
-                if (meds === 'is') {
-                    const actions = closingMedsActions.value || '[describe actions taken, e.g., medication reconciliation, prescription coordination, referral to prescriber, etc.]';
-                    medsSentence += `. The following actions were taken to support the clients medication management: ${actions}`;
+            const dischargeStatus = document.getElementById('closing-discharge-status')?.value || '[discharge status]';
+            const disposition = document.getElementById('closing-disposition')?.value || '[disposition]';
+            
+            // Check if this is a "Lost to contact" disposition
+            const isLostToContact = disposition === 'Left against clinical advice: Lost to contact (no referral possible)' || disposition === 'Loss of Contact';
+            
+            if (isLostToContact) {
+                // Generate Loss of Contact note
+                const lossMode = document.querySelector('input[name="closing-admitted-loss-mode"]:checked')?.value || 'sessions';
+                let lossNarrative = '';
+                
+                if (lossMode === 'sessions') {
+                    const sessions = closingAdmittedLossSessions?.value || '0';
+                    const startDate = closingAdmittedLossStartDate?.value || '[start date]';
+                    const endDate = closingAdmittedLossEndDate?.value || '[end date]';
+                    lossNarrative = `The client was seen for ${sessions} sessions from ${startDate} to ${endDate}. `;
+                } else {
+                    lossNarrative = 'The client engaged in their evaluation and entry session only. ';
                 }
-                noteParts.push(medsSentence);
-            }
-
-            const referrals = closingReferrals.value || '[list referrals, e.g., outpatient counseling, primary care, housing support, etc.]';
-            noteParts.push(`Referrals initiated to support the client post-discharge include: ${referrals}`);
-
-            const offeredTo = closingOfferedToDropdown.value;
-            if (offeredTo) {
-                noteParts.push(`The ${offeredTo} was offered a copy of their discharge plan, a recovery resource handout outlining community resources for urgent support, harm reduction resources, referrals to MAT providers and recovery peer services, and an overdose prevention/Narcan kit`);
-            }
-            
-            const clientResponse = closingClientResponse.value;
-            if (clientResponse) {
-                noteParts.push(`Client's Response to Resources Offered at Discharge: ${clientResponse}`);
-            }
-            
-            const joinedNote = noteParts.filter(Boolean).map(s => s.charAt(0).toUpperCase() + s.slice(1)).join('. ');
-            if (joinedNote) {
-                finalNote = joinedNote + '.';
-            }
-
-        } else if (selectedNoteType === 'closing-note-loss-of-contact') {
-            const entryOnlyChecked = (closingLossEntryOnly && closingLossEntryOnly.checked);
-            if (entryOnlyChecked) {
-                finalNote = `Client was discharged due to loss of contact. Client engaged in their evaluation and entry session only. Re-engagement efforts are documented in the chart. A discharge letter was sent to the client's last known address with the reason for their discharge, an invitation to re-engage in treatment when they are ready, and a recovery resource handout outlining community resources for urgent support, harm reduction resources, and referrals to MAT providers and recovery peer services.`;
+                
+                lossNarrative += `Re-engagement efforts are documented in the chart. A discharge letter was sent to the client's last known address with the reason for their discharge, an invitation to re-engage in treatment when they are ready, and a recovery resource handout outlining community resources for urgent support, harm reduction resources, and referrals to MAT providers and recovery peer services.`;
+                
+                finalNote = `Client was discharged with a status of ${dischargeStatus} and a disposition of ${disposition}. ${lossNarrative}`;
             } else {
-                const sessionsVal = (closingLossSessions && closingLossSessions.value) ? closingLossSessions.value : '[number]';
-                const startVal = formatDateForOutput(closingLossStartDate && closingLossStartDate.value) || '[start date]';
-                const endVal = formatDateForOutput(closingLossEndDate && closingLossEndDate.value) || '[end date]';
-                const sessionsNum = Number(sessionsVal);
-                const sessionLabel = (sessionsNum === 1) ? 'session' : 'sessions';
-                finalNote = `Client was discharged due to loss of contact. Client completed ${sessionsVal} ${sessionLabel} between ${startVal} and ${endVal}. Re-engagement efforts are documented in the chart. A discharge letter was sent to the client's last known address with the reason for their discharge, an invitation to re-engage in treatment when they are ready, and a recovery resource handout outlining community resources for urgent support, harm reduction resources, and referrals to MAT providers and recovery peer services.`;
+                // Generate regular Admitted note
+                let noteParts = [];
+                noteParts.push(`Client was discharged with a status of ${dischargeStatus} and a disposition of ${disposition}`);
+
+                const recommendations = closingRecommendations.value || '[recommended treatment plan or next steps]';
+                noteParts.push(`Treatment recommendations include ${recommendations}`);
+
+                const meds = closingMedsDropdown.value;
+                if (meds) {
+                    let medsSentence = `The client ${meds} currently prescribed medications most recently prescribed at Delphi`;
+                    if (meds === 'is') {
+                        const actions = closingMedsActions.value || '[describe actions taken, e.g., medication reconciliation, prescription coordination, referral to prescriber, etc.]';
+                        medsSentence += `. The following actions were taken to support the clients medication management: ${actions}`;
+                    }
+                    noteParts.push(medsSentence);
+                }
+
+                const referrals = closingReferrals.value || '[list referrals, e.g., outpatient counseling, primary care, housing support, etc.]';
+                noteParts.push(`Referrals initiated to support the client post-discharge include: ${referrals}`);
+
+                const offeredTo = closingOfferedToDropdown.value;
+                if (offeredTo) {
+                    noteParts.push(`The ${offeredTo} was offered a copy of their discharge plan, a recovery resource handout outlining community resources for urgent support, harm reduction resources, referrals to MAT providers and recovery peer services, and an overdose prevention/Narcan kit`);
+                }
+                
+                const clientResponse = closingClientResponse.value;
+                if (clientResponse) {
+                    noteParts.push(`Client's Response to Resources Offered at Discharge: ${clientResponse}`);
+                }
+                
+                const joinedNote = noteParts.filter(Boolean).map(s => s.charAt(0).toUpperCase() + s.slice(1)).join('. ');
+                if (joinedNote) {
+                    finalNote = joinedNote + '.';
+                }
             }
+
         } else if (selectedNoteType === 'closing-note-non-admitted') {
             const clientType = nonAdmittedClientType.value;
             if (clientType === 'no-engage') {
@@ -4366,10 +4408,15 @@ let interventions = [];
         closingMedsActionsContainer.classList.toggle('hidden', closingMedsDropdown.value !== 'is');
         updateFinalNote();
     });
-    [closingReason, closingRecommendations, closingMedsActions, closingReferrals, closingOfferedToDropdown, closingClientResponse].forEach(el => {
+    [closingDischargeStatus, closingDisposition, closingRecommendations, closingMedsActions, closingReferrals, closingOfferedToDropdown, closingClientResponse].forEach(el => {
         el.addEventListener('input', updateFinalNote);
         el.addEventListener('change', updateFinalNote);
     });
+    
+    // Closing Note (Admitted) Loss of Contact field listeners
+    if (closingAdmittedLossSessions) closingAdmittedLossSessions.addEventListener('input', updateFinalNote);
+    if (closingAdmittedLossStartDate) closingAdmittedLossStartDate.addEventListener('change', updateFinalNote);
+    if (closingAdmittedLossEndDate) closingAdmittedLossEndDate.addEventListener('change', updateFinalNote);
     
     // Closing Note (Non-Admitted) Listeners
     nonAdmittedClientType.addEventListener('change', () => {
