@@ -98,7 +98,9 @@
                     <label for="letterType" class="block text-lg font-semibold text-gray-700 mb-2">Select Letter Type</label>
                     <select id="letterType" onchange="handleTemplateChange()" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition text-lg">
                         <option value="generalUse">General Use</option>
-                        <option value="discharge">Discharge Letter</option>
+                        <option value="dischargeExternal">Discharge Letter - External / Referral Source</option>
+                        <option value="dischargeClient">Discharge Letter - Client</option>
+                        <option value="dischargeClientSuccess">Discharge Letter - Client (Successful Completion)</option>
                         <option value="enrollmentVerification">Enrollment Verification</option>
                         <option value="evalInProgress">Evaluation in Progress</option>
                         <option value="reEngagement">Re-Engagement</option>
@@ -124,13 +126,18 @@
                                 <div>
                                     <label for="commonSalutationType" class="block text-sm font-semibold text-gray-700 mb-1">Salutation</label>
                                     <select id="commonSalutationType" onchange="toggleCommonSalutationName(); generateReport();" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
+                                        <option value="dear">Dear [letter recipient]</option>
                                         <option value="toWhom">To Whom It May Concern</option>
-                                        <option value="dear">Dear</option>
+                                        <option value="custom">Custom Salutation</option>
                                     </select>
                                 </div>
                                 <div id="commonSalutationNameWrap" class="hidden">
                                     <label for="commonSalutationName" class="block text-sm font-medium text-gray-700 mb-1">Letter Recipient</label>
                                     <input type="text" id="commonSalutationName" oninput="generateReport()" class="w-48 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" placeholder="name" />
+                                </div>
+                                <div id="commonCustomSalutationWrap" class="hidden">
+                                    <label for="commonCustomSalutation" class="block text-sm font-medium text-gray-700 mb-1">Custom Salutation</label>
+                                    <input type="text" id="commonCustomSalutation" oninput="generateReport()" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" placeholder="e.g., Greetings Admissions Team," />
                                 </div>
                             </div>
                             <div>
@@ -143,8 +150,8 @@ Sincerely,</textarea>
                     </div>
                 </div>
 
-                <!-- ===== TEMPLATE: Discharge Letter ===== -->
-                <div id="dischargeFields" class="hidden form-section max-w-4xl mx-auto">
+                <!-- ===== TEMPLATE: Discharge Letter - External / Referral Source ===== -->
+                <div id="dischargeExternalFields" class="hidden form-section max-w-4xl mx-auto">
                     <div class="bg-gray-50 p-6 rounded-xl border border-gray-200 mb-6">
                         <h2 class="text-xl font-semibold mb-4 text-gray-600 border-b pb-2">Letter Information</h2>
                         <div class="space-y-4">
@@ -160,13 +167,18 @@ Sincerely,</textarea>
                                 <div>
                                     <label for="disSalutationType" class="block text-sm font-medium text-gray-700 mb-1">Salutation</label>
                                     <select id="disSalutationType" onchange="toggleDisSalutationName(); generateReport();" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
+                                        <option value="dear">Dear [letter recipient]</option>
                                         <option value="toWhom">To Whom It May Concern</option>
-                                        <option value="dear">Dear</option>
+                                        <option value="custom">Custom Salutation</option>
                                     </select>
                                 </div>
                                 <div id="disSalutationNameWrap" class="hidden">
                                     <label for="disSalutationName" class="block text-sm font-medium text-gray-700 mb-1">Letter Recipient</label>
                                     <input type="text" id="disSalutationName" oninput="generateReport()" class="w-48 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" placeholder="name">
+                                </div>
+                                <div id="disCustomSalutationWrap" class="hidden">
+                                    <label for="disCustomSalutation" class="block text-sm font-medium text-gray-700 mb-1">Custom Salutation</label>
+                                    <input type="text" id="disCustomSalutation" oninput="generateReport()" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" placeholder="e.g., Greetings Admissions Team," />
                                 </div>
                             </div>
                         </div>
@@ -244,6 +256,104 @@ Sincerely,</textarea>
                     </div>
                 </div>
 
+                <!-- ===== TEMPLATE: Discharge Letter - Client ===== -->
+                <div id="dischargeClientFields" class="hidden form-section max-w-4xl mx-auto">
+                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-200 mb-6">
+                        <h2 class="text-xl font-semibold mb-4 text-gray-600 border-b pb-2">Letter Information</h2>
+                        <div class="space-y-4">
+                            <div>
+                                <label for="disClientLetterDate" class="block text-sm font-medium text-gray-700 mb-1">Letter Date</label>
+                                <input type="date" id="disClientLetterDate" oninput="generateReport()" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div>
+                                <label for="disClientSubject" class="block text-sm font-semibold text-gray-700 mb-1">Subject</label>
+                                <input type="text" id="disClientSubject" oninput="generateReport()" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" value="Completion of Services">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div class="bg-gray-50 p-6 rounded-xl border border-gray-200">
+                            <h2 class="text-xl font-semibold mb-4 text-gray-600 border-b pb-2">Client &amp; Dates</h2>
+                            <div class="space-y-4">
+                                <div>
+                                    <label for="disClientRecipientFirstName" class="block text-sm font-medium text-gray-700 mb-1">Client's First Name</label>
+                                    <input type="text" id="disClientRecipientFirstName" oninput="generateReport()" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                </div>
+                                <div>
+                                    <label for="disClientRecipientLastName" class="block text-sm font-medium text-gray-700 mb-1">Client's Last Name</label>
+                                    <input type="text" id="disClientRecipientLastName" oninput="generateReport()" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                </div>
+                                <div>
+                                    <label for="disClientAdmissionDate" class="block text-sm font-medium text-gray-700 mb-1">Admission Date</label>
+                                    <input type="date" id="disClientAdmissionDate" oninput="generateReport()" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                </div>
+                                <div>
+                                    <label for="disClientDischargeDate" class="block text-sm font-medium text-gray-700 mb-1">Discharge Date</label>
+                                    <input type="date" id="disClientDischargeDate" oninput="generateReport()" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-gray-50 p-6 rounded-xl border border-gray-200">
+                            <h2 class="text-xl font-semibold mb-4 text-gray-600 border-b pb-2">Treatment Summary</h2>
+                            <div class="space-y-4">
+                                <div>
+                                    <label for="disClientNumSessions" class="block text-sm font-medium text-gray-700 mb-1">Number of Sessions</label>
+                                    <input type="number" id="disClientNumSessions" oninput="generateReport()" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===== TEMPLATE: Discharge Letter - Client (Successful Completion) ===== -->
+                <div id="dischargeClientSuccessFields" class="hidden form-section max-w-4xl mx-auto">
+                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-200 mb-6">
+                        <h2 class="text-xl font-semibold mb-4 text-gray-600 border-b pb-2">Letter Information</h2>
+                        <div class="space-y-4">
+                            <div>
+                                <label for="disClientSuccessLetterDate" class="block text-sm font-medium text-gray-700 mb-1">Letter Date</label>
+                                <input type="date" id="disClientSuccessLetterDate" oninput="generateReport()" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div>
+                                <label for="disClientSuccessSubject" class="block text-sm font-semibold text-gray-700 mb-1">Subject</label>
+                                <input type="text" id="disClientSuccessSubject" oninput="generateReport()" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" value="Completion of Treatment">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div class="bg-gray-50 p-6 rounded-xl border border-gray-200">
+                            <h2 class="text-xl font-semibold mb-4 text-gray-600 border-b pb-2">Client &amp; Dates</h2>
+                            <div class="space-y-4">
+                                <div>
+                                    <label for="disClientSuccessFirstName" class="block text-sm font-medium text-gray-700 mb-1">Client's First Name</label>
+                                    <input type="text" id="disClientSuccessFirstName" oninput="generateReport()" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                </div>
+                                <div>
+                                    <label for="disClientSuccessLastName" class="block text-sm font-medium text-gray-700 mb-1">Client's Last Name</label>
+                                    <input type="text" id="disClientSuccessLastName" oninput="generateReport()" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                </div>
+                                <div>
+                                    <label for="disClientSuccessAdmissionDate" class="block text-sm font-medium text-gray-700 mb-1">Admission Date</label>
+                                    <input type="date" id="disClientSuccessAdmissionDate" oninput="generateReport()" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                </div>
+                                <div>
+                                    <label for="disClientSuccessDischargeDate" class="block text-sm font-medium text-gray-700 mb-1">Discharge Date</label>
+                                    <input type="date" id="disClientSuccessDischargeDate" oninput="generateReport()" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-gray-50 p-6 rounded-xl border border-gray-200">
+                            <h2 class="text-xl font-semibold mb-4 text-gray-600 border-b pb-2">Treatment Summary</h2>
+                            <div class="space-y-4">
+                                <div>
+                                    <label for="disClientSuccessNumSessions" class="block text-sm font-medium text-gray-700 mb-1">Number of Sessions</label>
+                                    <input type="number" id="disClientSuccessNumSessions" oninput="generateReport()" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- ===== TEMPLATE: Enrollment Verification ===== -->
                 <div id="enrollmentVerificationFields" class="hidden form-section">
                     <div class="max-w-4xl mx-auto bg-white p-8 sm:p-12 rounded-2xl shadow-lg border border-gray-200 font-serif text-gray-900 leading-relaxed text-lg">
@@ -266,12 +376,17 @@ Sincerely,</textarea>
                             <div class="space-y-2">
                                 <label for="evSalutationType" class="block text-gray-700 mb-1">Salutation</label>
                                 <select id="evSalutationType" onchange="toggleEvSalutationName(); generateReport();" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition text-base">
+                                    <option value="dear">Dear [letter recipient]</option>
                                     <option value="toWhom">To Whom It May Concern</option>
-                                    <option value="dear">Dear</option>
+                                    <option value="custom">Custom Salutation</option>
                                 </select>
                                 <div id="evSalutationNameWrap" class="hidden">
                                     <label for="evSalutationName" class="block text-gray-700 mb-1">Letter Recipient</label>
                                     <input type="text" id="evSalutationName" oninput="generateReport()" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition text-base" placeholder="name">
+                                </div>
+                                <div id="evCustomSalutationWrap" class="hidden">
+                                    <label for="evCustomSalutation" class="block text-gray-700 mb-1">Custom Salutation</label>
+                                    <input type="text" id="evCustomSalutation" oninput="generateReport()" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition text-base" placeholder="e.g., Greetings Admissions Team," />
                                 </div>
                             </div>
                         </div>
@@ -362,12 +477,17 @@ Sincerely,</textarea>
                             <div class="space-y-2">
                                 <label for="trSalutationType" class="block text-sm font-medium text-gray-700 mb-1">Salutation</label>
                                 <select id="trSalutationType" onchange="toggleTrSalutationName(); generateReport();" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
+                                    <option value="dear">Dear [letter recipient]</option>
                                     <option value="toWhom">To Whom It May Concern</option>
-                                    <option value="dear">Dear</option>
+                                    <option value="custom">Custom Salutation</option>
                                 </select>
                                 <div id="trSalutationNameWrap" class="hidden">
                                     <label for="trSalutationName" class="block text-sm font-medium text-gray-700 mb-1">Letter Recipient</label>
                                     <input type="text" id="trSalutationName" oninput="generateReport()" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" placeholder="name">
+                                </div>
+                                <div id="trCustomSalutationWrap" class="hidden">
+                                    <label for="trCustomSalutation" class="block text-sm font-medium text-gray-700 mb-1">Custom Salutation</label>
+                                    <input type="text" id="trCustomSalutation" oninput="generateReport()" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" placeholder="e.g., Greetings Admissions Team," />
                                 </div>
                             </div>
                         </div>
@@ -471,12 +591,17 @@ Sincerely,</textarea>
                             <div class="space-y-2">
                                 <label for="tnrSalutationType" class="block text-sm font-medium text-gray-700 mb-1">Salutation</label>
                                 <select id="tnrSalutationType" onchange="toggleTnrSalutationName(); generateReport();" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
+                                    <option value="dear">Dear [letter recipient]</option>
                                     <option value="toWhom">To Whom It May Concern</option>
-                                    <option value="dear">Dear</option>
+                                    <option value="custom">Custom Salutation</option>
                                 </select>
                                 <div id="tnrSalutationNameWrap" class="hidden">
                                     <label for="tnrSalutationName" class="block text-sm font-medium text-gray-700 mb-1">Letter Recipient</label>
                                     <input type="text" id="tnrSalutationName" oninput="generateReport()" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" placeholder="name">
+                                </div>
+                                <div id="tnrCustomSalutationWrap" class="hidden">
+                                    <label for="tnrCustomSalutation" class="block text-sm font-medium text-gray-700 mb-1">Custom Salutation</label>
+                                    <input type="text" id="tnrCustomSalutation" oninput="generateReport()" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" placeholder="e.g., Greetings Admissions Team," />
                                 </div>
                             </div>
                         </div>
@@ -568,12 +693,17 @@ Sincerely,</textarea>
                             <div class="space-y-2">
                                 <label for="eipSalutationType" class="block text-sm font-medium text-gray-700 mb-1">Salutation</label>
                                 <select id="eipSalutationType" onchange="toggleEipSalutationName(); generateReport();" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
+                                    <option value="dear">Dear [letter recipient]</option>
                                     <option value="toWhom">To Whom It May Concern</option>
-                                    <option value="dear">Dear</option>
+                                    <option value="custom">Custom Salutation</option>
                                 </select>
                                 <div id="eipSalutationNameWrap" class="hidden">
                                     <label for="eipSalutationName" class="block text-sm font-medium text-gray-700 mb-1">Letter Recipient</label>
                                     <input type="text" id="eipSalutationName" oninput="generateReport()" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" placeholder="name">
+                                </div>
+                                <div id="eipCustomSalutationWrap" class="hidden">
+                                    <label for="eipCustomSalutation" class="block text-sm font-medium text-gray-700 mb-1">Custom Salutation</label>
+                                    <input type="text" id="eipCustomSalutation" oninput="generateReport()" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" placeholder="e.g., Greetings Admissions Team," />
                                 </div>
                             </div>
                         </div>
@@ -659,6 +789,7 @@ Sincerely,</textarea>
                                 <div>
                                     <label for="closureDate" class="block text-sm font-medium text-gray-700 mb-1">Closure Date</label>
                                     <input type="date" id="closureDate" oninput="generateReport()" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
+                                    <p id="closureDateWarning" class="text-sm text-red-600 mt-1 hidden">This date is within 60 days of the last date of service.</p>
                                     <p class="text-xs text-gray-500 mt-1">Friday of next week suggested.</p>
                                 </div>
                             </div>
@@ -847,13 +978,25 @@ Sincerely,</textarea>
             document.getElementById('tnrLetterDate').value = todayString;
             document.getElementById('evLetterDate').value = todayString;
             document.getElementById('disLetterDate').value = todayString;
+            document.getElementById('disClientLetterDate').value = todayString;
+            document.getElementById('disClientSuccessLetterDate').value = todayString;
             document.getElementById('disDischargeDate').value = '';
+            document.getElementById('disClientDischargeDate').value = '';
+            document.getElementById('disClientSuccessDischargeDate').value = '';
             document.getElementById('evStartDate').value = todayString;
-            document.getElementById('commonSalutationType').value = 'toWhom';
+            document.getElementById('commonSalutationType').value = 'dear';
             toggleCommonSalutationName();
             const disSubjectEl = document.getElementById('disSubject');
             if (disSubjectEl && !disSubjectEl.value) {
                 disSubjectEl.value = 'Patient Discharge from Delphi Rise';
+            }
+            const disClientSubjectEl = document.getElementById('disClientSubject');
+            if (disClientSubjectEl && !disClientSubjectEl.value) {
+                disClientSubjectEl.value = 'Completion of Services';
+            }
+            const disClientSuccessSubjectEl = document.getElementById('disClientSuccessSubject');
+            if (disClientSuccessSubjectEl && !disClientSuccessSubjectEl.value) {
+                disClientSuccessSubjectEl.value = 'Completion of Treatment';
             }
             const eipSubjectEl = document.getElementById('eipSubject');
             if (eipSubjectEl && !eipSubjectEl.value) {
@@ -873,27 +1016,27 @@ Sincerely,</textarea>
             }
             const disSalType = document.getElementById('disSalutationType');
             if (disSalType) {
-                disSalType.value = 'toWhom';
+                disSalType.value = 'dear';
                 toggleDisSalutationName();
             }
             const eipSalType = document.getElementById('eipSalutationType');
             if (eipSalType) {
-                eipSalType.value = 'toWhom';
+                eipSalType.value = 'dear';
                 toggleEipSalutationName();
             }
             const trSalType = document.getElementById('trSalutationType');
             if (trSalType) {
-                trSalType.value = 'toWhom';
+                trSalType.value = 'dear';
                 toggleTrSalutationName();
             }
             const tnrSalType = document.getElementById('tnrSalutationType');
             if (tnrSalType) {
-                tnrSalType.value = 'toWhom';
+                tnrSalType.value = 'dear';
                 toggleTnrSalutationName();
             }
             const evSalType = document.getElementById('evSalutationType');
             if (evSalType) {
-                evSalType.value = 'toWhom';
+                evSalType.value = 'dear';
                 toggleEvSalutationName();
             }
             
@@ -971,24 +1114,38 @@ Sincerely,</textarea>
             }
             // Make the output section visible for all letter types
             document.getElementById('outputSection').style.display = 'block';
-            
+            updateClosureDateWarning();
             generateReport();
+        }
+
+        function buildSalutation(type, name, custom) {
+            if (type === 'dear') {
+                return `Dear ${name || '[Name]'},`;
+            }
+            if (type === 'custom') {
+                return custom || '[Custom Salutation]';
+            }
+            return 'To Whom It May Concern,';
         }
 
         function getCommonSalutation() {
             const typeEl = document.getElementById('commonSalutationType');
             const nameEl = document.getElementById('commonSalutationName');
-            const type = typeEl ? typeEl.value : 'toWhom';
+            const customEl = document.getElementById('commonCustomSalutation');
+            const type = typeEl ? typeEl.value : 'dear';
             const name = nameEl ? (nameEl.value || '[Name]') : '[Name]';
-            return type === 'dear' ? `Dear ${name},` : 'To Whom It May Concern,';
+            const custom = customEl ? customEl.value : '';
+            return buildSalutation(type, name, custom);
         }
 
         function getSalutationByPrefix(prefix) {
             const typeEl = document.getElementById(`${prefix}SalutationType`);
             const nameEl = document.getElementById(`${prefix}SalutationName`);
-            const type = typeEl ? typeEl.value : 'toWhom';
+            const customEl = document.getElementById(`${prefix}CustomSalutation`);
+            const type = typeEl ? typeEl.value : 'dear';
             const name = nameEl ? (nameEl.value || '[Name]') : '[Name]';
-            return type === 'dear' ? `Dear ${name},` : 'To Whom It May Concern,';
+            const custom = customEl ? customEl.value : '';
+            return buildSalutation(type, name, custom);
         }
 
         document.getElementById('signatureUpload').addEventListener('change', function(event) {
@@ -1008,14 +1165,18 @@ Sincerely,</textarea>
         function toggleCommonSalutationName() {
             const salutationType = document.getElementById('commonSalutationType').value;
             const nameWrap = document.getElementById('commonSalutationNameWrap');
+            const customWrap = document.getElementById('commonCustomSalutationWrap');
             nameWrap.classList.toggle('hidden', salutationType !== 'dear');
+            if (customWrap) customWrap.classList.toggle('hidden', salutationType !== 'custom');
         }
 
         function toggleSalutationNameByPrefix(prefix) {
             const typeEl = document.getElementById(`${prefix}SalutationType`);
             const wrapEl = document.getElementById(`${prefix}SalutationNameWrap`);
+            const customWrapEl = document.getElementById(`${prefix}CustomSalutationWrap`);
             if (!typeEl || !wrapEl) return;
             wrapEl.classList.toggle('hidden', typeEl.value !== 'dear');
+            if (customWrapEl) customWrapEl.classList.toggle('hidden', typeEl.value !== 'custom');
         }
 
         function toggleEipSalutationName() { toggleSalutationNameByPrefix('eip'); }
@@ -1032,8 +1193,10 @@ Sincerely,</textarea>
         function toggleDisSalutationName() {
             const salutationType = document.getElementById('disSalutationType').value;
             const nameWrap = document.getElementById('disSalutationNameWrap');
+            const customWrap = document.getElementById('disCustomSalutationWrap');
             if (!nameWrap) return;
             nameWrap.classList.toggle('hidden', salutationType !== 'dear');
+            if (customWrap) customWrap.classList.toggle('hidden', salutationType !== 'custom');
         }
 
         function togglePositiveSubstance() {
@@ -1135,6 +1298,29 @@ Sincerely,</textarea>
             const closureDateString = `${yyyy}-${mm}-${dd}`;
             document.getElementById('closureDate').value = closureDateString;
         }
+
+        function updateClosureDateWarning() {
+            const lastServiceDateVal = document.getElementById('lastServiceDate')?.value;
+            const closureDateVal = document.getElementById('closureDate')?.value;
+            const warningEl = document.getElementById('closureDateWarning');
+            if (!warningEl) return;
+
+            if (!lastServiceDateVal || !closureDateVal) {
+                warningEl.classList.add('hidden');
+                return;
+            }
+
+            const lastServiceDate = new Date(lastServiceDateVal);
+            const closureDate = new Date(closureDateVal);
+            if (isNaN(lastServiceDate.getTime()) || isNaN(closureDate.getTime())) {
+                warningEl.classList.add('hidden');
+                return;
+            }
+
+            const differenceInTime = closureDate.getTime() - lastServiceDate.getTime();
+            const differenceInDays = Math.floor(differenceInTime / (1000 * 3600 * 24));
+            warningEl.classList.toggle('hidden', differenceInDays >= 60 || differenceInDays < 0);
+        }
         
         // --- Diagnosis Management ---
         function addDiagnosis() {
@@ -1192,14 +1378,21 @@ Sincerely,</textarea>
                 case 'treatmentRec':
                     generateTreatmentRecReport();
                     break;
-                case 'discharge':
+                case 'dischargeExternal':
                     generateDischargeReport();
+                    break;
+                case 'dischargeClient':
+                    generateDischargeClientReport();
+                    break;
+                case 'dischargeClientSuccess':
+                    generateDischargeClientSuccessReport();
                     break;
                 case 'enrollmentVerification':
                     generateEnrollmentVerificationReport();
                     break;
             }
             const includeReferrals = document.getElementById('includeReferrals')?.checked;
+            updateClosureDateWarning();
             if (includeReferrals) appendResourcesToTextarea();
         }
         
@@ -1462,9 +1655,7 @@ Description: Support for individuals and families impacted by substance use and 
         function generateGeneralUseReport() {
             const letterDate = formatDate(document.getElementById('guLetterDate').value, "Today's Date");
             const subject = document.getElementById('commonSubject').value;
-            const salutationType = document.getElementById('commonSalutationType').value;
-            const salutationName = document.getElementById('commonSalutationName').value || '[Name]';
-            const salutation = salutationType === 'dear' ? `Dear ${salutationName},` : 'To Whom It May Concern,';
+            const salutation = getCommonSalutation();
             const body = document.getElementById('guBody').value || '[Letter body]';
             
             const mainParagraphs = [
@@ -1494,9 +1685,7 @@ Description: Support for individuals and families impacted by substance use and 
             const numSessions = document.getElementById('disNumSessions').value || '[Number of Sessions]';
             const goalAchievement = document.getElementById('disGoalAchievement').value;
             const subject = document.getElementById('disSubject').value;
-            const disSalutationType = document.getElementById('disSalutationType').value;
-            const disSalutationName = document.getElementById('disSalutationName').value || '[Name]';
-            const disSalutation = disSalutationType === 'dear' ? `Dear ${disSalutationName},` : 'To Whom It May Concern,';
+            const disSalutation = getSalutationByPrefix('dis');
 
             let oasasReasonText = document.getElementById('disOasasReasonSelect').value;
             let finalOasasSentence;
@@ -1524,6 +1713,57 @@ Description: Support for individuals and families impacted by substance use and 
                 `If further information is required, please contact me using the information provided below.`
             );
             
+            const signatureBlock = getSignatureBlock();
+            const fullText = mainParagraphs.join('\n\n') + `\n\nSincerely,\n\n\n\n${signatureBlock}`;
+            document.getElementById('generatedText').value = fullText;
+        }
+
+        function generateDischargeClientReport() {
+            const letterDate = formatDate(document.getElementById('disClientLetterDate').value, "Today's Date");
+            const subject = document.getElementById('disClientSubject').value || 'Completion of Services';
+            const firstName = document.getElementById('disClientRecipientFirstName').value || '[First Name]';
+            const admissionDate = formatDate(document.getElementById('disClientAdmissionDate').value, "Admission Date");
+            const dischargeDate = formatDate(document.getElementById('disClientDischargeDate').value, "Discharge Date");
+            const numSessions = document.getElementById('disClientNumSessions').value || '[Number of Sessions]';
+            const attendedSentence = String(numSessions).trim() === '1'
+                ? `This letter confirms that you were admitted to outpatient services at Delphi Rise on ${admissionDate} and that your services concluded on ${dischargeDate}. During this time, you attended 1 session.`
+                : `This letter confirms that you were admitted to outpatient services at Delphi Rise on ${admissionDate} and that your services concluded on ${dischargeDate}. During this time, you attended ${numSessions} sessions and worked toward the goals we identified at the start of treatment.`;
+
+            const mainParagraphs = [
+                letterDate,
+                `Subject: ${subject}`,
+                `Dear ${firstName},`,
+                attendedSentence,
+                `If you feel that additional support would be helpful in the future, you are welcome to contact Delphi Rise to explore re-engaging in services or to discuss other available resources.`,
+                `If you need documentation of your participation or have questions about future services, please feel free to contact me.`,
+                `I wish you the best moving forward.`
+            ];
+
+            const signatureBlock = getSignatureBlock();
+            const fullText = mainParagraphs.join('\n\n') + `\n\nSincerely,\n\n\n\n${signatureBlock}`;
+            document.getElementById('generatedText').value = fullText;
+        }
+
+        function generateDischargeClientSuccessReport() {
+            const letterDate = formatDate(document.getElementById('disClientSuccessLetterDate').value, "Today's Date");
+            const subject = document.getElementById('disClientSuccessSubject').value || 'Completion of Treatment';
+            const firstName = document.getElementById('disClientSuccessFirstName').value || '[First Name]';
+            const admissionDate = formatDate(document.getElementById('disClientSuccessAdmissionDate').value, "Admission Date");
+            const dischargeDate = formatDate(document.getElementById('disClientSuccessDischargeDate').value, "Discharge Date");
+            const numSessions = document.getElementById('disClientSuccessNumSessions').value || '[Number of Sessions]';
+
+            const mainParagraphs = [
+                letterDate,
+                `Subject: ${subject}`,
+                `Dear ${firstName},`,
+                `This letter confirms that you were admitted to outpatient services at Delphi Rise on ${admissionDate} and successfully completed treatment on ${dischargeDate}.`,
+                `During your time in treatment, you attended ${numSessions} sessions and worked toward the goals we identified at the beginning of services. Your participation and effort contributed to the progress you made during this time.`,
+                `Completing treatment is a meaningful accomplishment. Reaching this point reflects the time, effort, and persistence you invested in the process. The work you have done to address challenges, build insight, and develop healthier patterns can continue to support you moving forward.`,
+                `If you feel that additional support would be helpful in the future, you are welcome to contact Delphi Rise to explore returning to services or to discuss other available resources.`,
+                `If you need documentation of your participation or have questions in the future, please feel free to reach out.`,
+                `I wish you continued success.`
+            ];
+
             const signatureBlock = getSignatureBlock();
             const fullText = mainParagraphs.join('\n\n') + `\n\nSincerely,\n\n\n\n${signatureBlock}`;
             document.getElementById('generatedText').value = fullText;
@@ -1751,7 +1991,7 @@ Description: Support for individuals and families impacted by substance use and 
             const bodyParagraphs = [
                 todaysDateFormatted,
                 salutation,
-                `I hope you’re doing well. It has been ${daysDifference} days since your last service with us, and in accordance with OASAS regulations, we are required to close your chart if there is no further engagement. However, we want to ensure you continue receiving the support and services that can help you in your recovery.`,
+                `I hope you’re doing well. It has been ${daysDifference} days since your last service with us, and in accordance with OASAS regulations, we are required to close your chart after 60 days if there is no further engagement. However, we want to ensure you continue receiving the support and services that can help you in your recovery.`,
                 `If you would like to remain active with Delphi Rise and continue receiving services, we ask that you schedule an appointment by ${closureDate}. You can do so by calling us at 585-467-2230.`,
                 `If there are any barriers preventing you from scheduling, please reach out—we are happy to discuss ways to help. We value your well-being and hope to continue supporting you on your journey.`
             ];
@@ -2053,9 +2293,17 @@ Description: Support for individuals and families impacted by substance use and 
                     clientFirstName = document.getElementById('trClientFirstName').value;
                     clientLastName = document.getElementById('trClientLastName').value;
                     break;
-                case 'discharge':
+                case 'dischargeExternal':
                     clientFirstName = document.getElementById('disClientFirstName').value;
                     clientLastName = document.getElementById('disClientLastName').value;
+                    break;
+                case 'dischargeClient':
+                    clientFirstName = document.getElementById('disClientRecipientFirstName').value;
+                    clientLastName = document.getElementById('disClientRecipientLastName').value;
+                    break;
+                case 'dischargeClientSuccess':
+                    clientFirstName = document.getElementById('disClientSuccessFirstName').value;
+                    clientLastName = document.getElementById('disClientSuccessLastName').value;
                     break;
                 case 'enrollmentVerification':
                     clientFirstName = document.getElementById('evClientFirstName').value;
