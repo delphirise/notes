@@ -317,12 +317,48 @@
             align-items: center;
             margin-bottom: 10px;
         }
-        .ouds-substance-grid label, .auds-substance-grid label {
+        .suds-couse-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .ouds-substance-grid label, .auds-substance-grid label, .suds-couse-grid label {
             margin: 0;
             font-weight: normal;
         }
-        .ouds-substance-grid input, .auds-substance-grid input {
+        .ouds-substance-grid input, .auds-substance-grid input, .suds-couse-grid input {
             margin: 0;
+        }
+        .other-substance-details {
+            margin-left: 42px;
+            margin-top: 8px;
+        }
+        .other-substance-row {
+            display: grid;
+            grid-template-columns: 1.25fr 1fr 1fr auto;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .other-substance-field {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .other-substance-field label {
+            margin: 0;
+            font-weight: normal;
+            font-size: 0.9em;
+        }
+        .other-substance-row input {
+            margin: 0;
+        }
+        @media (max-width: 768px) {
+            .other-substance-row {
+                grid-template-columns: 1fr;
+            }
         }
         /* Updated styling for ouds-inline-label to handle short textboxes */
         .ouds-inline-label, .auds-inline-label, .suds-inline-label {
@@ -2477,10 +2513,11 @@ Rochester, NY
             <textarea id="ouds-side-effects" placeholder="Note presence/absence of side effects."></textarea>
         </div>
         <h3>Any other substance use?</h3>
+      <p style="font-size: 0.9em; color: #555;">(Check all that apply and enter amount and last date of use)</p>
       <div style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 10px; align-items: center; margin-bottom: 5px; font-weight: bold; padding-left: 42px;">
     <span style="grid-column: 1;">Substance</span>
     <span style="grid-column: 2;">Amount Used</span>
-    <span style="grid-column: 3;">Last Date of Use</span>
+    <span style="grid-column: 3;">Last date of use</span>
 </div>
 
         <div id="ouds-substance-list">
@@ -2500,7 +2537,12 @@ Rochester, NY
                 <input type="date" id="ouds-date-benzodiazepines" class="hidden">
             </div>
             <div class="ouds-substance-grid">
-                <div class="checkbox-container" style="margin:0; padding:0; background:none; border:none;"><input type="checkbox" id="ouds-sub-cocaine"><label for="ouds-sub-cocaine">Cocaine</label></div>
+                <div class="checkbox-container" style="margin:0; padding:0; background:none; border:none;"><input type="checkbox" id="ouds-sub-cannabis"><label for="ouds-sub-cannabis">Cannabis:</label></div>
+                <input type="text" id="ouds-amt-cannabis" class="hidden" placeholder="Amount Used">
+                <input type="date" id="ouds-date-cannabis" class="hidden">
+            </div>
+            <div class="ouds-substance-grid">
+                <div class="checkbox-container" style="margin:0; padding:0; background:none; border:none;"><input type="checkbox" id="ouds-sub-cocaine"><label for="ouds-sub-cocaine">Cocaine:</label></div>
                 <input type="text" id="ouds-amt-cocaine" class="hidden" placeholder="Amount Used">
                 <input type="date" id="ouds-date-cocaine" class="hidden">
             </div>
@@ -2539,14 +2581,30 @@ Rochester, NY
                 <input type="text" id="ouds-amt-prescription-opioids" class="hidden" placeholder="Amount Used">
                 <input type="date" id="ouds-date-prescription-opioids" class="hidden">
             </div>
-            <div class="ouds-substance-grid">
-                <div class="checkbox-container" style="margin:0; padding:0; background:none; border:none;"><input type="checkbox" id="ouds-sub-other"><label for="ouds-sub-other">Other:</label></div>
-                <input type="text" id="ouds-sub-other-text" class="hidden" placeholder="Identify other drug">
-                <div>
-                    <input type="text" id="ouds-amt-other" class="hidden" placeholder="Amount Used" style="width:100%; margin-bottom: 5px;">
-                    <input type="date" id="ouds-date-other" class="hidden" style="width:100%;">
+            <div id="ouds-other-substances-container">
+                <div class="checkbox-container" style="margin:0; padding:0; background:none; border:none;">
+                    <input type="checkbox" id="ouds-sub-other">
+                    <label for="ouds-sub-other">Other:</label>
+                </div>
+                <div id="ouds-other-details" class="other-substance-details hidden">
+                    <div class="other-substance-row ouds-other-row">
+                        <div class="other-substance-field">
+                            <label>Substance</label>
+                            <input type="text" class="ouds-other-substance" aria-label="Substance">
+                        </div>
+                        <div class="other-substance-field">
+                            <label>Amount Used</label>
+                            <input type="text" class="ouds-other-amount" aria-label="Amount Used">
+                        </div>
+                        <div class="other-substance-field">
+                            <label>Last date of use</label>
+                            <input type="date" class="ouds-other-date" aria-label="Last date of use" title="Last date of use">
+                        </div>
+                        <button type="button" class="ouds-remove-other remove-btn" style="display: none;">−</button>
+                    </div>
                 </div>
             </div>
+            <button type="button" id="ouds-add-other" class="add-btn hidden" style="margin-left: 42px; margin-top: 10px;">+</button>
         </div>
 
         <h3>Medical History Related to Substance Use:</h3>
@@ -2770,20 +2828,98 @@ Rochester, NY
         <textarea id="suds-prior-treatment" rows="2"></textarea>
     </div>
 
-    <h3>Co-use of Other Substances</h3>
-    <p style="font-size: 0.9em; color: #555;">(Check all that apply)</p>
+    <h3>Any other substance use?</h3>
+    <p style="font-size: 0.9em; color: #555;">(Check all that apply and enter amount and last date of use)</p>
+    <div style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 10px; align-items: center; margin-bottom: 5px; font-weight: bold; padding-left: 42px;">
+    <span style="grid-column: 1;">Substance</span>
+    <span style="grid-column: 2;">Amount Used</span>
+    <span style="grid-column: 3;">Last date of use</span>
+</div>
     <div id="suds-couse-list">
-        <div class="checkbox-container"><input type="checkbox" id="suds-couse-alcohol"><label for="suds-couse-alcohol">Alcohol</label></div>
-        <div class="checkbox-container"><input type="checkbox" id="suds-couse-cannabis"><label for="suds-couse-cannabis">Cannabis</label></div>
-        <div class="checkbox-container"><input type="checkbox" id="suds-couse-opioids"><label for="suds-couse-opioids">Opioids</label></div>
-        <div class="checkbox-container"><input type="checkbox" id="suds-couse-benzodiazepines"><label for="suds-couse-benzodiazepines">Benzodiazepines</label></div>
-        <div class="checkbox-container"><input type="checkbox" id="suds-couse-nicotine"><label for="suds-couse-nicotine">Nicotine</label></div>
-        <div class="checkbox-container"><input type="checkbox" id="suds-couse-other"><label for="suds-couse-other">Other:</label><input type="text" id="suds-couse-other-text" placeholder="Specify" style="width: 200px; padding: 6px; margin-left: 10px;"></div>
-    </div>
-
-    <div class="suds-inline-label">
-        <label for="suds-couse-patterns">Describe Use Patterns of Co-use substances:</label>
-        <textarea id="suds-couse-patterns" rows="4" placeholder="Include timing, sequence, cravings, and any interactions noted between substances"></textarea>
+        <div class="suds-couse-grid">
+            <div class="checkbox-container" style="margin:0; padding:0; background:none; border:none;"><input type="checkbox" id="suds-couse-alcohol"><label for="suds-couse-alcohol">Alcohol:</label></div>
+            <input type="text" id="suds-couse-amt-alcohol" class="hidden" placeholder="Amount Used">
+            <input type="date" id="suds-couse-date-alcohol" class="hidden">
+        </div>
+        <div class="suds-couse-grid">
+            <div class="checkbox-container" style="margin:0; padding:0; background:none; border:none;"><input type="checkbox" id="suds-couse-amphet"><label for="suds-couse-amphet">Amphetamine / Methamphetamines / Crystal Meth:</label></div>
+            <input type="text" id="suds-couse-amt-amphet" class="hidden" placeholder="Amount Used">
+            <input type="date" id="suds-couse-date-amphet" class="hidden">
+        </div>
+        <div class="suds-couse-grid">
+            <div class="checkbox-container" style="margin:0; padding:0; background:none; border:none;"><input type="checkbox" id="suds-couse-benzodiazepines"><label for="suds-couse-benzodiazepines">Benzodiazepines:</label></div>
+            <input type="text" id="suds-couse-amt-benzodiazepines" class="hidden" placeholder="Amount Used">
+            <input type="date" id="suds-couse-date-benzodiazepines" class="hidden">
+        </div>
+        <div class="suds-couse-grid">
+            <div class="checkbox-container" style="margin:0; padding:0; background:none; border:none;"><input type="checkbox" id="suds-couse-cannabis"><label for="suds-couse-cannabis">Cannabis:</label></div>
+            <input type="text" id="suds-couse-amt-cannabis" class="hidden" placeholder="Amount Used">
+            <input type="date" id="suds-couse-date-cannabis" class="hidden">
+        </div>
+        <div class="suds-couse-grid">
+            <div class="checkbox-container" style="margin:0; padding:0; background:none; border:none;"><input type="checkbox" id="suds-couse-cocaine"><label for="suds-couse-cocaine">Cocaine:</label></div>
+            <input type="text" id="suds-couse-amt-cocaine" class="hidden" placeholder="Amount Used">
+            <input type="date" id="suds-couse-date-cocaine" class="hidden">
+        </div>
+        <div class="suds-couse-grid">
+            <div class="checkbox-container" style="margin:0; padding:0; background:none; border:none;"><input type="checkbox" id="suds-couse-hallucinogens"><label for="suds-couse-hallucinogens">Hallucinogens:</label></div>
+            <input type="text" id="suds-couse-amt-hallucinogens" class="hidden" placeholder="Amount Used">
+            <input type="date" id="suds-couse-date-hallucinogens" class="hidden">
+        </div>
+        <div class="suds-couse-grid">
+            <div class="checkbox-container" style="margin:0; padding:0; background:none; border:none;"><input type="checkbox" id="suds-couse-illicit-opioids"><label for="suds-couse-illicit-opioids">Illicit opioids:</label></div>
+            <input type="text" id="suds-couse-amt-illicit-opioids" class="hidden" placeholder="Amount Used">
+            <input type="date" id="suds-couse-date-illicit-opioids" class="hidden">
+        </div>
+        <div class="suds-couse-grid">
+            <div class="checkbox-container" style="margin:0; padding:0; background:none; border:none;"><input type="checkbox" id="suds-couse-ivdu"><label for="suds-couse-ivdu">IVDU:</label></div>
+            <input type="text" id="suds-couse-amt-ivdu" class="hidden" placeholder="Amount Used">
+            <input type="date" id="suds-couse-date-ivdu" class="hidden">
+        </div>
+        <div class="suds-couse-grid">
+            <div class="checkbox-container" style="margin:0; padding:0; background:none; border:none;"><input type="checkbox" id="suds-couse-kratom"><label for="suds-couse-kratom">Kratom:</label></div>
+            <input type="text" id="suds-couse-amt-kratom" class="hidden" placeholder="Amount Used">
+            <input type="date" id="suds-couse-date-kratom" class="hidden">
+        </div>
+        <div class="suds-couse-grid">
+            <div class="checkbox-container" style="margin:0; padding:0; background:none; border:none;"><input type="checkbox" id="suds-couse-mdma"><label for="suds-couse-mdma">MDMA:</label></div>
+            <input type="text" id="suds-couse-amt-mdma" class="hidden" placeholder="Amount Used">
+            <input type="date" id="suds-couse-date-mdma" class="hidden">
+        </div>
+        <div class="suds-couse-grid">
+            <div class="checkbox-container" style="margin:0; padding:0; background:none; border:none;"><input type="checkbox" id="suds-couse-nicotine"><label for="suds-couse-nicotine">Nicotine use:</label></div>
+            <input type="text" id="suds-couse-amt-nicotine" class="hidden" placeholder="Amount Used">
+            <input type="date" id="suds-couse-date-nicotine" class="hidden">
+        </div>
+        <div class="suds-couse-grid">
+            <div class="checkbox-container" style="margin:0; padding:0; background:none; border:none;"><input type="checkbox" id="suds-couse-prescription-opioids"><label for="suds-couse-prescription-opioids">Prescription opioids:</label></div>
+            <input type="text" id="suds-couse-amt-prescription-opioids" class="hidden" placeholder="Amount Used">
+            <input type="date" id="suds-couse-date-prescription-opioids" class="hidden">
+        </div>
+        <div id="suds-other-substances-container">
+            <div class="checkbox-container" style="margin:0; padding:0; background:none; border:none;">
+                <input type="checkbox" id="suds-couse-other">
+                <label for="suds-couse-other">Other:</label>
+            </div>
+            <div id="suds-other-details" class="other-substance-details hidden">
+                <div class="other-substance-row suds-other-row">
+                    <div class="other-substance-field">
+                        <label>Substance</label>
+                        <input type="text" class="suds-other-substance" aria-label="Substance">
+                    </div>
+                    <div class="other-substance-field">
+                        <label>Amount Used</label>
+                        <input type="text" class="suds-other-amount" aria-label="Amount Used">
+                    </div>
+                    <div class="other-substance-field">
+                        <label>Last date of use</label>
+                        <input type="date" class="suds-other-date" aria-label="Last date of use" title="Last date of use">
+                    </div>
+                    <button type="button" class="suds-remove-other remove-btn" style="display: none;">−</button>
+                </div>
+            </div>
+        </div>
+        <button type="button" id="suds-add-other" class="add-btn hidden" style="margin-left: 42px; margin-top: 10px;">+</button>
     </div>
 
     <h3>Cravings</h3>
@@ -3094,36 +3230,16 @@ Rochester, NY
 
     <h3>Any other substance use?</h3>
     <p style="font-size: 0.9em; color: #555;">(Check all that apply and enter amount and last date of use)</p>
+    <div style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 10px; align-items: center; margin-bottom: 5px; font-weight: bold; padding-left: 42px;">
+    <span style="grid-column: 1;">Substance</span>
+    <span style="grid-column: 2;">Amount Used</span>
+    <span style="grid-column: 3;">Last date of use</span>
+</div>
     <div id="auds-substance-list">
         <div class="auds-substance-grid">
-            <div class="checkbox-container" style="margin:0; padding:0; background:none; border:none;"><input type="checkbox" id="auds-sub-illicit-opioids"><label for="auds-sub-illicit-opioids">Illicit opioids:</label></div>
-            <input type="text" id="auds-amt-illicit-opioids" class="hidden" placeholder="Amount Used">
-            <input type="date" id="auds-date-illicit-opioids" class="hidden">
-        </div>
-        <div class="auds-substance-grid">
-            <div class="checkbox-container" style="margin:0; padding:0; background:none; border:none;"><input type="checkbox" id="auds-sub-prescription-opioids"><label for="auds-sub-prescription-opioids">Prescription opioids:</label></div>
-            <input type="text" id="auds-amt-prescription-opioids" class="hidden" placeholder="Amount Used">
-            <input type="date" id="auds-date-prescription-opioids" class="hidden">
-        </div>
-        <div class="auds-substance-grid">
-            <div class="checkbox-container" style="margin:0; padding:0; background:none; border:none;"><input type="checkbox" id="auds-sub-kratom"><label for="auds-sub-kratom">Kratom:</label></div>
-            <input type="text" id="auds-amt-kratom" class="hidden" placeholder="Amount Used">
-            <input type="date" id="auds-date-kratom" class="hidden">
-        </div>
-        <div class="auds-substance-grid">
-            <div class="checkbox-container" style="margin:0; padding:0; background:none; border:none;"><input type="checkbox" id="auds-sub-ivdu"><label for="auds-sub-ivdu">IVDU:</label></div>
-            <input type="text" id="auds-amt-ivdu" class="hidden" placeholder="Amount Used">
-            <input type="date" id="auds-date-ivdu" class="hidden">
-        </div>
-         <div class="auds-substance-grid">
-            <div class="checkbox-container" style="margin:0; padding:0; background:none; border:none;"><input type="checkbox" id="auds-sub-benzodiazepines"><label for="auds-sub-benzodiazepines">Benzodiazepines:</label></div>
-            <input type="text" id="auds-amt-benzodiazepines" class="hidden" placeholder="Amount Used">
-            <input type="date" id="auds-date-benzodiazepines" class="hidden">
-        </div>
-        <div class="auds-substance-grid">
-            <div class="checkbox-container" style="margin:0; padding:0; background:none; border:none;"><input type="checkbox" id="auds-sub-cocaine"><label for="auds-sub-cocaine">Cocaine:</label></div>
-            <input type="text" id="auds-amt-cocaine" class="hidden" placeholder="Amount Used">
-            <input type="date" id="auds-date-cocaine" class="hidden">
+            <div class="checkbox-container" style="margin:0; padding:0; background:none; border:none;"><input type="checkbox" id="auds-sub-alcohol"><label for="auds-sub-alcohol">Alcohol:</label></div>
+            <input type="text" id="auds-amt-alcohol" class="hidden" placeholder="Amount Used">
+            <input type="date" id="auds-date-alcohol" class="hidden">
         </div>
         <div class="auds-substance-grid">
             <div class="checkbox-container" style="margin:0; padding:0; background:none; border:none;"><input type="checkbox" id="auds-sub-amphet"><label for="auds-sub-amphet">Amphetamine / Methamphetamines / Crystal Meth:</label></div>
@@ -3131,9 +3247,39 @@ Rochester, NY
             <input type="date" id="auds-date-amphet" class="hidden">
         </div>
         <div class="auds-substance-grid">
+            <div class="checkbox-container" style="margin:0; padding:0; background:none; border:none;"><input type="checkbox" id="auds-sub-benzodiazepines"><label for="auds-sub-benzodiazepines">Benzodiazepines:</label></div>
+            <input type="text" id="auds-amt-benzodiazepines" class="hidden" placeholder="Amount Used">
+            <input type="date" id="auds-date-benzodiazepines" class="hidden">
+        </div>
+        <div class="auds-substance-grid">
+            <div class="checkbox-container" style="margin:0; padding:0; background:none; border:none;"><input type="checkbox" id="auds-sub-cannabis"><label for="auds-sub-cannabis">Cannabis:</label></div>
+            <input type="text" id="auds-amt-cannabis" class="hidden" placeholder="Amount Used">
+            <input type="date" id="auds-date-cannabis" class="hidden">
+        </div>
+        <div class="auds-substance-grid">
+            <div class="checkbox-container" style="margin:0; padding:0; background:none; border:none;"><input type="checkbox" id="auds-sub-cocaine"><label for="auds-sub-cocaine">Cocaine:</label></div>
+            <input type="text" id="auds-amt-cocaine" class="hidden" placeholder="Amount Used">
+            <input type="date" id="auds-date-cocaine" class="hidden">
+        </div>
+        <div class="auds-substance-grid">
             <div class="checkbox-container" style="margin:0; padding:0; background:none; border:none;"><input type="checkbox" id="auds-sub-hallucinogens"><label for="auds-sub-hallucinogens">Hallucinogens:</label></div>
             <input type="text" id="auds-amt-hallucinogens" class="hidden" placeholder="Amount Used">
             <input type="date" id="auds-date-hallucinogens" class="hidden">
+        </div>
+        <div class="auds-substance-grid">
+            <div class="checkbox-container" style="margin:0; padding:0; background:none; border:none;"><input type="checkbox" id="auds-sub-illicit-opioids"><label for="auds-sub-illicit-opioids">Illicit opioids:</label></div>
+            <input type="text" id="auds-amt-illicit-opioids" class="hidden" placeholder="Amount Used">
+            <input type="date" id="auds-date-illicit-opioids" class="hidden">
+        </div>
+        <div class="auds-substance-grid">
+            <div class="checkbox-container" style="margin:0; padding:0; background:none; border:none;"><input type="checkbox" id="auds-sub-ivdu"><label for="auds-sub-ivdu">IVDU:</label></div>
+            <input type="text" id="auds-amt-ivdu" class="hidden" placeholder="Amount Used">
+            <input type="date" id="auds-date-ivdu" class="hidden">
+        </div>
+        <div class="auds-substance-grid">
+            <div class="checkbox-container" style="margin:0; padding:0; background:none; border:none;"><input type="checkbox" id="auds-sub-kratom"><label for="auds-sub-kratom">Kratom:</label></div>
+            <input type="text" id="auds-amt-kratom" class="hidden" placeholder="Amount Used">
+            <input type="date" id="auds-date-kratom" class="hidden">
         </div>
         <div class="auds-substance-grid">
             <div class="checkbox-container" style="margin:0; padding:0; background:none; border:none;"><input type="checkbox" id="auds-sub-mdma"><label for="auds-sub-mdma">MDMA:</label></div>
@@ -3141,15 +3287,39 @@ Rochester, NY
             <input type="date" id="auds-date-mdma" class="hidden">
         </div>
         <div class="auds-substance-grid">
-            <div class="checkbox-container" style="margin:0; padding:0; background:none; border:none;"><input type="checkbox" id="auds-sub-alcohol"><label for="auds-sub-alcohol">Alcohol:</label></div>
-            <input type="text" id="auds-amt-alcohol" class="hidden" placeholder="Amount Used">
-            <input type="date" id="auds-date-alcohol" class="hidden">
-        </div>
-        <div class="auds-substance-grid">
             <div class="checkbox-container" style="margin:0; padding:0; background:none; border:none;"><input type="checkbox" id="auds-sub-nicotine"><label for="auds-sub-nicotine">Nicotine use:</label></div>
             <input type="text" id="auds-amt-nicotine" class="hidden" placeholder="Amount Used">
             <input type="date" id="auds-date-nicotine" class="hidden">
         </div>
+        <div class="auds-substance-grid">
+            <div class="checkbox-container" style="margin:0; padding:0; background:none; border:none;"><input type="checkbox" id="auds-sub-prescription-opioids"><label for="auds-sub-prescription-opioids">Prescription opioids:</label></div>
+            <input type="text" id="auds-amt-prescription-opioids" class="hidden" placeholder="Amount Used">
+            <input type="date" id="auds-date-prescription-opioids" class="hidden">
+        </div>
+        <div id="auds-other-substances-container">
+            <div class="checkbox-container" style="margin:0; padding:0; background:none; border:none;">
+                <input type="checkbox" id="auds-sub-other">
+                <label for="auds-sub-other">Other:</label>
+            </div>
+            <div id="auds-other-details" class="other-substance-details hidden">
+                <div class="other-substance-row auds-other-row">
+                    <div class="other-substance-field">
+                        <label>Substance</label>
+                        <input type="text" class="auds-other-substance" aria-label="Substance">
+                    </div>
+                    <div class="other-substance-field">
+                        <label>Amount Used</label>
+                        <input type="text" class="auds-other-amount" aria-label="Amount Used">
+                    </div>
+                    <div class="other-substance-field">
+                        <label>Last date of use</label>
+                        <input type="date" class="auds-other-date" aria-label="Last date of use" title="Last date of use">
+                    </div>
+                    <button type="button" class="auds-remove-other remove-btn" style="display: none;">−</button>
+                </div>
+            </div>
+        </div>
+        <button type="button" id="auds-add-other" class="add-btn hidden" style="margin-left: 42px; margin-top: 10px;">+</button>
     </div>
 
     <h3>Medical History Related to Substance Use</h3>

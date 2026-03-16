@@ -313,7 +313,7 @@
     const oudsPharmRadios = document.querySelectorAll('input[name="ouds-pharmacotherapy"]');
     const oudsPharmFields = document.getElementById('ouds-pharm-fields');
     const oudsSubstances = [
-        'alcohol', 'amphet', 'benzodiazepines', 'cocaine', 'hallucinogens', 'illicit-opioids', 'ivdu', 'kratom', 'mdma', 'nicotine', 'prescription-opioids', 'other'
+        'alcohol', 'amphet', 'benzodiazepines', 'cannabis', 'cocaine', 'hallucinogens', 'illicit-opioids', 'ivdu', 'kratom', 'mdma', 'nicotine', 'prescription-opioids', 'other'
     ];
 
 
@@ -2863,13 +2863,10 @@ function addNurseInterventionRow(isFirstRow = false) {
             if (pharm.length > 0) noteParts.push(`Pharmacotherapy\n${pharm.join('\n')}`);
 
             let otherSubs = [];
-            oudsSubstances.forEach(key => {
+            oudsSubstances.filter(key => key !== 'other').forEach(key => {
                 const cb = document.getElementById(`ouds-sub-${key}`);
                 if (cb && cb.checked) {
                     let detail = `${document.querySelector(`label[for="ouds-sub-${key}"]`).textContent}`;
-                    if (key === 'other' && document.getElementById('ouds-sub-other-text').value) {
-                        detail += ` (${document.getElementById('ouds-sub-other-text').value})`;
-                    }
                     const amt = document.getElementById(`ouds-amt-${key}`).value;
                     const date = document.getElementById(`ouds-date-${key}`).value;
                     if (amt) detail += ` - Amount used: ${amt}`;
@@ -2877,6 +2874,18 @@ function addNurseInterventionRow(isFirstRow = false) {
                     otherSubs.push(detail);
                 }
             });
+            if (document.getElementById('ouds-sub-other')?.checked) {
+                document.querySelectorAll('#ouds-other-details .ouds-other-row').forEach(row => {
+                    const substance = row.querySelector('.ouds-other-substance')?.value.trim();
+                    const amount = row.querySelector('.ouds-other-amount')?.value.trim();
+                    const date = row.querySelector('.ouds-other-date')?.value;
+                    if (!substance && !amount && !date) return;
+                    let detail = substance || 'Other';
+                    if (amount) detail += ` - Amount used: ${amount}`;
+                    if (date) detail += ` - Last date of use: ${date}`;
+                    otherSubs.push(detail);
+                });
+            }
             if (otherSubs.length > 0) noteParts.push(`Any other substance use?\n${otherSubs.join('\n')}`);
 
             let medHistory = [];
@@ -3009,16 +3018,31 @@ function addNurseInterventionRow(isFirstRow = false) {
     if (sudsSuh.length > 0) noteParts.push(`Substance Use History\n${sudsSuh.join('\n')}`);
 
     let sudsCouse = [];
-    const sudsCoUseCheckboxes = ['suds-couse-alcohol', 'suds-couse-cannabis', 'suds-couse-opioids', 'suds-couse-benzodiazepines', 'suds-couse-nicotine'];
+    const sudsCoUseCheckboxes = ['suds-couse-alcohol', 'suds-couse-amphet', 'suds-couse-benzodiazepines', 'suds-couse-cannabis', 'suds-couse-cocaine', 'suds-couse-hallucinogens', 'suds-couse-illicit-opioids', 'suds-couse-ivdu', 'suds-couse-kratom', 'suds-couse-mdma', 'suds-couse-nicotine', 'suds-couse-prescription-opioids'];
     sudsCoUseCheckboxes.forEach(id => {
         if (document.getElementById(id).checked) {
-            sudsCouse.push(document.querySelector(`label[for="${id}"]`).textContent);
+            let detail = document.querySelector(`label[for="${id}"]`).textContent;
+            const key = id.replace('suds-couse-', '');
+            const amount = document.getElementById(`suds-couse-amt-${key}`)?.value.trim();
+            const date = document.getElementById(`suds-couse-date-${key}`)?.value;
+            if (amount) detail += ` - Amount used: ${amount}`;
+            if (date) detail += ` - Last date of use: ${date}`;
+            sudsCouse.push(detail);
         }
     });
-    if (document.getElementById('suds-couse-other').checked && document.getElementById('suds-couse-other-text').value) {
-        sudsCouse.push(`Other: ${document.getElementById('suds-couse-other-text').value}`);
+    if (document.getElementById('suds-couse-other')?.checked) {
+        document.querySelectorAll('#suds-other-details .suds-other-row').forEach(row => {
+            const substance = row.querySelector('.suds-other-substance')?.value.trim();
+            const amount = row.querySelector('.suds-other-amount')?.value.trim();
+            const date = row.querySelector('.suds-other-date')?.value;
+            if (!substance && !amount && !date) return;
+            let detail = substance || 'Other';
+            if (amount) detail += ` - Amount used: ${amount}`;
+            if (date) detail += ` - Last date of use: ${date}`;
+            sudsCouse.push(detail);
+        });
     }
-    if (sudsCouse.length > 0) noteParts.push(`Co-use of Other Substances\n${sudsCouse.join('\n')}`);
+    if (sudsCouse.length > 0) noteParts.push(`Any other substance use?\n${sudsCouse.join('\n')}`);
 
     const sudsCravings = document.querySelector('input[name="suds-cravings"]:checked');
     if (sudsCravings) noteParts.push(`Cravings: ${sudsCravings.value}`);
@@ -3204,16 +3228,18 @@ function addNurseInterventionRow(isFirstRow = false) {
             audsOtherSubs.push(detail);
         }
     });
-
-    // Special handling for 'Other' substance if needed (if you add an 'other' checkbox/field for AUD)
-    // if (document.getElementById('auds-sub-other') && document.getElementById('auds-sub-other').checked) {
-    //     let detail = `Other: ${document.getElementById('auds-sub-other-text').value || '[Identify other drug]'}`;
-    //     const amt = document.getElementById('auds-amt-other').value;
-    //     const date = document.getElementById('auds-date-other').value;
-    //     if (amt) detail += ` - Amount used: ${amt}`;
-    //     if (date) detail += ` - Last date of use: ${date}`;
-    //     audsOtherSubs.push(detail);
-    // }
+    if (document.getElementById('auds-sub-other')?.checked) {
+        document.querySelectorAll('#auds-other-details .auds-other-row').forEach(row => {
+            const substance = row.querySelector('.auds-other-substance')?.value.trim();
+            const amount = row.querySelector('.auds-other-amount')?.value.trim();
+            const date = row.querySelector('.auds-other-date')?.value;
+            if (!substance && !amount && !date) return;
+            let detail = substance || 'Other';
+            if (amount) detail += ` - Amount used: ${amount}`;
+            if (date) detail += ` - Last date of use: ${date}`;
+            audsOtherSubs.push(detail);
+        });
+    }
 
     if (audsOtherSubs.length > 0) noteParts.push(`Any other substance use?\n${audsOtherSubs.join('\n')}`);
 
@@ -4162,23 +4188,104 @@ let interventions = [];
         updateFinalNote();
     }));
     oudsSubstances.forEach(key => {
-        const cb = document.getElementById(`ouds-sub-${key}`);
-        if (cb) {
-            cb.addEventListener('change', () => {
-                const isChecked = cb.checked;
-                const amtInput = document.getElementById(`ouds-amt-${key}`);
-                const dateInput = document.getElementById(`ouds-date-${key}`);
-                const otherTextInput = document.getElementById('ouds-sub-other-text');
+        if (key !== 'other') {
+            const cb = document.getElementById(`ouds-sub-${key}`);
+            if (cb) {
+                cb.addEventListener('change', () => {
+                    const isChecked = cb.checked;
+                    const amtInput = document.getElementById(`ouds-amt-${key}`);
+                    const dateInput = document.getElementById(`ouds-date-${key}`);
 
-                if (amtInput) amtInput.classList.toggle('hidden', !isChecked);
-                if (dateInput) dateInput.classList.toggle('hidden', !isChecked);
-                if (key === 'other' && otherTextInput) {
-                    otherTextInput.classList.toggle('hidden', !isChecked);
-                }
+                    if (amtInput) amtInput.classList.toggle('hidden', !isChecked);
+                    if (dateInput) dateInput.classList.toggle('hidden', !isChecked);
+                    updateFinalNote();
+                });
+            }
+        }
+    });
+
+    function createOtherSubstanceRow(rowClass, substanceClass, amountClass, dateClass, removeClass) {
+        const row = document.createElement('div');
+        row.className = `other-substance-row ${rowClass}`;
+        row.innerHTML = `
+            <div class="other-substance-field">
+                <label>Substance</label>
+                <input type="text" class="${substanceClass}" aria-label="Substance">
+            </div>
+            <div class="other-substance-field">
+                <label>Amount Used</label>
+                <input type="text" class="${amountClass}" aria-label="Amount Used">
+            </div>
+            <div class="other-substance-field">
+                <label>Last date of use</label>
+                <input type="date" class="${dateClass}" aria-label="Last date of use" title="Last date of use">
+            </div>
+            <button type="button" class="${removeClass} remove-btn">−</button>
+        `;
+        return row;
+    }
+
+    function bindOtherSubstanceRow(row, removeVisibilityUpdater) {
+        row.querySelectorAll('input').forEach(input => {
+            input.addEventListener('input', updateFinalNote);
+            input.addEventListener('change', updateFinalNote);
+        });
+        const removeBtn = row.querySelector('.remove-btn');
+        if (removeBtn) {
+            removeBtn.addEventListener('click', () => {
+                row.remove();
+                removeVisibilityUpdater();
                 updateFinalNote();
             });
         }
-    });
+    }
+
+    // Handle OUDS "Other" substances add/remove functionality
+    function setupOudsOtherRow(row) {
+        bindOtherSubstanceRow(row, updateOudsRemoveButtonVisibility);
+    }
+
+    function updateOudsRemoveButtonVisibility() {
+        const container = document.getElementById('ouds-other-details');
+        if (!container) return;
+        const rows = container.querySelectorAll('.ouds-other-row');
+        rows.forEach(row => {
+            const removeBtn = row.querySelector('.ouds-remove-other');
+            if (removeBtn) {
+                removeBtn.style.display = rows.length > 1 ? 'block' : 'none';
+            }
+        });
+    }
+
+    const oudsOtherCheckbox = document.getElementById('ouds-sub-other');
+    const oudsOtherContainer = document.getElementById('ouds-other-details');
+    const oudsAddOtherBtn = document.getElementById('ouds-add-other');
+    
+    if (oudsOtherContainer) {
+        oudsOtherContainer.querySelectorAll('.ouds-other-row').forEach(row => setupOudsOtherRow(row));
+        updateOudsRemoveButtonVisibility();
+    }
+
+    if (oudsOtherCheckbox && oudsOtherContainer && oudsAddOtherBtn) {
+        oudsOtherCheckbox.addEventListener('change', () => {
+            const isChecked = oudsOtherCheckbox.checked;
+            oudsOtherContainer.classList.toggle('hidden', !isChecked);
+            oudsAddOtherBtn.classList.toggle('hidden', !isChecked);
+            updateFinalNote();
+        });
+        oudsOtherContainer.classList.toggle('hidden', !oudsOtherCheckbox.checked);
+        oudsAddOtherBtn.classList.toggle('hidden', !oudsOtherCheckbox.checked);
+    }
+
+    if (oudsAddOtherBtn) {
+        oudsAddOtherBtn.addEventListener('click', () => {
+            const newRow = createOtherSubstanceRow('ouds-other-row', 'ouds-other-substance', 'ouds-other-amount', 'ouds-other-date', 'ouds-remove-other');
+            oudsOtherContainer.appendChild(newRow);
+            setupOudsOtherRow(newRow);
+            updateOudsRemoveButtonVisibility();
+            updateFinalNote();
+        });
+    }
 
     // OUDS Psychiatric Ideation Listener
     const oudsParallaxIdeation = document.getElementById('ouds-psych-ideation');
@@ -4216,12 +4323,69 @@ let interventions = [];
         });
     }
     
-    // Show/hide other co-use input
-    const sudsCoUseOtherCb = document.getElementById('suds-couse-other');
-    const sudsCoUseOtherText = document.getElementById('suds-couse-other-text');
-    if (sudsCoUseOtherCb) {
-        sudsCoUseOtherCb.addEventListener('change', () => {
-            sudsCoUseOtherText.classList.toggle('hidden', !sudsCoUseOtherCb.checked);
+    // Show/hide other substance use input and handle amount/date fields
+    const sudsCouseSubstances = [
+        'alcohol', 'amphet', 'benzodiazepines', 'cannabis', 'cocaine', 'hallucinogens', 'illicit-opioids', 'ivdu', 'kratom', 'mdma', 'nicotine', 'prescription-opioids'
+    ];
+    
+    sudsCouseSubstances.forEach(key => {
+        const cb = document.getElementById(`suds-couse-${key}`);
+        if (cb) {
+            cb.addEventListener('change', () => {
+                const isChecked = cb.checked;
+                const amtInput = document.getElementById(`suds-couse-amt-${key}`);
+                const dateInput = document.getElementById(`suds-couse-date-${key}`);
+                
+                if (amtInput) amtInput.classList.toggle('hidden', !isChecked);
+                if (dateInput) dateInput.classList.toggle('hidden', !isChecked);
+                updateFinalNote();
+            });
+        }
+    });
+
+    // Handle SUDS "Other" substances add/remove functionality
+    function setupSudsOtherRow(row) {
+        bindOtherSubstanceRow(row, updateSudsRemoveButtonVisibility);
+    }
+
+    function updateSudsRemoveButtonVisibility() {
+        const container = document.getElementById('suds-other-details');
+        if (!container) return;
+        const rows = container.querySelectorAll('.suds-other-row');
+        rows.forEach(row => {
+            const removeBtn = row.querySelector('.suds-remove-other');
+            if (removeBtn) {
+                removeBtn.style.display = rows.length > 1 ? 'block' : 'none';
+            }
+        });
+    }
+
+    const sudsOtherCheckbox = document.getElementById('suds-couse-other');
+    const sudsOtherContainer = document.getElementById('suds-other-details');
+    const sudsAddOtherBtn = document.getElementById('suds-add-other');
+    
+    if (sudsOtherContainer) {
+        sudsOtherContainer.querySelectorAll('.suds-other-row').forEach(row => setupSudsOtherRow(row));
+        updateSudsRemoveButtonVisibility();
+    }
+
+    if (sudsOtherCheckbox && sudsOtherContainer && sudsAddOtherBtn) {
+        sudsOtherCheckbox.addEventListener('change', () => {
+            const isChecked = sudsOtherCheckbox.checked;
+            sudsOtherContainer.classList.toggle('hidden', !isChecked);
+            sudsAddOtherBtn.classList.toggle('hidden', !isChecked);
+            updateFinalNote();
+        });
+        sudsOtherContainer.classList.toggle('hidden', !sudsOtherCheckbox.checked);
+        sudsAddOtherBtn.classList.toggle('hidden', !sudsOtherCheckbox.checked);
+    }
+
+    if (sudsAddOtherBtn) {
+        sudsAddOtherBtn.addEventListener('click', () => {
+            const newRow = createOtherSubstanceRow('suds-other-row', 'suds-other-substance', 'suds-other-amount', 'suds-other-date', 'suds-remove-other');
+            sudsOtherContainer.appendChild(newRow);
+            setupSudsOtherRow(newRow);
+            updateSudsRemoveButtonVisibility();
             updateFinalNote();
         });
     }
@@ -4259,7 +4423,8 @@ let interventions = [];
     }));
 
     const audsSubstanceList = document.getElementById('auds-substance-list');
-    const audsSubstanceCheckboxes = audsSubstanceList.querySelectorAll('input[type="checkbox"]');
+    const audsSubstanceCheckboxes = Array.from(audsSubstanceList.querySelectorAll('input[type="checkbox"]'))
+        .filter(checkbox => checkbox.id !== 'auds-sub-other');
     audsSubstanceCheckboxes.forEach(checkbox => {
         checkbox.addEventListener('change', () => {
             const isChecked = checkbox.checked;
@@ -4269,13 +4434,57 @@ let interventions = [];
 
             if (amtInput) amtInput.classList.toggle('hidden', !isChecked);
             if (dateInput) dateInput.classList.toggle('hidden', !isChecked);
-            // If you add an 'other' substance, you'll need similar logic for a custom text input
-            // if (key === 'other' && document.getElementById('auds-sub-other-text')) {
-            //     document.getElementById('auds-sub-other-text').classList.toggle('hidden', !isChecked);
-            // }
+            
             updateFinalNote();
         });
     });
+
+    // Handle AUDS "Other" substances add/remove functionality
+    function setupAudsOtherRow(row) {
+        bindOtherSubstanceRow(row, updateAudsRemoveButtonVisibility);
+    }
+
+    function updateAudsRemoveButtonVisibility() {
+        const container = document.getElementById('auds-other-details');
+        if (!container) return;
+        const rows = container.querySelectorAll('.auds-other-row');
+        rows.forEach(row => {
+            const removeBtn = row.querySelector('.auds-remove-other');
+            if (removeBtn) {
+                removeBtn.style.display = rows.length > 1 ? 'block' : 'none';
+            }
+        });
+    }
+
+    const audsOtherCheckbox = document.getElementById('auds-sub-other');
+    const audsOtherContainer = document.getElementById('auds-other-details');
+    const audsAddOtherBtn = document.getElementById('auds-add-other');
+    
+    if (audsOtherContainer) {
+        audsOtherContainer.querySelectorAll('.auds-other-row').forEach(row => setupAudsOtherRow(row));
+        updateAudsRemoveButtonVisibility();
+    }
+
+    if (audsOtherCheckbox && audsOtherContainer && audsAddOtherBtn) {
+        audsOtherCheckbox.addEventListener('change', () => {
+            const isChecked = audsOtherCheckbox.checked;
+            audsOtherContainer.classList.toggle('hidden', !isChecked);
+            audsAddOtherBtn.classList.toggle('hidden', !isChecked);
+            updateFinalNote();
+        });
+        audsOtherContainer.classList.toggle('hidden', !audsOtherCheckbox.checked);
+        audsAddOtherBtn.classList.toggle('hidden', !audsOtherCheckbox.checked);
+    }
+
+    if (audsAddOtherBtn) {
+        audsAddOtherBtn.addEventListener('click', () => {
+            const newRow = createOtherSubstanceRow('auds-other-row', 'auds-other-substance', 'auds-other-amount', 'auds-other-date', 'auds-remove-other');
+            audsOtherContainer.appendChild(newRow);
+            setupAudsOtherRow(newRow);
+            updateAudsRemoveButtonVisibility();
+            updateFinalNote();
+        });
+    }
 
     // Listener for Psychiatric Ideation dropdown to show/hide safety planning
     const audsPsychIdeationSelect = document.getElementById('auds-psych-ideation');
