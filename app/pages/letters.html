@@ -1062,6 +1062,7 @@ Sincerely,</textarea>
             }
 
             loadSignature();
+            initializeDischargeFieldSync();
             handleTemplateChange();
 
             // Set initial state for Enrollment Verification interactive form
@@ -1146,6 +1147,44 @@ Sincerely,</textarea>
             const name = nameEl ? (nameEl.value || '[Name]') : '[Name]';
             const custom = customEl ? customEl.value : '';
             return buildSalutation(type, name, custom);
+        }
+
+        const dischargeSyncGroups = [
+            ['disLetterDate', 'disClientLetterDate', 'disClientSuccessLetterDate'],
+            ['disClientFirstName', 'disClientRecipientFirstName', 'disClientSuccessFirstName'],
+            ['disClientLastName', 'disClientRecipientLastName', 'disClientSuccessLastName'],
+            ['disAdmissionDate', 'disClientAdmissionDate', 'disClientSuccessAdmissionDate'],
+            ['disDischargeDate', 'disClientDischargeDate', 'disClientSuccessDischargeDate'],
+            ['disNumSessions', 'disClientNumSessions', 'disClientSuccessNumSessions'],
+        ];
+
+        function syncDischargeFields(sourceId) {
+            const group = dischargeSyncGroups.find((ids) => ids.includes(sourceId));
+            if (!group) return;
+
+            const sourceEl = document.getElementById(sourceId);
+            if (!sourceEl) return;
+
+            group.forEach((id) => {
+                if (id === sourceId) return;
+                const targetEl = document.getElementById(id);
+                if (targetEl) {
+                    targetEl.value = sourceEl.value;
+                }
+            });
+        }
+
+        function initializeDischargeFieldSync() {
+            dischargeSyncGroups.forEach((group) => {
+                group.forEach((id) => {
+                    const field = document.getElementById(id);
+                    if (!field) return;
+
+                    const handler = () => syncDischargeFields(id);
+                    field.addEventListener('input', handler);
+                    field.addEventListener('change', handler);
+                });
+            });
         }
 
         document.getElementById('signatureUpload').addEventListener('change', function(event) {
