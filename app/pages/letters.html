@@ -403,10 +403,10 @@ Sincerely,</textarea>
                 
                         <!-- Paragraph 2: Attendance -->
                         <div id="evAttendanceSection" class="mb-6 p-4 bg-blue-50/50 rounded-lg flex items-center justify-between gap-4 form-letter-section">
-                           <p>The client has been attending services on an
+                           <p>The client has been attending services on
                                 <select id="evAttendance" onchange="generateReport()" class="inline-select">
-                                    <option value="regular">regular</option>
-                                    <option value="irregular">irregular</option>
+                                    <option value="a regular">a regular</option>
+                                    <option value="an irregular">an irregular</option>
                                 </select>
                                 basis.
                             </p>
@@ -959,6 +959,8 @@ Sincerely,</textarea>
             "Other (or Unknown) Substance Use Disorder", "Gambling Disorder"
         ];
         let selectedDiagnoses = [];
+        let isUpdatingGeneratedText = false;
+        let hasManualGeneratedTextOverride = false;
 
         async function initializeApp() {
             const today = new Date();
@@ -1064,6 +1066,16 @@ Sincerely,</textarea>
             loadSignature();
             initializeDischargeFieldSync();
             handleTemplateChange();
+
+            const generatedTextEl = document.getElementById('generatedText');
+            if (generatedTextEl && !generatedTextEl.dataset.manualOverrideBound) {
+                generatedTextEl.addEventListener('input', () => {
+                    if (!isUpdatingGeneratedText) {
+                        hasManualGeneratedTextOverride = true;
+                    }
+                });
+                generatedTextEl.dataset.manualOverrideBound = 'true';
+            }
 
             // Set initial state for Enrollment Verification interactive form
             toggleSection(document.getElementById('evAttOmit'), 'evAttendanceSection');
@@ -1434,6 +1446,15 @@ Sincerely,</textarea>
             updateClosureDateWarning();
             if (includeReferrals) appendResourcesToTextarea();
         }
+
+        function setGeneratedText(value) {
+            const textarea = document.getElementById('generatedText');
+            if (!textarea) return;
+            isUpdatingGeneratedText = true;
+            textarea.value = value;
+            isUpdatingGeneratedText = false;
+            hasManualGeneratedTextOverride = false;
+        }
         
         // --- Report Generation Functions ---
         
@@ -1710,7 +1731,7 @@ Description: Support for individuals and families impacted by substance use and 
             
             const signatureBlock = getSignatureBlock();
             const fullText = mainParagraphs.join('\n\n') + `\n\n\n${signatureBlock}`;
-            document.getElementById('generatedText').value = fullText;
+            setGeneratedText(fullText);
         }
         
         function generateDischargeReport() {
@@ -1754,7 +1775,7 @@ Description: Support for individuals and families impacted by substance use and 
             
             const signatureBlock = getSignatureBlock();
             const fullText = mainParagraphs.join('\n\n') + `\n\nSincerely,\n\n\n\n${signatureBlock}`;
-            document.getElementById('generatedText').value = fullText;
+            setGeneratedText(fullText);
         }
 
         function generateDischargeClientReport() {
@@ -1780,7 +1801,7 @@ Description: Support for individuals and families impacted by substance use and 
 
             const signatureBlock = getSignatureBlock();
             const fullText = mainParagraphs.join('\n\n') + `\n\nSincerely,\n\n\n\n${signatureBlock}`;
-            document.getElementById('generatedText').value = fullText;
+            setGeneratedText(fullText);
         }
 
         function generateDischargeClientSuccessReport() {
@@ -1805,7 +1826,7 @@ Description: Support for individuals and families impacted by substance use and 
 
             const signatureBlock = getSignatureBlock();
             const fullText = mainParagraphs.join('\n\n') + `\n\nSincerely,\n\n\n\n${signatureBlock}`;
-            document.getElementById('generatedText').value = fullText;
+            setGeneratedText(fullText);
         }
 
         function generateEnrollmentVerificationReport() {
@@ -1838,7 +1859,7 @@ Description: Support for individuals and families impacted by substance use and 
             // Attendance
             if (!document.getElementById('evAttOmit').checked) {
                 const attendance = document.getElementById('evAttendance').value;
-                bodyParagraphs.push(`The client has been attending services on an ${attendance} basis.`);
+                bodyParagraphs.push(`The client has been attending services on ${attendance} basis.`);
             }
 
             // Positive Toxicology
@@ -1871,7 +1892,7 @@ Description: Support for individuals and families impacted by substance use and 
             const fullText = bodyParagraphs.join('\n\n') + `\n\nSincerely,\n\n\n\n${signatureBlock}`;
             
             // The generatedText textarea is now primarily for the PDF/Copy functions, not for display.
-            document.getElementById('generatedText').value = fullText;
+            setGeneratedText(fullText);
         }
 
         function generateTreatmentRecReport() {
@@ -1911,7 +1932,7 @@ Description: Support for individuals and families impacted by substance use and 
 
             const signatureBlock = getSignatureBlock();
             const fullText = mainParagraphs.join('\n\n') + `\n\nSincerely,\n\n\n\n${signatureBlock}`;
-            document.getElementById('generatedText').value = fullText;
+            setGeneratedText(fullText);
         }
 
         function generateTreatmentNotRecReport() {
@@ -1958,7 +1979,7 @@ Description: Support for individuals and families impacted by substance use and 
             
             const signatureBlock = getSignatureBlock();
             const fullText = mainParagraphs.join('\n\n') + `\n\nSincerely,\n\n\n\n${signatureBlock}`;
-            document.getElementById('generatedText').value = fullText;
+            setGeneratedText(fullText);
         }
 
         function generateEvalInProgressReport() {
@@ -1998,7 +2019,7 @@ Description: Support for individuals and families impacted by substance use and 
             
             const signatureBlock = getSignatureBlock();
             const fullText = mainParagraphs.join('\n\n') + `\n\nSincerely,\n\n\n\n${signatureBlock}`;
-            document.getElementById('generatedText').value = fullText;
+            setGeneratedText(fullText);
         }
         
         function generateReEngagementReport() {
@@ -2037,7 +2058,7 @@ Description: Support for individuals and families impacted by substance use and 
 
             const signatureBlock = getSignatureBlock();
             const fullText = bodyParagraphs.join('\n\n') + `\n\nSincerely,\n\n\n\n${signatureBlock}`;
-            document.getElementById('generatedText').value = `${addressBlock}\n\n${fullText}`;
+            setGeneratedText(`${addressBlock}\n\n${fullText}`);
         }
 
         function getSignatureBlock() {
@@ -2052,8 +2073,9 @@ Description: Support for individuals and families impacted by substance use and 
         }
 
         function copyText() {
-            // Ensure the text is generated before copying, especially for EV letter
-            generateReport();
+            if (!hasManualGeneratedTextOverride) {
+                generateReport();
+            }
             const textarea = document.getElementById('generatedText');
             textarea.select();
             textarea.setSelectionRange(0, 99999);
