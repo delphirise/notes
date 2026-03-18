@@ -1141,12 +1141,12 @@ Sincerely,</textarea>
             return 'To Whom It May Concern,';
         }
 
-        function getCommonSalutation() {
+        function getCommonSalutation(fallbackName = '[Name]') {
             const typeEl = document.getElementById('commonSalutationType');
             const nameEl = document.getElementById('commonSalutationName');
             const customEl = document.getElementById('commonCustomSalutation');
             const type = typeEl ? typeEl.value : 'dear';
-            const name = nameEl ? (nameEl.value || '[Name]') : '[Name]';
+            const name = nameEl ? (nameEl.value || fallbackName) : fallbackName;
             const custom = customEl ? customEl.value : '';
             return buildSalutation(type, name, custom);
         }
@@ -2030,7 +2030,7 @@ Description: Support for individuals and families impacted by substance use and 
             const cityStateZip = document.getElementById('reClientCityStateZip').value || '[CITY], [STATE] [ZIP]';
             const todaysDateFormatted = formatDate(document.getElementById('reTodaysDate').value, "TODAY'S DATE");
             const closureDate = formatDate(document.getElementById('closureDate').value, "CLOSURE DATE");
-            const salutation = getCommonSalutation();
+            const salutation = getCommonSalutation(clientFirstName);
 
             // Calculate days since last service
             const lastServiceDateVal = document.getElementById('lastServiceDate').value;
