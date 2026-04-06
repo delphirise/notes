@@ -875,7 +875,7 @@ Sincerely,</textarea>
                </div>
           </div>
           <!-- PDF Footer pinned to bottom with 0.5" vertical margin, right aligned -->
-          <div id="pdf-footer" style="position: absolute; bottom: 0.5in; right: 1in; text-align: right; font-size: 8pt; color: #555; line-height: 1.2;">
+          <div id="pdf-footer" style="position: absolute; bottom: 0.5in; left: 1in; width: 6.5in; text-align: right; font-size: 8pt; color: #555; line-height: 1.2;">
                Treatment | Prevention | Care Management | Counseling<br>
                72 Hinchey Road, Rochester, NY 14624 | 585-467-2230<br>
                www.delphirise.org
@@ -2185,19 +2185,29 @@ Description: Support for individuals and families impacted by substance use and 
             const pdfSignatureBlock = document.getElementById('pdf-signature-block');
 
             // 1. Prepare Content
-            const sincerelyIndex = currentReportText.lastIndexOf('Sincerely,');
-            const mainBody = (sincerelyIndex !== -1) ? currentReportText.substring(0, sincerelyIndex).trim() : currentReportText;
+            const signatureBlockText = getSignatureBlock();
+            let mainBody = currentReportText.trim();
+            const signatureBlockIndex = mainBody.lastIndexOf(signatureBlockText);
+
+            if (signatureBlockIndex !== -1) {
+                mainBody = mainBody.substring(0, signatureBlockIndex).trimEnd();
+            }
+
+            if (mainBody.endsWith('Sincerely,')) {
+                mainBody = mainBody.substring(0, mainBody.length - 'Sincerely,'.length).trimEnd();
+            }
+
             pdfTextContent.innerText = mainBody;
 
             if (hasSignatureImage) {
                 const processedSignatureData = await processSignatureImage(signaturePreview.src);
                 pdfSignatureImg.src = processedSignatureData;
                 pdfSignatureImg.style.display = 'block';
-                pdfSignatureBlock.innerText = getSignatureBlock();
+                pdfSignatureBlock.innerText = signatureBlockText;
             } else {
                 pdfSignatureImg.src = "";
                 pdfSignatureImg.style.display = 'none';
-                pdfSignatureBlock.innerText = `\n\n\n${getSignatureBlock()}`;
+                pdfSignatureBlock.innerText = `\n\n\n${signatureBlockText}`;
             }
 
             // 2. Setup for Measurement
@@ -2313,7 +2323,8 @@ Description: Support for individuals and families impacted by substance use and 
                     // The footer div has text-align right.
                     // Let's assume we place it at bottom.
                     const footerPdfH = (footerProps.height * 6.5) / footerProps.width;
-                    pdf.addImage(footerImgData, 'PNG', 1, 10.5, 6.5, footerPdfH);
+                    const footerY = 11 - 0.5 - footerPdfH;
+                    pdf.addImage(footerImgData, 'PNG', 1, footerY, 6.5, footerPdfH);
 
                     heightLeft -= 11;
                     position -= 11;
