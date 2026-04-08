@@ -18,6 +18,7 @@
                 { value: 'mdt', label: 'MDT Note' },
                 { value: 'narcan-kit', label: 'Narcan Education & Kit' },
                 { value: 'telehealth', label: 'Telehealth' },
+                    { value: 'crisis-intervention', label: 'Crisis Intervention' },
                 { value: 'time-off-coverage', label: 'Time Off Coverage' }
             ],
             medical: [
@@ -25,6 +26,7 @@
                 { value: 'mat-education', label: 'MAT Education' },
                 { value: 'medical-screening', label: 'Medical Screening' },
                 { value: 'complex-coordination-of-care', label: 'Complex Coordination of Care' },
+                { value: 'crisis-intervention', label: 'Crisis Intervention' },
                 { value: 'nurse-smoking-initial', label: 'Smoking Cessation - Nurse - Initial' },
                 { value: 'nurse-smoking-followup', label: 'Smoking Cessation - Nurse - Follow Up' },
                 { value: 'prescriber-smoking-initial', label: 'Smoking Cessation - Prescriber - Initial' },
@@ -42,12 +44,13 @@
             psychiatric: [
                 { value: 'psychiatric-assessment', label: 'Psychiatric Assessment' },
                 { value: 'psychiatric-followup', label: 'Psychiatric Follow-Up' },
+                { value: 'crisis-intervention', label: 'Crisis Intervention' },
                 { value: 'complex-coordination-of-care', label: 'Complex Coordination of Care' }
             ]
         };
 
         // Helper: format date strings used in final copy to MM/DD/YYYY
-        function formatDateForOutput(val) {
+    function formatDateForOutput(val) {
             if (!val) return val;
             const s = String(val).trim();
             const m = s.match(/^(\d{4})-(\d{2})-(\d{2})$/);
@@ -60,6 +63,103 @@
                 return `${mm}/${dd}/${yyyy}`;
             }
             return val;
+        }
+
+        function getCheckedValue(name) {
+            return document.querySelector(`input[name="${name}"]:checked`)?.value || '';
+        }
+
+        function esc(text) {
+            return (text || '').trim();
+        }
+
+        function durationMinutes(start, end) {
+            if (!start || !end) return null;
+            const [sh, sm] = start.split(':').map(Number);
+            const [eh, em] = end.split(':').map(Number);
+            if ([sh, sm, eh, em].some(Number.isNaN)) return null;
+            let mins = (eh * 60 + em) - (sh * 60 + sm);
+            if (mins < 0) mins += 24 * 60;
+            return mins;
+        }
+
+        function prettyRisk(v) {
+            if (!v) return 'Not documented';
+            return v.charAt(0).toUpperCase() + v.slice(1);
+        }
+
+        function qualifierLabels(values) {
+            const map = {
+                'reported or stated intent to harm self': 'reported or stated intent to harm self',
+                'reported or stated intent to harm others': 'reported or stated intent to harm others',
+                'substance-related overdose risk': 'substance-related overdose risk',
+                'substance-related mental health crisis risk that may require hospitalization': 'substance-related mental health crisis risk that may require hospitalization',
+                'deteriorating mental health with risk for hospitalization': 'deteriorating mental health with risk for hospitalization',
+                'history of non-fatal overdose, self-injury, or similar at-risk behavior': 'history of non-fatal overdose, self-injury, or similar at-risk behavior'
+            };
+            return values.map(v => map[v] || v);
+        }
+
+        function interventionLabels(values) {
+            const map = {
+                'therapeutic communication and de-escalation': 'therapeutic communication and de-escalation',
+                'safety / crisis prevention planning': 'safety / crisis prevention planning',
+                'referral and linkage to supports or services': 'referral and linkage to supports or services',
+                'crisis dispatch or escalation decision': 'crisis dispatch or escalation decision',
+                'urgent medical or medication-related intervention considered or facilitated': 'urgent medical or medication-related intervention considered or facilitated',
+                'follow-up related to this crisis episode arranged': 'follow-up related to this crisis episode arranged'
+            };
+            return values.map(v => map[v] || v);
+        }
+
+        function computeBilling(minutes, patientStatus, serviceMode) {
+            let code = 'Undetermined';
+            let reason = [];
+            let badgeClass = 'warn';
+            let modifier = 'No automatic modifier suggestion';
+
+            if (serviceMode === 'telephone') {
+                modifier = 'Audio-only telehealth: verify current payer requirements. OASAS 2025 manual generally points to FQ or 93 for audio-only telehealth and GT where 95 cannot be used.';
+            } else if (serviceMode === 'telehealth') {
+                modifier = 'Interactive audio-video telehealth: verify whether 95 or GT applies for the code on the claim.';
+            }
+
+            if (minutes == null || minutes <= 0) {
+                reason.push('Enter start and end times to calculate a billing recommendation.');
+                return { code, units: '', reason, badgeClass, modifier };
+            }
+
+            if (minutes < 15) {
+                reason.push('Below the 15-minute minimum published for H2011.');
+                return { code, units: '', reason, badgeClass: 'bad', modifier };
+            }
+
+            if (minutes <= 90) {
+                code = 'H2011';
+                const units = Math.min(6, Math.ceil(minutes / 15));
+                reason.push(`15-minute units. Suggested units: ${units}. H2011 is available to new or existing patients, with a max of 6 units per service date.`);
+                return { code, units: `${units} unit${units === 1 ? '' : 's'}`, reason, badgeClass: 'good', modifier };
+            }
+
+            if (patientStatus !== 'existing') {
+                reason.push('Duration exceeds H2011 daily maximum, and complex crisis codes are limited to existing patients in the OASAS manual. Manual review needed.');
+                return { code: 'Manual review required', units: '', reason, badgeClass: 'bad', modifier };
+            }
+
+            if (minutes >= 60 && minutes <= 150) {
+                code = 'S9484';
+                reason.push('Single hourly-complex crisis unit for 1 to 2.5 hours. Existing patients only.');
+                return { code, units: '1 unit', reason, badgeClass: 'good', modifier };
+            }
+
+            if (minutes >= 180) {
+                code = 'S9485';
+                reason.push('Single per-diem complex crisis unit for 3 or more hours. Existing patients only.');
+                return { code, units: '1 unit', reason, badgeClass: 'good', modifier };
+            }
+
+            reason.push('Entered duration falls between published thresholds for S9484 (up to 2.5 hours) and S9485 (3 or more hours). Manual billing review is needed.');
+            return { code: 'Manual review required', units: '', reason, badgeClass: 'warn', modifier };
         }
 
         function populateNoteTypesForRole(role) {
@@ -98,6 +198,10 @@
     const copyButton = document.getElementById('copy-button');
     const dtcProgressCopyButton = document.getElementById('dtc-progress-copy-button');
     const dtcCourtCopyButton = document.getElementById('dtc-court-copy-button');
+    const crisisGeneratedNote = document.getElementById('ci-generated-note');
+    const crisisCopyButton = document.getElementById('ci-copy-btn');
+    const crisisCopyHint = document.getElementById('ci-copy-hint');
+    const crisisResetButton = document.getElementById('ci-reset-btn');
 
     // Eval-CD elements
     const diagnosisContainer = document.getElementById('diagnosis-container');
@@ -1626,6 +1730,7 @@ function addNurseInterventionRow(isFirstRow = false) {
         if (activeContainer) {
             activeContainer.classList.remove('hidden');
         }
+        document.body.classList.toggle('crisis-wide', selectedNoteType === 'crisis-intervention');
 
         if (selectedNoteType === 'eval-cd') {
             const diagnosisElements = diagnosisContainer.querySelectorAll('select');
@@ -1678,6 +1783,138 @@ function addNurseInterventionRow(isFirstRow = false) {
             } else {
                 finalNote = baseNote;
             }
+        } else if (selectedNoteType === 'crisis-intervention') {
+            // Build Crisis Intervention note from ci-* fields
+            const start = document.getElementById('ci-start-time')?.value || '';
+            const end = document.getElementById('ci-end-time')?.value || '';
+            let durationStr = '';
+            if (start && end) {
+                const [sh, sm] = start.split(':').map(Number);
+                const [eh, em] = end.split(':').map(Number);
+                if (![sh, sm, eh, em].some(Number.isNaN)) {
+                    let mins = (eh * 60 + em) - (sh * 60 + sm);
+                    if (mins < 0) mins += 24 * 60;
+                    durationStr = `${mins} minute${mins === 1 ? '' : 's'}`;
+                }
+            }
+            const durEl = document.getElementById('ci-duration'); if (durEl) durEl.value = durationStr;
+
+            const qualifierIds = ['ci-qualifier-self-harm','ci-qualifier-harm-others','ci-qualifier-overdose','ci-qualifier-mh-substance','ci-qualifier-mh-deterioration','ci-qualifier-history-at-risk'];
+            const qualifiers = qualifierIds.map(id => { const el = document.getElementById(id); return el && el.checked ? (el.value || (el.nextElementSibling && el.nextElementSibling.textContent) || '') : ''; }).filter(Boolean);
+
+            const interventionIds = ['ci-intervention-therapeutic','ci-intervention-safety-plan','ci-intervention-referral','ci-intervention-dispatch','ci-intervention-med-related','ci-intervention-followup'];
+            const interventions = interventionIds.map(id => { const el = document.getElementById(id); return el && el.checked ? (el.value || (el.nextElementSibling && el.nextElementSibling.textContent) || '') : ''; }).filter(Boolean);
+
+            const serviceMode = document.getElementById('ci-service-mode')?.value || '';
+            const location = document.getElementById('ci-location')?.value || '';
+            const presentingProblem = document.getElementById('ci-presenting-problem')?.value || '';
+            const suicideRisk = getCheckedValue('ci-suicide-risk');
+            const homicideRisk = getCheckedValue('ci-homicide-risk');
+            const odRisk = getCheckedValue('ci-od-risk');
+            const mse = document.getElementById('ci-mse')?.value || '';
+            const emergencyNeed = getCheckedValue('ci-emergency-need');
+            const emergencyDetails = document.getElementById('ci-emergency-details')?.value || '';
+            const collaterals = document.getElementById('ci-collaterals')?.value || '';
+            const interventionsNarrative = document.getElementById('ci-interventions-narrative')?.value || '';
+            const disposition = document.getElementById('ci-disposition')?.value || '';
+            const followupDateRaw = document.getElementById('ci-followup-date')?.value || '';
+            const followupDate = followupDateRaw;
+            const followupPlan = document.getElementById('ci-followup-plan')?.value || '';
+
+            const validationIssues = [];
+            const clinicalFlags = [];
+
+            if (!qualifiers.length) validationIssues.push('At least one qualifying crisis indicator should be selected.');
+            if (!esc(presentingProblem)) validationIssues.push('Presenting problem is required.');
+            if (!suicideRisk) validationIssues.push('Suicide risk assessment is required.');
+            if (!homicideRisk) validationIssues.push('Homicide risk assessment is required.');
+            if (!odRisk) validationIssues.push('Intoxication or overdose risk assessment is required.');
+            if (!esc(mse)) validationIssues.push('Mental status examination is required.');
+            if (!emergencyNeed) validationIssues.push('Document whether emergency services were immediately needed.');
+            if (emergencyNeed === 'yes' && !esc(emergencyDetails)) validationIssues.push('Emergency response details are required when emergency services were needed.');
+            if (!interventions.length) validationIssues.push('Document at least one crisis intervention or initial plan component.');
+            if (!esc(interventionsNarrative)) validationIssues.push('Intervention details are required.');
+            if (!esc(disposition)) validationIssues.push('Disposition or outcome is required.');
+            if (durationMinutes(start, end) != null && durationMinutes(start, end) < 15) validationIssues.push('Encounter duration is below the 15-minute minimum for H2011.');
+
+            if (suicideRisk === 'high' || homicideRisk === 'high' || odRisk === 'high') clinicalFlags.push('High risk identified. Confirm emergency escalation, safety measures, and transfer or monitoring decision are clearly documented.');
+            if (emergencyNeed === 'yes') clinicalFlags.push('Immediate emergency intervention documented or required.');
+
+            let eligibilityLabel = 'Documentation incomplete';
+            let eligibilityClass = 'warn';
+            let eligibilitySummary = 'Complete the required clinical elements to determine whether the encounter is well-supported as crisis intervention.';
+            if (!validationIssues.length && qualifiers.length) {
+                eligibilityLabel = 'Likely appropriate for crisis intervention';
+                eligibilityClass = 'good';
+                eligibilitySummary = 'The record includes at least one qualifying crisis indicator and the core triage and initial-plan elements described in the OASAS guidance.';
+            } else if (validationIssues.length && qualifiers.length) {
+                eligibilityLabel = 'Potentially appropriate, but documentation gaps remain';
+                eligibilityClass = 'warn';
+                eligibilitySummary = 'A crisis indicator is present, but one or more required assessment or intervention elements are missing or unclear.';
+            } else if (!qualifiers.length) {
+                eligibilityLabel = 'Not yet supported as crisis intervention';
+                eligibilityClass = 'bad';
+                eligibilitySummary = 'No qualifying crisis indicator has been selected. Review whether the encounter fits another service category instead.';
+            }
+
+            const mins = durationMinutes(start, end);
+            const billing = computeBilling(mins, '', serviceMode);
+
+            const eligibilityBox = document.getElementById('ci-eligibility-box');
+            const billingBox = document.getElementById('ci-billing-box');
+            const validationBox = document.getElementById('ci-validation-box');
+            if (eligibilityBox) {
+                eligibilityBox.innerHTML = `
+                    <div class="status-title">Eligibility review</div>
+                    <div class="badge ${eligibilityClass}">${eligibilityLabel}</div>
+                    <div>${eligibilitySummary}</div>
+                    ${clinicalFlags.length ? `<ul>${clinicalFlags.map(x => `<li>${x}</li>`).join('')}</ul>` : '<div class="small">No high-acuity flag generated from the current inputs.</div>'}
+                `;
+            }
+            if (billingBox) {
+                billingBox.innerHTML = `
+                    <div class="status-title">Billing support</div>
+                    <div class="badge ${billing.badgeClass}">${billing.code}</div>
+                    <div class="kv"><b>Duration</b><span>${mins == null ? 'Not calculated' : mins + ' minute' + (mins === 1 ? '' : 's')}</span></div>
+                    <div class="kv"><b>Units</b><span>${billing.units || 'Not determined'}</span></div>
+                    <div class="kv"><b>Modifier note</b><span>${billing.modifier}</span></div>
+                    <ul>${billing.reason.map(x => `<li>${x}</li>`).join('')}</ul>
+                `;
+            }
+            if (validationBox) {
+                validationBox.innerHTML = `
+                    <div class="status-title">Validation check</div>
+                    <div class="badge ${validationIssues.length ? 'warn' : 'good'}">${validationIssues.length ? validationIssues.length + ' issue' + (validationIssues.length === 1 ? '' : 's') : 'No validation issues'}</div>
+                    ${validationIssues.length ? `<ul>${validationIssues.map(x => `<li>${x}</li>`).join('')}</ul>` : '<div class="small">Required documentation fields appear complete based on this form.</div>'}
+                `;
+            }
+            const crisisCopyReady = validationIssues.length === 0;
+            if (crisisCopyButton) crisisCopyButton.disabled = !crisisCopyReady;
+            if (crisisCopyHint) crisisCopyHint.style.display = crisisCopyReady ? 'none' : 'block';
+
+            const modeMap = {
+                telephone: 'telephone / audio-only',
+                telehealth: 'telehealth audio-video',
+                in_person: 'in person',
+                community: 'community / onsite response'
+            };
+            const mode = modeMap[serviceMode] || '[service mode]';
+            const qualifierText = qualifierLabels(qualifiers).join('; ') || '[no qualifying indicator selected]';
+            const interventionText = interventionLabels(interventions).join('; ') || '[no intervention selected]';
+            const emergencyText = emergencyNeed === 'yes'
+                ? `Immediate emergency services were required. ${esc(emergencyDetails) || '[details needed]'}`
+                : emergencyNeed === 'no'
+                  ? 'Immediate emergency services were assessed and not required at the time of this encounter.'
+                  : 'Need for immediate emergency services was not documented.';
+
+            const note = `Crisis Intervention Note\n\nService Mode: ${mode}${location ? ` | Location: ${location}` : ''}\nDuration: ${mins != null ? `${mins} minutes` : '[duration not calculated]'}\nSuggested Crisis Code: ${billing.code}${billing.units ? ` (${billing.units})` : ''}\n\nReason for Crisis Intervention / Qualifying Indicators:\nThis encounter was evaluated as crisis intervention based on the following qualifying indicator(s): ${qualifierText}.\n\nPresenting Problem:\n${esc(presentingProblem) || '[presenting problem required]'}\n\nTriage and Risk Assessment:\nSuicide risk: ${prettyRisk(suicideRisk)}.\nHomicide risk: ${prettyRisk(homicideRisk)}.\nIntoxication / overdose risk: ${prettyRisk(odRisk)}.\nMental Status Examination: ${esc(mse) || '[MSE required]'}\n${emergencyText}\n${esc(collaterals) ? `Collateral / family / other involved parties: ${esc(collaterals)}\n` : ''}\nInterventions Provided / Initial Plan of Services:\nDocumented crisis interventions included ${interventionText}.\nIntervention details: ${esc(interventionsNarrative) || '[intervention details required]'}\n\nDisposition / Outcome:\n${esc(disposition) || '[disposition required]'}\n\nFollow-Up:\n${esc(followupDate) || esc(followupPlan) ? `Follow-up related to this qualifying crisis episode is planned for ${esc(followupDate) || '[date not entered]'}${esc(followupPlan) ? ` with the following plan: ${esc(followupPlan)}` : '.'}` : 'No specific follow-up documented in this form.'}\n\nClinical Documentation Review Summary:\nEligibility status: ${eligibilityLabel}.\n${validationIssues.length ? `Documentation gaps still requiring review or completion: ${validationIssues.join(' ')}` : 'Required triage and intervention elements appear complete based on the form inputs.'}\n${billing.modifier ? `Telehealth / modifier note: ${billing.modifier}` : ''}`;
+
+            finalNote = note;
+            if (crisisGeneratedNote) {
+                crisisGeneratedNote.value = note;
+                autoResize(crisisGeneratedNote);
+            }
+
         } else if (selectedNoteType === 'psychiatric-assessment') {
             const val = (id) => (document.getElementById(id)?.value || '').trim();
             const checkedLabel = (id) => {
@@ -4033,7 +4270,7 @@ let interventions = [];
         const dtcDualCopyArea = document.getElementById('dtc-dual-copy-area');
         const tocCopyButton = document.getElementById('toc-copy-button');
         const copyAreaContainer = document.querySelector('.copy-area-container');
-        const hideCopyAreaForDischargePlan = selectedNoteType === 'discharge-plan';
+        const hideCopyAreaForDischargePlan = selectedNoteType === 'discharge-plan' || selectedNoteType === 'crisis-intervention';
         if (copyAreaContainer) {
             copyAreaContainer.style.display = hideCopyAreaForDischargePlan ? 'none' : 'block';
         }
@@ -4053,8 +4290,13 @@ let interventions = [];
             dtcDualCopyArea.style.display = 'none';
             if (tocCopyButton) tocCopyButton.style.display = 'none';
             document.getElementById('dtc-validation-warning').style.display = 'none';
-            finalNoteCopy.value = finalNote.trim();
-            autoResize(finalNoteCopy);
+            if (selectedNoteType === 'crisis-intervention' && crisisGeneratedNote) {
+                crisisGeneratedNote.value = finalNote.trim();
+                autoResize(crisisGeneratedNote);
+            } else {
+                finalNoteCopy.value = finalNote.trim();
+                autoResize(finalNoteCopy);
+            }
         }
     }
 
@@ -4174,6 +4416,12 @@ let interventions = [];
     // Opioid Use Disorder Short Listeners
     const oudsInputs = document.querySelectorAll('#opioid-use-disorder-short-container input, #opioid-use-disorder-short-container textarea, #opioid-use-disorder-short-container select');
     oudsInputs.forEach(input => {
+        input.addEventListener('input', updateFinalNote);
+        input.addEventListener('change', updateFinalNote);
+    });
+    // Crisis Intervention Listeners
+    const crisisInputs = document.querySelectorAll('#crisis-intervention-container input, #crisis-intervention-container textarea, #crisis-intervention-container select');
+    crisisInputs.forEach(input => {
         input.addEventListener('input', updateFinalNote);
         input.addEventListener('change', updateFinalNote);
     });
@@ -4740,6 +4988,44 @@ let interventions = [];
         }
     });
 
+    if (crisisCopyButton && crisisGeneratedNote) {
+        crisisCopyButton.addEventListener('click', () => {
+            crisisGeneratedNote.select();
+            try {
+                const successful = document.execCommand('copy');
+                const originalText = crisisCopyButton.textContent;
+                if (successful) {
+                    crisisCopyButton.textContent = 'Copied!';
+                    crisisCopyButton.style.backgroundColor = '#1e7e34';
+                    setTimeout(() => {
+                        crisisCopyButton.textContent = originalText;
+                        crisisCopyButton.style.backgroundColor = '#224f8f';
+                    }, 1500);
+                } else {
+                    crisisCopyButton.textContent = 'Copy Failed';
+                }
+            } catch (err) {
+                console.error('Fallback copy failed', err);
+            }
+        });
+    }
+
+    if (crisisResetButton) {
+        crisisResetButton.addEventListener('click', () => {
+            const crisisContainer = document.getElementById('crisis-intervention-container');
+            if (!crisisContainer) return;
+            if (!confirm('Reset all fields?')) return;
+            crisisContainer.querySelectorAll('input, textarea, select').forEach(el => {
+                if (el.type === 'checkbox' || el.type === 'radio') {
+                    el.checked = false;
+                } else {
+                    el.value = '';
+                }
+            });
+            updateFinalNote();
+        });
+    }
+
     // Initial call to populate the form on page load
     document.addEventListener('DOMContentLoaded', () => {
         // sortSelectOptions(noteTypeSelect); // Sort the main dropdown
@@ -5176,9 +5462,13 @@ Total dispensed: 15 tablets (10 scheduled + 5 PRN).`;
 
     // Psychiatric Assessment MSE modal
     function openPsychMSEModal() {
+        openPsychMSEModalFor('psych-mse-output');
+    }
+
+    function openPsychMSEModalFor(targetId) {
         const mseModal = document.getElementById('mse-modal');
         if (mseModal) {
-            activeMseTargetId = 'psych-mse-output';
+            activeMseTargetId = targetId;
             mseModal.style.display = 'block';
         }
     }
@@ -5423,11 +5713,7 @@ Total dispensed: 15 tablets (10 scheduled + 5 PRN).`;
     }
 
     function openPsychFUMSEModal() {
-        const mseModal = document.getElementById('mse-modal');
-        if (mseModal) {
-            activeMseTargetId = 'psych-fu-mse-output';
-            mseModal.style.display = 'block';
-        }
+        openPsychMSEModalFor('psych-fu-mse-output');
     }
 
     function addPsychRiskOther() {

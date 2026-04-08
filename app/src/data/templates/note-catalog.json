@@ -51,4 +51,63 @@
     ],
     "output": "Psychiatric follow-up completed for {{clientName}} on {{date}}.\n\nMood and symptom update: {{moodSymptoms}}\n\nRisk review: {{riskReview}}\n\nTreatment plan: {{plan}}"
   }
+  ,
+  {
+    "id": "crisis-intervention-oasas",
+    "role": "counseling",
+    "label": "Crisis Intervention",
+    "fields": [
+      { "key": "startTime", "label": "Start time", "type": "time" },
+      { "key": "endTime", "label": "End time", "type": "time" },
+      { "key": "patientStatus", "label": "Patient status", "type": "select", "placeholder": "Select", "options": [
+        { "label": "New patient", "value": "new" },
+        { "label": "Existing patient", "value": "existing" }
+      ]},
+      { "key": "serviceMode", "label": "Service mode", "type": "select", "placeholder": "Select", "options": [
+        { "label": "Telephone / audio-only", "value": "telephone" },
+        { "label": "Telehealth audio-video", "value": "telehealth" },
+        { "label": "In person", "value": "in_person" },
+        { "label": "In community / onsite response", "value": "community" }
+      ]},
+      { "key": "location", "label": "Location", "type": "text", "placeholder": "Clinic, home, phone, community, etc." },
+      { "key": "qualifiers", "label": "Qualifying crisis indicators (list or brief notes)", "type": "textarea", "rows": 3, "placeholder": "List qualifying indicators or brief notes" },
+      { "key": "presentingProblem", "label": "Presenting problem(s)", "type": "textarea", "rows": 4, "placeholder": "Describe the acute event, precipitating factors, observed behavior, symptoms, collateral information..." },
+      { "key": "suicideRisk", "label": "Suicide risk", "type": "select", "placeholder": "Select", "options": [
+        { "label": "Not documented", "value": "" },
+        { "label": "None", "value": "none" },
+        { "label": "Low", "value": "low" },
+        { "label": "Moderate", "value": "moderate" },
+        { "label": "High", "value": "high" }
+      ]},
+      { "key": "homicideRisk", "label": "Homicide risk", "type": "select", "placeholder": "Select", "options": [
+        { "label": "Not documented", "value": "" },
+        { "label": "None", "value": "none" },
+        { "label": "Low", "value": "low" },
+        { "label": "Moderate", "value": "moderate" },
+        { "label": "High", "value": "high" }
+      ]},
+      { "key": "odRisk", "label": "Intoxication / overdose risk", "type": "select", "placeholder": "Select", "options": [
+        { "label": "Not documented", "value": "" },
+        { "label": "None", "value": "none" },
+        { "label": "Low", "value": "low" },
+        { "label": "Moderate", "value": "moderate" },
+        { "label": "High", "value": "high" }
+      ]},
+      { "key": "mse", "label": "Mental status examination", "type": "textarea", "rows": 4, "placeholder": "Appearance, behavior, speech, mood/affect, thought process/content, orientation, insight/judgment..." },
+      { "key": "emergencyNeed", "label": "Immediate emergency services needed?", "type": "select", "placeholder": "Select", "options": [
+        { "label": "Not documented", "value": "" },
+        { "label": "No", "value": "no" },
+        { "label": "Yes", "value": "yes" }
+      ]},
+      { "key": "emergencyDetails", "label": "Emergency response details", "type": "textarea", "rows": 3, "placeholder": "Police, EMS, ED, CPEP, mobile team dispatch, naloxone, hospitalization..." },
+      { "key": "collaterals", "label": "Collateral contacts / family / others involved", "type": "textarea", "rows": 2, "placeholder": "Who provided collateral information or participated..." },
+      { "key": "interventions", "label": "Interventions / initial plan (list or brief notes)", "type": "textarea", "rows": 3, "placeholder": "List interventions provided or brief summary" },
+      { "key": "interventionsNarrative", "label": "Intervention details", "type": "textarea", "rows": 4, "placeholder": "Describe what was done during the encounter and how client responded" },
+      { "key": "disposition", "label": "Disposition / outcome", "type": "textarea", "rows": 3, "placeholder": "Stabilized in place, transferred to ED, mobile crisis dispatched..." },
+      { "key": "followupDate", "label": "Follow-up date (if arranged)", "type": "date" },
+      { "key": "followupPlan", "label": "Follow-up plan", "type": "text", "placeholder": "Phone follow-up, in person, referral confirmation..." },
+      { "key": "duration", "label": "Calculated duration", "type": "text", "placeholder": "Calculated from start and end time", "helpText": "Automatically computed from start and end times." }
+    ],
+    "output": "Crisis Intervention Note\n\nService Mode: {{serviceMode}}\nLocation: {{location}}\nPatient Status: {{patientStatus}}\nDuration: {{duration}}\n\nReason for Crisis Intervention / Qualifying Indicators:\n{{qualifiers}}\n\nPresenting Problem:\n{{presentingProblem}}\n\nTriage and Risk Assessment:\nSuicide risk: {{suicideRisk}}.\nHomicide risk: {{homicideRisk}}.\nIntoxication / overdose risk: {{odRisk}}.\nMental Status Examination: {{mse}}\nEmergency need: {{emergencyNeed}}\nEmergency details: {{emergencyDetails}}\n\nCollateral / family / other involved parties:\n{{collaterals}}\n\nInterventions Provided / Initial Plan of Services:\n{{interventions}}\nIntervention details: {{interventionsNarrative}}\n\nDisposition / Outcome:\n{{disposition}}\n\nFollow-Up:\nFollow-up date: {{followupDate}}\nFollow-up plan: {{followupPlan}}\n\nClinical Documentation Review Summary:\nDuration: {{duration}}\n"
+  }
 ]
