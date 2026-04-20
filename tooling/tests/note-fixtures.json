@@ -7,18 +7,6 @@
     },
     {
       "staffRole": "counseling",
-      "noteType": "closing-note-loss-of-contact",
-      "mode": "single",
-      "steps": [
-        {
-          "action": "setValue",
-          "selector": "#closing-loss-sessions",
-          "value": "0"
-        }
-      ]
-    },
-    {
-      "staffRole": "counseling",
       "noteType": "closing-note-non-admitted",
       "mode": "single",
       "steps": [
@@ -78,8 +66,13 @@
     },
     {
       "staffRole": "counseling",
+      "noteType": "crisis-intervention",
+      "mode": "crisis"
+    },
+    {
+      "staffRole": "counseling",
       "noteType": "discharge-plan",
-      "mode": "single"
+      "mode": "hidden-copy"
     },
     {
       "staffRole": "counseling",
@@ -220,6 +213,11 @@
           "value": true
         }
       ]
+    },
+    {
+      "staffRole": "medical",
+      "noteType": "crisis-intervention",
+      "mode": "crisis"
     },
     {
       "staffRole": "medical",
@@ -424,6 +422,11 @@
           "value": true
         }
       ]
+    },
+    {
+      "staffRole": "psychiatric",
+      "noteType": "crisis-intervention",
+      "mode": "crisis"
     },
     {
       "staffRole": "psychiatric",

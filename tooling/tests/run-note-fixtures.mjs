@@ -97,6 +97,26 @@ async function runFixture(browser, fixture) {
       return { ok: true };
     }
 
+    if (fixture.mode === 'hidden-copy') {
+      const hidden = await page.$eval('.copy-area-container', (el) => getComputedStyle(el).display === 'none');
+      if (!hidden) {
+        return { ok: false, detail: 'copy-area-container should be hidden' };
+      }
+      return { ok: true };
+    }
+
+    if (fixture.mode === 'crisis') {
+      const hidden = await page.$eval('.copy-area-container', (el) => getComputedStyle(el).display === 'none');
+      if (!hidden) {
+        return { ok: false, detail: 'copy-area-container should be hidden for crisis-intervention' };
+      }
+      const text = await page.$eval('#ci-generated-note', (el) => (el.value || '').trim());
+      if (!text.length) {
+        return { ok: false, detail: 'ci-generated-note is empty' };
+      }
+      return { ok: true };
+    }
+
     return { ok: false, detail: `unknown fixture mode: ${fixture.mode}` };
   } catch (error) {
     return { ok: false, detail: error.message };

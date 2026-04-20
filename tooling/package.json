@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "node ./node_modules/postcss-cli/index.js --config . -o ../app/dist/output.css ../app/src/input.css",
+    "assets:pdf": "powershell -ExecutionPolicy Bypass -File ./sync-pdf-assets.ps1",
     "smoke": "powershell -ExecutionPolicy Bypass -File ./smoke-check.ps1",
     "index:smoke": "node ./tests/run-index-smoke.mjs",
     "fixtures:sync": "node ./tests/sync-note-fixtures.mjs",
