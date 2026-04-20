@@ -161,6 +161,34 @@ function migrateInlineInputChangeAttributes() {
 migrateInlineInputChangeAttributes();
 wireDataActionButtons();
 wireDataInputChangeAttributes();
+
+const LETTERS_SIGNATURE_STORAGE_KEY = 'delphiRiseSignatureInfo';
+
+function applyNoPredictiveText(root = document) {
+    const selector = 'input[type="text"], input[type="email"], input[type="password"], input[type="search"], input[type="tel"], input[type="url"], input[type="number"], input[type="date"], input[type="time"], textarea';
+    root.querySelectorAll(selector).forEach((element) => {
+        element.setAttribute('autocomplete', 'off');
+        element.setAttribute('autocorrect', 'off');
+        element.setAttribute('autocapitalize', 'none');
+        element.setAttribute('spellcheck', 'false');
+    });
+}
+
+function loadSavedSignatureData() {
+    const raw = localStorage.getItem(LETTERS_SIGNATURE_STORAGE_KEY);
+    if (!raw) {
+        return null;
+    }
+
+    try {
+        const parsed = JSON.parse(raw);
+        // Backward compatibility: accept both legacy payload wrapper and plain object.
+        return parsed && parsed.data && typeof parsed.data === 'object' ? parsed.data : parsed;
+    } catch {
+        localStorage.removeItem(LETTERS_SIGNATURE_STORAGE_KEY);
+        return null;
+    }
+}
 // --- Custom Notification System ---
         function showNotification(message, isError = false) {
             const notification = document.getElementById('notification');
@@ -272,34 +300,6 @@ wireDataInputChangeAttributes();
             document.getElementById('evStartDate').value = todayString;
             document.getElementById('commonSalutationType').value = 'dear';
             toggleCommonSalutationName();
-            const disSubjectEl = document.getElementById('disSubject');
-            if (disSubjectEl && !disSubjectEl.value) {
-                disSubjectEl.value = 'Patient Discharge from Delphi Rise';
-            }
-            const disClientSubjectEl = document.getElementById('disClientSubject');
-            if (disClientSubjectEl && !disClientSubjectEl.value) {
-                disClientSubjectEl.value = 'Completion of Services';
-            }
-            const disClientSuccessSubjectEl = document.getElementById('disClientSuccessSubject');
-            if (disClientSuccessSubjectEl && !disClientSuccessSubjectEl.value) {
-                disClientSuccessSubjectEl.value = 'Completion of Treatment';
-            }
-            const eipSubjectEl = document.getElementById('eipSubject');
-            if (eipSubjectEl && !eipSubjectEl.value) {
-                eipSubjectEl.value = 'Evaluation in Progress';
-            }
-            const trSubjectEl = document.getElementById('trSubject');
-            if (trSubjectEl && !trSubjectEl.value) {
-                trSubjectEl.value = 'Treatment Recommendation';
-            }
-            const tnrSubjectEl = document.getElementById('tnrSubject');
-            if (tnrSubjectEl && !tnrSubjectEl.value) {
-                tnrSubjectEl.value = 'Treatment Recommendation';
-            }
-            const evSubjectEl = document.getElementById('evSubject');
-            if (evSubjectEl && !evSubjectEl.value) {
-                evSubjectEl.value = 'Enrollment Verification';
-            }
             const disSalType = document.getElementById('disSalutationType');
             if (disSalType) {
                 disSalType.value = 'dear';
@@ -343,6 +343,8 @@ wireDataInputChangeAttributes();
             document.getElementById('visible-logo').src = logoPath;
             document.getElementById('pdf-logo').src = logoPath;
             document.getElementById('ev-preview-logo').src = logoPath;
+
+            applyNoPredictiveText();
 
             loadSignature();
             initializeDischargeFieldSync();
@@ -562,16 +564,13 @@ wireDataInputChangeAttributes();
                 email: document.getElementById('counselorEmail').value,
                 imgSrc: signaturePreview.src.startsWith('data:image') ? signaturePreview.src : null
             };
-            // NOTE(security): avoid storing PHI in localStorage; keep only minimal signature metadata.
-            localStorage.setItem('delphiRiseSignatureInfo', JSON.stringify(signatureData));
+            localStorage.setItem(LETTERS_SIGNATURE_STORAGE_KEY, JSON.stringify(signatureData));
             showNotification('Signature information saved!');
         }
 
         function loadSignature() {
-            // NOTE(security): avoid storing PHI in localStorage; keep only minimal signature metadata.
-            const savedData = localStorage.getItem('delphiRiseSignatureInfo');
-            if (savedData) {
-                const signatureData = JSON.parse(savedData);
+            const signatureData = loadSavedSignatureData();
+            if (signatureData) {
                 document.getElementById('counselorName').value = signatureData.name || '';
                 document.getElementById('counselorCredentials').value = signatureData.credentials || '';
                 document.getElementById('counselorExtension').value = signatureData.extension || '';
@@ -585,7 +584,7 @@ wireDataInputChangeAttributes();
         }
 
         function deleteSignature() {
-            localStorage.removeItem('delphiRiseSignatureInfo');
+            localStorage.removeItem(LETTERS_SIGNATURE_STORAGE_KEY);
             document.getElementById('counselorName').value = '';
             document.getElementById('counselorCredentials').value = '';
             document.getElementById('counselorExtension').value = '';
@@ -1355,8 +1354,34 @@ Description: Support for individuals and families impacted by substance use and 
 
         let referralsPdfBytesPromise = null; // cache to avoid repeated fetches
 
+        function base64DataUrlToArrayBuffer(dataUrl) {
+            const marker = 'base64,';
+            const markerIndex = dataUrl.indexOf(marker);
+            if (markerIndex === -1) {
+                throw new Error('Invalid referrals data URL');
+            }
+
+            const base64Payload = dataUrl.slice(markerIndex + marker.length);
+            const binary = atob(base64Payload);
+            const bytes = new Uint8Array(binary.length);
+            for (let index = 0; index < binary.length; index += 1) {
+                bytes[index] = binary.charCodeAt(index);
+            }
+            return bytes.buffer;
+        }
+
         async function getReferralsPdfBytes() {
             if (referralsPdfBytesPromise) return referralsPdfBytesPromise;
+
+            const embeddedReferralsDataUrl = typeof window.__REFERRALS_PDF_DATA_URL === 'string'
+                ? window.__REFERRALS_PDF_DATA_URL
+                : '';
+
+            // In file:// contexts, browser fetch/XHR cannot read local PDFs. Prefer embedded bytes.
+            if (window.location.protocol === 'file:' && embeddedReferralsDataUrl) {
+                referralsPdfBytesPromise = Promise.resolve(base64DataUrlToArrayBuffer(embeddedReferralsDataUrl));
+                return referralsPdfBytesPromise;
+            }
 
             const candidates = [
                 new URL('../../assets/documents/Referrals.pdf', window.location.href).toString()
@@ -1377,6 +1402,11 @@ Description: Support for individuals and families impacted by substance use and 
                         continue;
                     }
                 }
+
+                if (embeddedReferralsDataUrl) {
+                    return base64DataUrlToArrayBuffer(embeddedReferralsDataUrl);
+                }
+
                 throw lastError || new Error('Unable to fetch Referrals.pdf');
             })().catch(err => {
                 referralsPdfBytesPromise = null; // allow retry on next attempt

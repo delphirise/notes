@@ -8,7 +8,7 @@
     };
 
         const { PDFDocument, StandardFonts, rgb, ParseSpeeds } = PDFLib;
-        const SIGNATURE_STORAGE_KEY = 'pdfEditorSavedSignature';
+        let cachedSignatureDataUrl = '';
 
         const state = {
             pdfBytes: null,
@@ -73,7 +73,7 @@
 
         function setSignatureUiState() {
             const hasSignature = Boolean(state.signatureDataUrl);
-            const hasSavedSignature = Boolean(localStorage.getItem(SIGNATURE_STORAGE_KEY));
+            const hasSavedSignature = Boolean(cachedSignatureDataUrl);
 
             if (hasSignature) {
                 ui.signaturePreview.src = state.signatureDataUrl;
@@ -86,12 +86,12 @@
             ui.saveSignatureMemory.disabled = !hasSignature;
             ui.clearSignatureMemory.disabled = !hasSavedSignature;
             ui.signatureStatus.textContent = hasSavedSignature
-                ? 'Saved signature is available for future visits.'
+                ? 'Saved signature is available for this tab only.'
                 : 'No signature saved in browser memory.';
         }
 
         async function loadSavedSignature() {
-            const savedSignature = localStorage.getItem(SIGNATURE_STORAGE_KEY);
+            const savedSignature = cachedSignatureDataUrl;
             if (!savedSignature) {
                 setSignatureUiState();
                 return;
@@ -99,7 +99,7 @@
 
             state.signatureDataUrl = await normalizeSignatureDataUrl(savedSignature);
             if (state.signatureDataUrl !== savedSignature) {
-                localStorage.setItem(SIGNATURE_STORAGE_KEY, state.signatureDataUrl);
+                cachedSignatureDataUrl = state.signatureDataUrl;
             }
             setSignatureUiState();
         }
@@ -110,15 +110,25 @@
                 return;
             }
 
-            localStorage.setItem(SIGNATURE_STORAGE_KEY, state.signatureDataUrl);
+            cachedSignatureDataUrl = state.signatureDataUrl;
             setSignatureUiState();
         }
 
         function clearSavedSignature() {
-            localStorage.removeItem(SIGNATURE_STORAGE_KEY);
+            cachedSignatureDataUrl = '';
             state.signatureDataUrl = '';
             ui.signatureUpload.value = '';
             setSignatureUiState();
+        }
+
+        function applyNoPredictiveText() {
+            const selector = 'input[type="text"], input[type="email"], input[type="search"], textarea';
+            document.querySelectorAll(selector).forEach((element) => {
+                element.setAttribute('autocomplete', 'off');
+                element.setAttribute('autocorrect', 'off');
+                element.setAttribute('autocapitalize', 'none');
+                element.setAttribute('spellcheck', 'false');
+            });
         }
 
         function setActiveTool(tool) {
@@ -838,5 +848,6 @@
         });
 
         syncControlPanel();
+        applyNoPredictiveText();
         setActiveTool('signature');
         loadSavedSignature();

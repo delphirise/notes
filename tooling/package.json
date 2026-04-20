@@ -10,6 +10,7 @@
     "index:smoke": "node ./tests/run-index-smoke.mjs",
     "fixtures:sync": "node ./tests/sync-note-fixtures.mjs",
     "fixtures": "node ./tests/run-note-fixtures.mjs",
+    "security:guardrails": "node ./tests/security-guardrails.mjs",
     "serve": "npx http-server -p 8080 -c-1 ..",
     "test": "echo \"Use npm run smoke and npm run fixtures\""
   },

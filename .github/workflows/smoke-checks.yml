@@ -38,3 +38,6 @@ jobs:
 
       - name: Run fixture note tests
         run: npm run fixtures
+
+      - name: Run security guardrails
+        run: npm run security:guardrails

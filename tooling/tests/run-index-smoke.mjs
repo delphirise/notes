@@ -49,14 +49,14 @@ try {
 
   await assertFrameLoaded(
     page,
-    "button[onclick=\"openTab(event, 'NoteTemplates')\"]",
+    "button[data-onclick=\"openTab(event, 'NoteTemplates')\"]",
     '#NoteTemplates iframe',
     'Templates.html',
   );
 
   await assertFrameLoaded(
     page,
-    "button[onclick=\"openTab(event, 'SUD')\"]",
+    "button[data-onclick=\"openTab(event, 'SUD')\"]",
     '#SUD iframe',
     'SUD_Diagnostic_Tool.html',
     { beforeEvaluate: () => window.showSudDropdown() },
@@ -64,7 +64,7 @@ try {
 
   await assertFrameLoaded(
     page,
-    "button[onclick=\"openTab(event, 'DSMDx')\"]",
+    "button[data-onclick=\"openTab(event, 'DSMDx')\"]",
     '#DSMDx iframe',
     'DSMDx.html',
     { beforeEvaluate: () => window.showSudDropdown() },
@@ -72,21 +72,21 @@ try {
 
   await assertFrameLoaded(
     page,
-    "button[onclick=\"openTab(event, 'Planner')\"]",
+    "button[data-onclick=\"openTab(event, 'Planner')\"]",
     '#Planner iframe',
     'Treatment_Planner.html',
   );
 
   await assertFrameLoaded(
     page,
-    "button[onclick=\"openTab(event, 'Letters')\"]",
+    "button[data-onclick=\"openTab(event, 'Letters')\"]",
     '#Letters iframe',
     'letters.html',
   );
 
   await assertFrameLoaded(
     page,
-    "button[onclick=\"openTab(event, 'SafetyPlan')\"]",
+    "button[data-onclick=\"openTab(event, 'SafetyPlan')\"]",
     '#SafetyPlan iframe',
     'safetyplan.html',
   );

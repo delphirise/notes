@@ -1,310 +1,189 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <title>Therapy Tools</title>
-    <link href="./app/dist/output.css" rel="stylesheet">
-    <style>
-        /* Custom styles for the tab interface */
-        .tab-button {
-            transition: background-color 0.3s, color 0.3s;
-        }
-        .tab-button.active {
-            border-color: #4f46e5;
-            color: #4f46e5;
-            font-weight: 600;
-        }
-        /* Styles for MSE form */
-        .mse-form-container {
-            max-width: 900px;
-            margin: 0 auto;
-        }
-        .mse-category {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-        }
-        .mse-category label {
-            width: 48%; /* Adjust for better spacing */
-            margin-bottom: 4px;
-        }
-        @media (min-width: 768px) {
-            .mse-category label {
-                width: 30%;
-            }
-        }
-        .mse-category input[type="text"] {
-            width: 100%;
-            margin: 5px 0;
-        }
-        .mse-custom-input {
-            width: 98%;
-            margin: 1%;
-        }
-        .mse-form-container legend {
-            font-weight: bold;
-            color: #c2410c; /* A more modern orange/red */
-            font-size: 1.1em;
-            margin-bottom: 0.5rem;
-        }
-        /* Styles for DARP form */
-        .darp-form-container label, .darp-form-container select, .darp-form-container input {
-            display: block;
-        }
-        .darp-form-container textarea {
-            width: 100%;
-            min-height: 80px;
-            resize: none;
-            overflow: hidden;
-        }
-        .darp-interventions {
-            display: grid;
-            gap: 1rem;
-            grid-template-columns: 1fr; /* 1 column on mobile */
-        }
-        @media (min-width: 640px) { /* sm */
-            .darp-interventions {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-        @media (min-width: 1024px) { /* lg */
-            .darp-interventions {
-                grid-template-columns: repeat(4, 1fr); /* Adjusted for 4 columns */
-            }
-        }
-        .darp-column {
-            padding: 0.75rem;
-            border: 1px solid #d1d5db;
-            border-radius: 8px;
-            box-sizing: border-box;
-            border-color: #d1d5db !important;
-        }
-        .darp-inline-checkbox {
-            display: flex;
-            align-items: center;
-            margin-bottom: 0.5rem;
-            gap: 0.5rem; /* Adds space between checkbox and label */
-        }
-        .scroll-top-btn {
-            position: fixed;
-            bottom: 1.25rem;
-            right: 1.25rem;
-            display: none;
-            align-items: center;
-            gap: 0.35rem;
-            padding: 0.75rem 1rem;
-            background: #4f46e5;
-            color: #fff;
-            font-weight: 700;
-            border: none;
-            border-radius: 9999px;
-            box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.4);
-            cursor: pointer;
-            z-index: 50;
-        }
-        .scroll-top-btn:hover {
-            background: #4338ca;
-        }
-    </style>
-</head>
-<body class="bg-gray-100 font-sans p-4 md:p-8">
-<div class="bg-white rounded-lg shadow-lg">
-    <div class="border-b border-gray-200">
-        <div class="flex justify-between items-center flex-wrap">
-            <div class="flex flex-1 flex-wrap">
-                <button class="tab-button flex-grow text-center text-gray-500 hover:text-gray-700 py-4 px-2 border-b-2 border-transparent text-base md:text-lg active" id="defaultOpen" onclick="openTab(event, 'MSE')">
-                    MSE
-                </button>
-                <button class="tab-button flex-grow text-center text-gray-500 hover:text-gray-700 py-4 px-2 border-b-2 border-transparent text-base md:text-lg" onclick="openTab(event, 'DARP')">
-                    DARP
-                </button>
-                <button class="tab-button flex-grow text-center text-gray-500 hover:text-gray-700 py-4 px-2 border-b-2 border-transparent text-base md:text-lg" onclick="openTab(event, 'NoteTemplates')">
-                    Templates
-                </button>
-                <div class="relative flex-grow" id="sudContainer" onmouseenter="showSudDropdown()" onmouseleave="hideSudDropdown()">
-                    <button class="tab-button w-full text-center text-gray-500 hover:text-gray-700 py-4 px-2 border-b-2 border-transparent text-base md:text-lg" onclick="toggleSudDropdown(event)">
-                        SUD Dx
-                    </button>
-                    <div id="sudDropdown" class="absolute left-0 mt-0 w-full bg-white border border-gray-200 rounded shadow-lg hidden z-10">
-                        <button type="button" class="dropdown-option w-full text-left px-4 py-2 text-gray-700 transition-all" onclick="openTab(event, 'SUD')" onmouseenter="highlightOption(this)" onmouseleave="unhighlightOption(this)">
-                            SUD Dx
-                        </button>
-                        <button type="button" class="dropdown-option w-full text-left px-4 py-2 text-gray-700 transition-all border-t border-gray-200" onclick="openTab(event, 'DSMDx')" onmouseenter="highlightOption(this)" onmouseleave="unhighlightOption(this)">
-                            DSM-V-TR Dx
-                        </button>
-                    </div>
-                </div>
-                <button class="tab-button flex-grow text-center text-gray-500 hover:text-gray-700 py-4 px-2 border-b-2 border-transparent text-base md:text-lg" onclick="openTab(event, 'Planner')">Planner</button>
-                <button class="tab-button flex-grow text-center text-gray-500 hover:text-gray-700 py-4 px-2 border-b-2 border-transparent text-base md:text-lg" onclick="openTab(event, 'Letters')">Letters</button>
-                <button class="tab-button flex-grow text-center text-gray-500 hover:text-gray-700 py-4 px-2 border-b-2 border-transparent text-base md:text-lg" onclick="openTab(event, 'SafetyPlan')">Safety Plan</button>
-            </div>
-            <button onclick="location.reload()" class="ml-4 my-2 mr-4 px-4 py-2 bg-red-600 text-white font-semibold rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 flex-shrink-0">
-                Clear All
-            </button>
-        </div>
-    </div>
+﻿"use strict";
 
-    <div class="tabcontent p-4 sm:p-6 md:p-8" id="MSE" style="display: block;">
-        <form autocomplete="off">
-                <h1 class="text-3xl font-bold text-center text-gray-800 mb-6">Mental Status Exam</h1>
-                <fieldset class="border p-3 rounded-md mb-4">
-                    <legend>Presets</legend>
-                    <div class="space-y-2">
-                        <label class="flex items-center"><input class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" id="positiveMSE" onclick="togglePositiveMSE()" type="checkbox"> <span class="ml-2">Normal MSE</span></label>
-                        <label class="flex items-center"><input class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" id="telehealthpositiveMSE" onclick="TelehealthPositiveMSE()" type="checkbox"> <span class="ml-2">Telehealth Normal MSE</span></label><br>
-                       <button class="mt-2 px-6 py-2 bg-indigo-600 text-white font-semibold rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" onclick="clearAllMseCheckboxes(); updateMseText();" type="button">
-                            Clear Form
-                        </button>
-                    </div>
-                </fieldset>
-                <div class="space-y-4">
-                    <fieldset class="border p-3 rounded-md"><legend>Orientation</legend><div class="mse-category"><label><input id="x4" onclick="updateMseText()" type="checkbox"> Oriented x4</label><label><input id="time" onclick="updateMseText()" type="checkbox"> Time</label><label><input id="place" onclick="updateMseText()" type="checkbox"> Place</label><label><input id="situation" onclick="updateMseText()" type="checkbox"> Situation</label><label><input id="person" onclick="updateMseText()" type="checkbox"> Person</label><input class="mse-custom-input border-gray-300 rounded-md" id="orientationCustom" oninput="updateMseText()" placeholder="Other" type="text"></div></fieldset>
-                    <fieldset class="border p-3 rounded-md"><legend>Clothing/Grooming</legend><div class="mse-category"><label><input id="neat" onclick="updateMseText()" type="checkbox"> Neat</label><label><input id="clean" onclick="updateMseText()" type="checkbox"> Clean</label><label><input id="appropriatelydressed" onclick="updateMseText()" type="checkbox"> Appropriately Dressed</label><label><input id="careless" onclick="updateMseText()" type="checkbox"> Careless</label><label><input id="disheveled" onclick="updateMseText()" type="checkbox"> Disheveled</label><label><input id="dirty" onclick="updateMseText()" type="checkbox"> Dirty</label><label><input id="inappropriate" onclick="updateMseText()" type="checkbox"> Inappropriate</label><label><input id="bizarre" onclick="updateMseText()" type="checkbox"> Bizarre</label><input class="mse-custom-input border-gray-300 rounded-md" id="clothingGroomingCustom" oninput="updateMseText()" placeholder="Other" type="text"></div></fieldset>
-                    <fieldset class="border p-3 rounded-md"><legend>Motor Activity</legend><div class="mse-category"><label><input id="notRemarkable" onclick="updateMseText()" type="checkbox"> Not Remarkable</label><label><input id="slowed" onclick="updateMseText()" type="checkbox"> Slowed</label><label><input id="repetitive" onclick="updateMseText()" type="checkbox"> Repetitive</label><label><input id="restless" onclick="updateMseText()" type="checkbox"> Restless</label><label><input id="agitated" onclick="updateMseText()" type="checkbox"> Agitated</label><label><input id="tremor" onclick="updateMseText()" type="checkbox"> Tremor</label><input class="mse-custom-input border-gray-300 rounded-md" id="motorActivityCustom" oninput="updateMseText()" placeholder="Other" type="text"></div></fieldset>
-                    <fieldset class="border p-3 rounded-md"><legend>Behavior</legend><div class="mse-category"><label><input id="appropriate" onclick="updateMseText()" type="checkbox"> Appropriate</label><label><input id="aggressive" onclick="updateMseText()" type="checkbox"> Aggressive</label><label><input id="angry" onclick="updateMseText()" type="checkbox"> Angry</label><label><input id="apathetic" onclick="updateMseText()" type="checkbox"> Apathetic</label><label><input id="irritable" onclick="updateMseText()" type="checkbox"> Irritable</label><label><input id="passive" onclick="updateMseText()" type="checkbox"> Passive</label><label><input id="manipulative" onclick="updateMseText()" type="checkbox"> Manipulative</label><input class="mse-custom-input border-gray-300 rounded-md" id="behaviorCustom" oninput="updateMseText()" placeholder="Other" type="text"></div></fieldset>
-                    <fieldset class="border p-3 rounded-md"><legend>Attention</legend><div class="mse-category"><label><input id="normalAttention" onclick="updateMseText()" type="checkbox"> Normal</label><label><input id="unaware" onclick="updateMseText()" type="checkbox"> Unaware</label><label><input id="distractible" onclick="updateMseText()" type="checkbox"> Distractible</label><label><input id="vigilant" onclick="updateMseText()" type="checkbox"> Vigilant</label><input class="mse-custom-input border-gray-300 rounded-md" id="attentionCustom" oninput="updateMseText()" placeholder="Other" type="text"></div></fieldset>
-                    <fieldset class="border p-3 rounded-md"><legend>Recall/Memory</legend><div class="mse-category"><label><input id="normalMemory" onclick="updateMseText()" type="checkbox"> Normal</label><label><input id="shortTermImpaired" onclick="updateMseText()" type="checkbox"> Short-term Impaired, Long-Term Intact</label><label><input id="longTermImpaired" onclick="updateMseText()" type="checkbox"> Short-term Intact, Long-term Impaired</label><input class="mse-custom-input border-gray-300 rounded-md" id="recallMemoryCustom" oninput="updateMseText()" placeholder="Other" type="text"></div></fieldset>
-                    <fieldset class="border p-3 rounded-md"><legend>Eye Contact</legend><div class="mse-category"><label><input id="normalEyeContact" onclick="updateMseText()" type="checkbox"> Normal</label><label><input id="fleeting" onclick="updateMseText()" type="checkbox"> Fleeting</label><label><input id="avoided" onclick="updateMseText()" type="checkbox"> Avoided</label><label><input id="none" onclick="updateMseText()" type="checkbox"> None</label><label><input id="staring" onclick="updateMseText()" type="checkbox"> Staring</label><input class="mse-custom-input border-gray-300 rounded-md" id="eyeContactCustom" oninput="updateMseText()" placeholder="Other" type="text"></div></fieldset>
-                    <fieldset class="border p-3 rounded-md"><legend>Facial Expression</legend><div class="mse-category"><label><input id="responsive" onclick="updateMseText()" type="checkbox"> Responsive</label><label><input id="tense" onclick="updateMseText()" type="checkbox"> Tense</label><label><input id="anxious" onclick="updateMseText()" type="checkbox"> Anxious</label><label><input id="sad" onclick="updateMseText()" type="checkbox"> Sad</label><label><input id="angry" onclick="updateMseText()" type="checkbox"> Angry</label><input class="mse-custom-input border-gray-300 rounded-md" id="facialExpressionCustom" oninput="updateMseText()" placeholder="Other" type="text"></div></fieldset>
-                    <fieldset class="border p-3 rounded-md"><legend>Attitude toward Evaluator</legend><div class="mse-category"><label><input id="cooperative" onclick="updateMseText()" type="checkbox"> Cooperative</label><label><input id="friendly" onclick="updateMseText()" type="checkbox"> Friendly</label><label><input id="guarded" onclick="updateMseText()" type="checkbox"> Guarded</label><label><input id="hostile" onclick="updateMseText()" type="checkbox"> Hostile</label><label><input id="indifferent" onclick="updateMseText()" type="checkbox"> Indifferent</label><label><input id="ingratiating" onclick="updateMseText()" type="checkbox"> Ingratiating</label><label><input id="manipulative" onclick="updateMseText()" type="checkbox"> Manipulative</label><label><input id="open" onclick="updateMseText()" type="checkbox"> Open</label><label><input id="seductive" onclick="updateMseText()" type="checkbox"> Seductive</label><label><input id="suspicious" onclick="updateMseText()" type="checkbox"> Suspicious</label><label><input id="uncooperative" onclick="updateMseText()" type="checkbox"> Uncooperative</label><input class="mse-custom-input border-gray-300 rounded-md" id="attitudeEvaluatorCustom" oninput="updateMseText()" placeholder="Other" type="text"></div></fieldset>
-                    <fieldset class="border p-3 rounded-md"><legend>Affect</legend><div class="mse-category"><label><input id="affectCongruent" onclick="updateMseText()" type="checkbox"> Congruent</label><label><input id="affectIncongruent" onclick="updateMseText()" type="checkbox"> Incongruent</label><label><input id="affectAppropriate" onclick="updateMseText()" type="checkbox"> Appropriate</label><label><input id="affectInappropriate" onclick="updateMseText()" type="checkbox"> Inappropriate</label><label><input id="labile" onclick="updateMseText()" type="checkbox"> Labile</label><label><input id="restricted" onclick="updateMseText()" type="checkbox"> Restricted</label><label><input id="flat" onclick="updateMseText()" type="checkbox"> Flat</label><label><input id="reactive" onclick="updateMseText()" type="checkbox"> Reactive</label><label><input id="blunted" onclick="updateMseText()" type="checkbox"> Blunted</label><input class="mse-custom-input border-gray-300 rounded-md" id="affectCustom" oninput="updateMseText()" placeholder="Other" type="text"></div></fieldset>
-                    <fieldset class="border p-3 rounded-md"><legend>Mood</legend><div class="mse-category"><label><input id="euthymic" onclick="updateMseText()" type="checkbox"> Euthymic</label><label><input id="dysphoric" onclick="updateMseText()" type="checkbox"> Dysphoric</label><label><input id="anxiousmood" onclick="updateMseText()" type="checkbox"> Anxious</label><label><input id="angrymood" onclick="updateMseText()" type="checkbox"> Angry</label><label><input id="irritableMood" onclick="updateMseText()" type="checkbox"> Irritable</label><label><input id="pessimistic" onclick="updateMseText()" type="checkbox"> Pessimistic</label><label><input id="depressed" onclick="updateMseText()" type="checkbox"> Depressed</label><label><input id="hypomanic" onclick="updateMseText()" type="checkbox"> Hypomanic</label><label><input id="euphoric" onclick="updateMseText()" type="checkbox"> Euphoric</label><input class="mse-custom-input border-gray-300 rounded-md" id="moodCustom" oninput="updateMseText()" placeholder="Other" type="text"></div></fieldset>
-                    <fieldset class="border p-3 rounded-md"><legend>Speech</legend><div class="mse-category"><label><input id="normalSpeech" onclick="updateMseText()" type="checkbox"> Normal</label><label><input id="loud" onclick="updateMseText()" type="checkbox"> Loud</label><label><input id="blocked" onclick="updateMseText()" type="checkbox"> Blocked</label><label><input id="pressured" onclick="updateMseText()" type="checkbox"> Pressured</label><label><input id="flightOfIdeas" onclick="updateMseText()" type="checkbox"> Flight of Ideas</label><label><input id="slurred" onclick="updateMseText()" type="checkbox"> Slurred</label><label><input id="soft" onclick="updateMseText()" type="checkbox"> Soft</label><label><input id="stuttering" onclick="updateMseText()" type="checkbox"> Stuttering</label><label><input id="mute" onclick="updateMseText()" type="checkbox"> Mute</label><label><input id="verbose" onclick="updateMseText()" type="checkbox"> Verbose</label><input class="mse-custom-input border-gray-300 rounded-md" id="speechCustom" oninput="updateMseText()" placeholder="Other" type="text"></div></fieldset>
-                    <fieldset class="border p-3 rounded-md"><legend>Expression of Thought Content</legend><div class="mse-category"><label><input id="expressionCongruent" onclick="updateMseText()" type="checkbox"> Congruent</label><label><input id="expressionIncongruent" onclick="updateMseText()" type="checkbox"> Incongruent</label><label><input id="looseassociations" onclick="updateMseText()" type="checkbox"> Loose Associations</label><label><input id="suspicions" onclick="updateMseText()" type="checkbox"> Suspicions</label><label><input id="delusions" onclick="updateMseText()" type="checkbox"> Delusions</label><label><input id="phobias" onclick="updateMseText()" type="checkbox"> Phobias</label><label><input id="obsessions" onclick="updateMseText()" type="checkbox"> Obsessions</label><input class="mse-custom-input border-gray-300 rounded-md" id="expressionCustom" oninput="updateMseText()" placeholder="Other" type="text"></div></fieldset>
-                    <fieldset class="border p-3 rounded-md"><legend>Organization of Thought</legend><div class="mse-category"><label><input id="normalOrganization" onclick="updateMseText()" type="checkbox"> Normal</label><label><input id="logical" onclick="updateMseText()" type="checkbox"> Logical</label><label><input id="goalDirected" onclick="updateMseText()" type="checkbox"> Goal-directed</label><input class="mse-custom-input border-gray-300 rounded-md" id="organizationCustom" oninput="updateMseText()" placeholder="Other" type="text"></div></fieldset>
-                    <fieldset class="border p-3 rounded-md"><legend>Perception</legend><div class="mse-category"><label><input id="noHallucinations" onclick="updateMseText()" type="checkbox"> No Hallucinations or Delusions during Interview</label><label><input id="auditoryhallucinations" onclick="updateMseText()" type="checkbox"> Auditory Hallucinations</label><label><input id="visualhallucinations" onclick="updateMseText()" type="checkbox"> Visual Hallucinations</label><label><input id="olfactoryhallucinations" onclick="updateMseText()" type="checkbox"> Olfactory Hallucinations</label><label><input id="tactilehallucinations" onclick="updateMseText()" type="checkbox"> Tactile Hallucinations</label><label><input id="gustatoryhallucinations" onclick="updateMseText()" type="checkbox"> Gustatory Hallucinations</label><label><input id="delusionsPresent" onclick="updateMseText()" type="checkbox"> Delusions Present</label><input class="mse-custom-input border-gray-300 rounded-md" id="perceptionCustom" oninput="updateMseText()" placeholder="Other" type="text"></div></fieldset>
-                    <fieldset class="border p-3 rounded-md"><legend>Insight</legend><div class="mse-category"><label><input id="insightExcellent" onclick="updateMseText()" type="checkbox"> Excellent</label><label><input id="insightGood" onclick="updateMseText()" type="checkbox"> Good</label><label><input id="insightFair" onclick="updateMseText()" type="checkbox"> Fair</label><label><input id="insightPoor" onclick="updateMseText()" type="checkbox"> Poor</label><label><input id="insightNil" onclick="updateMseText()" type="checkbox"> nil</label><input class="mse-custom-input border-gray-300 rounded-md" id="insightCustom" oninput="updateMseText()" placeholder="Other" type="text"></div></fieldset>
-                    <fieldset class="border p-3 rounded-md"><legend>Judgment</legend><div class="mse-category"><label><input id="judgementExcellent" onclick="updateMseText()" type="checkbox"> Excellent</label><label><input id="judgementGood" onclick="updateMseText()" type="checkbox"> Good</label><label><input id="judgementFair" onclick="updateMseText()" type="checkbox"> Fair</label><label><input id="judgementPoor" onclick="updateMseText()" type="checkbox"> Poor</label><label><input id="judgementNil" onclick="updateMseText()" type="checkbox"> nil</label><label><input id="judgementDangerous" onclick="updateMseText()" type="checkbox"> Dangerous</label><input class="mse-custom-input border-gray-300 rounded-md" id="judgmentCustom" oninput="updateMseText()" placeholder="Other" type="text"></div></fieldset>
-                    <fieldset class="border p-3 rounded-md"><legend>Decision Making</legend><div class="mse-category"><label><input id="normalDecisionMaking" onclick="updateMseText()" type="checkbox"> Normal</label><label><input id="onlySimple" onclick="updateMseText()" type="checkbox"> Only Simple</label><label><input id="impulsive" onclick="updateMseText()" type="checkbox"> Impulsive</label><label><input id="confused" onclick="updateMseText()" type="checkbox"> Confused</label><input class="mse-custom-input border-gray-300 rounded-md" id="decisionMakingCustom" oninput="updateMseText()" placeholder="Other" type="text"></div></fieldset>
-                    <fieldset class="border p-3 rounded-md"><legend>Safety</legend><div class="mse-category"><label><input id="noSIHI" onclick="updateMseText()" type="checkbox"> No evidence or report of SI/HI</label><label><input id="deniesSIHI" onclick="updateMseText()" type="checkbox"> Denies SI/HI</label><label><input id="reportsHI" onclick="updateMseText()" type="checkbox"> Reports HI</label><label><input id="reportsPassiveSIT" onclick="updateMseText()" type="checkbox"> Reports Passive Suicidal Thoughts</label><label><input id="reportsSuicidePlan" onclick="updateMseText()" type="checkbox"> Reports Suicide Plan</label><label><input id="reportsSuicidalIntention" onclick="updateMseText()" type="checkbox"> Reports Suicidal Intention</label><input class="mse-custom-input border-gray-300 rounded-md" id="safetyCustom" oninput="updateMseText()" placeholder="Other" type="text"></div></fieldset>
-                </div>
-                <textarea class="w-full mt-4 p-2 border border-gray-300 rounded-md" id="mseTextbox" rows="12"></textarea>
-                <button class="mt-2 px-6 py-2 bg-indigo-600 text-white font-semibold rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" onclick="copyMseToClipboard()" type="button">COPY MSE</button>
-            </form>
-    </div>
-    
-    <div class="tabcontent p-4 sm:p-6 md:p-8" id="DARP" style="display:none;">
-        <div class="darp-form-container">
-            <h2 class="text-3xl font-bold text-center text-gray-800 mb-4">Progress Note Form</h2>
-            <form id="progressNoteForm" autocomplete="off">
-                
-                <div class="darp-inline-checkbox mb-2">
-                    <input id="internNoteCheckbox" name="internNoteCheckbox" type="checkbox" onchange="toggleInternNote(); updateDarpProgressNote();" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
-                    <label for="internNoteCheckbox" class="font-medium text-gray-700">Intern Note</label>
-                </div>
-                
-                <div id="internStatementSection" class="bg-blue-100 p-4 rounded-md mb-4" style="display:none;">
-                    Intern informed client that they are a counselor-in-training completing an internship at the clinic under the supervision of a licensed clinician. Intern explained the supervisory relationship and the role of the supervisor in supporting client care and ensuring quality services. Client was informed that parts of sessions may be reviewed for supervision purposes. Intern obtained client’s verbal consent to proceed with treatment under intern status. Client expressed understanding and agreed to continue services.
-                </div>
-                <h3 class="text-xl font-semibold text-gray-700 mt-4 mb-2">DATA:</h3>
-                
-                <label class="font-medium text-gray-700 mb-2" for="diagnoses">Diagnoses:</label>
-                <textarea class="p-2 border border-gray-300 rounded-md w-full" id="diagnoses" name="diagnoses" oninput="autoResize(this); updateDarpProgressNote();"></textarea>
-               <label class="font-medium text-gray-700 mb-1" for="problemsAddressed">Session Content and Problems Addressed:</label>
-                <textarea class="p-2 border border-gray-300 rounded-md w-full" id="problemsAddressed" name="problemsAddressed" oninput="autoResize(this); updateDarpProgressNote();"></textarea>
-                <p class="text-sm text-gray-500 italic mt-1">Remember to include person-centered language and client quotes.</p>
-                
-<div class="flex items-center mt-4 space-x-2">
-    <label class="font-medium text-gray-700">Updates and Progress to Client's Treatment Goals:</label>
-    <input type="date" id="sessionDate" name="sessionDate" class="p-2 border border-gray-300 rounded-md" onchange="syncSessionDateToGoals(this.value)">
-</div>
-                <div id="treatmentGoalsContainer" class="space-y-2">
-                    </div>
+function splitCallArguments(argsSource) {
+    const parts = [];
+    let current = '';
+    let inSingle = false;
+    let inDouble = false;
 
-                <div class="darp-inline-checkbox mt-2"><input id="toxicologyScreen" name="toxicologyScreen" type="checkbox" onchange="updateDarpProgressNote()"><label for="toxicologyScreen">Client provided a toxicology screen</label></div>
-                <label class="font-medium text-gray-700 mb-2 mt-2" for="additionalNotes">Additional Notes:</label>
-                <textarea class="p-2 border border-gray-300 rounded-md w-full" id="additionalNotes" name="additionalNotes" oninput="autoResize(this); updateDarpProgressNote();"></textarea>
-                
-                <h3 class="text-xl font-semibold text-gray-700 mt-4 mb-2">Interventions Used:</h3>
-                
-                <!-- Controls to add new modality -->
-                <div class="mb-4 flex gap-2 items-end">
-                    <div class="flex-grow">
-                         <label class="block text-sm font-medium text-gray-700 mb-1">Add New Modality Category</label>
-                        <input type="text" id="newModalityInput" class="w-full p-2 border border-gray-300 rounded-md" placeholder="e.g. DBT, EMDR">
-                    </div>
-                    <button type="button" onclick="addNewModality()" class="px-4 py-2 bg-indigo-600 text-white font-semibold rounded-md shadow-sm hover:bg-indigo-700">
-                        Add Category
-                    </button>
-                    <button type="button" onclick="resetModalitiesToDefault()" class="px-4 py-2 bg-gray-500 text-white font-semibold rounded-md shadow-sm hover:bg-gray-600" title="Reset to defaults">
-                        Reset
-                    </button>
-                </div>
+    for (let i = 0; i < argsSource.length; i += 1) {
+        const ch = argsSource[i];
+        if (ch === "'" && !inDouble) {
+            inSingle = !inSingle;
+            current += ch;
+            continue;
+        }
+        if (ch === '"' && !inSingle) {
+            inDouble = !inDouble;
+            current += ch;
+            continue;
+        }
+        if (ch === ',' && !inSingle && !inDouble) {
+            parts.push(current.trim());
+            current = '';
+            continue;
+        }
+        current += ch;
+    }
 
-                <div id="darp-interventions-container" class="darp-interventions">
-                    <!-- Dynamic content will be rendered here -->
-                </div>
-                <h3 class="text-xl font-semibold text-gray-700 mt-4 mb-2">ASSESSMENT:</h3>
-                <label class="font-medium text-gray-700 mb-2" for="mentalStatus">Mental Status Exam:</label>
-                <textarea class="p-2 border border-gray-300 rounded-md w-full" id="mentalStatus" name="mentalStatus" oninput="autoResize(this); updateDarpProgressNote();"></textarea>
-                <label class="font-medium text-gray-700 mb-2" for="additionalAssessment">Additional Assessment:</label>
-                <textarea class="p-2 border border-gray-300 rounded-md w-full" id="additionalAssessment" name="additionalAssessment" oninput="autoResize(this); updateDarpProgressNote();"></textarea>
-                <h3 class="text-xl font-semibold text-gray-700 mt-4 mb-2">RESPONSE:</h3>
-                <label class="font-medium text-gray-700 mb-2" for="response">Response:</label>
-                <textarea class="p-2 border border-gray-300 rounded-md w-full" id="response" name="response" oninput="autoResize(this); updateDarpProgressNote();"></textarea>
-                <h3 class="text-xl font-semibold text-gray-700 mt-4 mb-2">PLAN:</h3>
-                <label class="font-medium text-gray-700 mb-2" for="plan">Plan:</label>
-                <textarea class="p-2 border border-gray-300 rounded-md w-full" id="plan" name="plan" oninput="autoResize(this); updateDarpProgressNote();"></textarea>
-            
-                <div id="internInfoSection" class="bg-blue-100 p-4 rounded-md mt-6" style="display:none;">
-                    <h3 class="text-lg font-semibold mb-3">Internship Information</h3>
-                    <div class="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 items-center">
-                        <label for="internName" class="font-medium text-gray-700 justify-self-end">Name of Intern:</label>
-                        <input type="text" id="internName" class="p-2 border border-gray-300 rounded-md w-full" oninput="updateDarpProgressNote()">
-                        
-                        <label for="supervisorName" class="font-medium text-gray-700 justify-self-end">Name of Supervisor:</label>
-                        <input type="text" id="supervisorName" class="p-2 border border-gray-300 rounded-md w-full" oninput="updateDarpProgressNote()">
-                        
-                        <label for="supervisorCredential" class="font-medium text-gray-700 justify-self-end">Supervisor Credential:</label>
-                        <input type="text" id="supervisorCredential" class="p-2 border border-gray-300 rounded-md w-full" oninput="updateDarpProgressNote()">
-                        
-                        <label for="supervisorCredentialNum" class="font-medium text-gray-700 justify-self-end">Supervisor Credential Number:</label>
-                        <input type="text" id="supervisorCredentialNum" class="p-2 border border-gray-300 rounded-md w-full" oninput="updateDarpProgressNote()">
-                    </div>
-                    <div class="flex gap-2 mt-4">
-                        <button type="button" id="saveInternInfo" class="px-4 py-2 bg-blue-600 text-white font-semibold rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                            Save Information
-                        </button>
-                        <button type="button" id="clearInternInfo" class="px-4 py-2 bg-gray-500 text-white font-semibold rounded-md shadow-sm hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400">
-                            Clear Information
-                        </button>
-                    </div>
-                </div>
-                </form>
-            <h3 class="text-2xl font-bold text-gray-800 mt-6 mb-2">Generated Progress Note</h3>
-            <textarea class="w-full p-2 border border-gray-300 rounded-md bg-gray-50" id="progressNote" oninput="autoResize(this)"></textarea>
-            <button class="mt-2 px-6 py-2 bg-indigo-600 text-white font-semibold rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" onclick="copyDarpToClipboard()">COPY DARP NOTE</button>
-        </div>
-    </div>
+    if (current.trim()) {
+        parts.push(current.trim());
+    }
 
-    <div class="tabcontent p-4 sm:p-6 md:p-8" id="NoteTemplates" style="display:none;">
-        <iframe src="./app/pages/Templates.html" class="w-full h-[85vh]" style="border:none;" title="Note Templates"></iframe>
-    </div>
+    return parts;
+}
 
-    <div class="tabcontent p-4 sm:p-6 md:p-8" id="SUD" style="display:none;">
-        <iframe src="./app/pages/SUD_Diagnostic_Tool.html" class="w-full h-[85vh]" style="border:none;" title="SUD Diagnostic Tool"></iframe>
-    </div>
+function resolveCallablePath(path) {
+    const segments = path.split('.');
+    let context = window;
+    for (let i = 0; i < segments.length - 1; i += 1) {
+        context = context?.[segments[i]];
+    }
 
-    <div class="tabcontent p-4 sm:p-6 md:p-8" id="DSMDx" style="display:none;">
-        <iframe src="./app/pages/DSMDx.html" class="w-full h-[85vh]" style="border:none;" title="DSM-V-TR Diagnostic Tool"></iframe>
-    </div>
+    if (!context) {
+        return null;
+    }
 
-    <div class="tabcontent p-4 sm:p-6 md:p-8" id="Planner" style="display:none;">
-        <iframe src="./app/pages/Treatment_Planner.html" class="w-full h-[85vh]" style="border:none;" title="Treatment Planner"></iframe>
-    </div>
+    const fn = context[segments[segments.length - 1]];
+    if (typeof fn !== 'function') {
+        return null;
+    }
 
-    <div class="tabcontent p-4 sm:p-6 md:p-8" id="Letters" style="display:none;">
-        <iframe src="./app/pages/letters.html" class="w-full h-[85vh]" style="border:none;" title="Letters"></iframe>
-    </div>
+    return { fn, context };
+}
 
-    <div class="tabcontent p-4 sm:p-6 md:p-8" id="SafetyPlan" style="display:none">
-        <iframe src="./app/pages/safetyplan.html" class="w-full h-[85vh]" style="border:none;" title="Safety Plan"></iframe>
-    </div>
-</div>
-<button id="scrollTopBtn" class="scroll-top-btn" type="button" onclick="scrollToTop()" aria-label="Scroll to top">Top</button>
-<script>
-    if ('scrollRestoration' in history) {
+function parseCallArgument(token, scopedEvent, element) {
+    if (token === 'this') return element;
+    if (token === 'event') return scopedEvent;
+    if (token === 'true') return true;
+    if (token === 'false') return false;
+    if (token === 'null') return null;
+    if (/^-?\d+(?:\.\d+)?$/.test(token)) return Number(token);
+    if ((token.startsWith("'") && token.endsWith("'")) || (token.startsWith('"') && token.endsWith('"'))) {
+        return token.slice(1, -1);
+    }
+    return undefined;
+}
+
+function executeDataCalls(expression, event, element) {
+    if (!expression) {
+        return;
+    }
+
+    const statements = String(expression)
+        .split(';')
+        .map((item) => item.trim())
+        .filter(Boolean);
+
+    const scopedEvent = event
+        ? new Proxy(event, {
+            get(target, prop) {
+                if (prop === 'currentTarget' || prop === 'delegateTarget') {
+                    return element;
+                }
+                const value = target[prop];
+                return typeof value === 'function' ? value.bind(target) : value;
+            },
+        })
+        : event;
+
+    for (const statement of statements) {
+        const callMatch = statement.match(/^([A-Za-z_$][\w$.]*)\s*(?:\((.*)\))?$/);
+        if (!callMatch) {
+            continue;
+        }
+
+        const callable = resolveCallablePath(callMatch[1]);
+        if (!callable) {
+            continue;
+        }
+
+        const argsSource = callMatch[2] || '';
+        const args = argsSource.trim()
+            ? splitCallArguments(argsSource)
+                .map((token) => parseCallArgument(token, scopedEvent, element))
+                .filter((value) => value !== undefined)
+            : [];
+
+        try {
+            callable.fn.apply(callable.context, args);
+        } catch (error) {
+            console.error(`Error running data call ${callMatch[1]}:`, error);
+        }
+    }
+}
+
+function getClosestWithAttribute(event, attributeName) {
+    const target = event.target;
+    if (!(target instanceof Element)) {
+        return null;
+    }
+    return target.closest(`[${attributeName}]`);
+}
+
+function wireDeclarativeHandlers() {
+    if (document.body.dataset.dataHandlersWired === 'true') {
+        return;
+    }
+
+    document.body.addEventListener('click', (event) => {
+        const element = getClosestWithAttribute(event, 'data-onclick');
+        if (!element) {
+            return;
+        }
+        executeDataCalls(element.getAttribute('data-onclick'), event, element);
+    });
+
+    document.body.addEventListener('input', (event) => {
+        const target = event.target;
+        if (!(target instanceof Element) || !target.hasAttribute('data-oninput')) {
+            return;
+        }
+        executeDataCalls(target.getAttribute('data-oninput'), event, target);
+    });
+
+    document.body.addEventListener('change', (event) => {
+        const target = event.target;
+        if (!(target instanceof Element) || !target.hasAttribute('data-onchange')) {
+            return;
+        }
+        executeDataCalls(target.getAttribute('data-onchange'), event, target);
+    });
+
+    document.body.addEventListener('mouseover', (event) => {
+        const element = getClosestWithAttribute(event, 'data-onmouseenter');
+        if (!element) {
+            return;
+        }
+
+        const related = event.relatedTarget;
+        if (related instanceof Node && element.contains(related)) {
+            return;
+        }
+
+        executeDataCalls(element.getAttribute('data-onmouseenter'), event, element);
+    });
+
+    document.body.addEventListener('mouseout', (event) => {
+        const element = getClosestWithAttribute(event, 'data-onmouseleave');
+        if (!element) {
+            return;
+        }
+
+        const related = event.relatedTarget;
+        if (related instanceof Node && element.contains(related)) {
+            return;
+        }
+
+        executeDataCalls(element.getAttribute('data-onmouseleave'), event, element);
+    });
+
+    document.body.dataset.dataHandlersWired = 'true';
+}
+
+wireDeclarativeHandlers();
+
+if ('scrollRestoration' in history) {
         history.scrollRestoration = 'manual';
     }
     window.scrollTo({ top: 0, behavior: 'auto' });
@@ -334,7 +213,7 @@
     }
 
     // Close dropdown when clicking outside
-    document.addEventListener('click', function() {
+    document.addEventListener('click', function(event) {
         const dropdown = document.getElementById('sudDropdown');
         const sudContainer = document.getElementById('sudContainer');
         if (dropdown && !dropdown.classList.contains('hidden') && !sudContainer.contains(event.target)) {
@@ -477,7 +356,17 @@
     // --- DARP (Progress Note) Logic ---
 
     // *** NEW: Intern Note Logic ***
-    const internStatementText = "Intern informed client that they are a counselor-in-training completing an internship at the clinic under the supervision of a licensed clinician. Intern explained the supervisory relationship and the role of the supervisor in supporting client care and ensuring quality services. Client was informed that parts of sessions may be reviewed for supervision purposes. Intern obtained client’s verbal consent to proceed with treatment under intern status. Client expressed understanding and agreed to continue services.";
+    function applyNoPredictiveText(root = document) {
+        const selector = 'input[type="text"], input[type="email"], input[type="search"], input[type="tel"], input[type="url"], input[type="number"], input[type="date"], input[type="time"], textarea';
+        root.querySelectorAll(selector).forEach((element) => {
+            element.setAttribute('autocomplete', 'off');
+            element.setAttribute('autocorrect', 'off');
+            element.setAttribute('autocapitalize', 'none');
+            element.setAttribute('spellcheck', 'false');
+        });
+    }
+
+    const internStatementText = "Intern informed client that they are a counselor-in-training completing an internship at the clinic under the supervision of a licensed clinician. Intern explained the supervisory relationship and the role of the supervisor in supporting client care and ensuring quality services. Client was informed that parts of sessions may be reviewed for supervision purposes. Intern obtained client's verbal consent to proceed with treatment under intern status. Client expressed understanding and agreed to continue services.";
 
     function toggleInternNote() {
         const isChecked = document.getElementById('internNoteCheckbox').checked;
@@ -512,7 +401,6 @@
         document.getElementById('supervisorName').value = '';
         document.getElementById('supervisorCredential').value = '';
         document.getElementById('supervisorCredentialNum').value = '';
-        
         document.getElementById('internNoteCheckbox').checked = false;
         toggleInternNote(); // This will hide the sections
         updateDarpProgressNote();
@@ -521,12 +409,17 @@
 
     function loadInternInfo() {
         if (localStorage.getItem('autoCheckInternNote') === 'true') {
-            const internData = JSON.parse(localStorage.getItem('internData'));
-            if (internData) {
+            const rawInternData = localStorage.getItem('internData');
+            const saved = rawInternData ? JSON.parse(rawInternData) : null;
+            if (saved) {
+                // Backward compatibility: read both legacy payload wrapper and plain object.
+                const internData = saved.data && typeof saved.data === 'object' ? saved.data : saved;
                 document.getElementById('internName').value = internData.name || '';
                 document.getElementById('supervisorName').value = internData.supervisor || '';
                 document.getElementById('supervisorCredential').value = internData.credential || '';
                 document.getElementById('supervisorCredentialNum').value = internData.credentialNum || '';
+            } else {
+                localStorage.removeItem('autoCheckInternNote');
             }
             document.getElementById('internNoteCheckbox').checked = true;
         }
@@ -558,16 +451,16 @@
             <div class="flex-grow space-y-2">
                 <div class="flex items-center gap-2">
                     <label class="font-medium text-gray-700 w-28 flex-shrink-0">Treatment Goal:</label>
-                    <input type="text" class="p-2 border border-gray-300 rounded-md w-full treatment-goal-input" oninput="updateDarpProgressNote()">
+                    <input type="text" class="p-2 border border-gray-300 rounded-md w-full treatment-goal-input" data-oninput="updateDarpProgressNote()">
                 </div>
                 <div class="flex items-start gap-2">
                     <label class="font-medium text-gray-700 w-28 flex-shrink-0 mt-2">Update:</label>
-                    <textarea class="p-2 border border-gray-300 rounded-md w-full treatment-goal-update" oninput="autoResize(this); updateDarpProgressNote()">${datePrefix}</textarea>
+                    <textarea class="p-2 border border-gray-300 rounded-md w-full treatment-goal-update" data-oninput="autoResize(this); updateDarpProgressNote()">${datePrefix}</textarea>
                 </div>
             </div>
             <div class="flex flex-col gap-2">
-                <button type="button" class="px-3 py-1 bg-green-500 text-white rounded-md hover:bg-green-600" onclick="addTreatmentGoalRow()">+</button>
-                <button type="button" class="px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-600 remove-goal-btn" onclick="removeTreatmentGoalRow(this)">-</button>
+                <button type="button" class="px-3 py-1 bg-green-500 text-white rounded-md hover:bg-green-600" data-onclick="addTreatmentGoalRow()">+</button>
+                <button type="button" class="px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-600 remove-goal-btn" data-onclick="removeTreatmentGoalRow(this)">-</button>
             </div>
         `;
 
@@ -641,6 +534,15 @@
     function updateDarpProgressNote() {
         let progressNote = "";
         const isInternNote = document.getElementById('internNoteCheckbox')?.checked;
+        const gv = document.getElementById('goalVerification');
+        if (gv && !gv.checked) {
+            const noteBox = document.getElementById('progressNote');
+            if (noteBox) {
+                noteBox.value = 'Verify Goals have been updated to generate note.';
+                autoResize(noteBox);
+            }
+            return;
+        }
 
         // *** NEW: Prepend intern statement ***
         if (isInternNote) {
@@ -651,23 +553,6 @@
         const mentalStatus = document.getElementById('mentalStatus')?.value || '';
         const problemsAddressed = document.getElementById('problemsAddressed')?.value || '';
         const diagnoses = document.getElementById('diagnoses')?.value || '';
-        
-        let updatesProgressText = "";
-        const goalRows = document.querySelectorAll('#treatmentGoalsContainer .treatment-goal-row');
-        goalRows.forEach((row, index) => {
-            const goalInput = row.querySelector('.treatment-goal-input');
-            const updateInput = row.querySelector('.treatment-goal-update');
-            if (goalInput && updateInput) {
-                const goal = goalInput.value.trim();
-                const update = updateInput.value.trim();
-                if (goal || update) {
-                    updatesProgressText += `Goal: ${goal}\nUpdate: ${update}\n\n`;
-                }
-            }
-        });
-        updatesProgressText = updatesProgressText.trim();
-
-        const additionalNotes = document.getElementById('additionalNotes')?.value || '';
         const additionalAssessment = document.getElementById('additionalAssessment')?.value || '';
         const response = document.getElementById('response')?.value || '';
         const plan = document.getElementById('plan')?.value || '';
@@ -676,9 +561,7 @@
         progressNote += "DATA:\n";
         if (diagnoses) progressNote += `Diagnoses:\n${diagnoses}\n\n`;
         if (problemsAddressed) progressNote += `Problems Addressed in the Counseling Session:\n${problemsAddressed}\n\n`;
-        if (updatesProgressText) progressNote += `Updates and Progress to Client's Treatment Goals:\n${updatesProgressText}\n\n`;
         if (toxicologyScreen) progressNote += `Client provided a toxicology screen.\n\n`;
-        if (additionalNotes) progressNote += `Additional Notes:\n${additionalNotes}\n\n`;
         
         // --- Interventions Logic ---
         let interventionsUsed = "Interventions Used:\n";
@@ -717,7 +600,7 @@
 
         progressNote += "ASSESSMENT:\n";
         if (mentalStatus) progressNote += `Mental Status Exam:\n${mentalStatus}\n\n`;
-        if (additionalAssessment) progressNote += `Additional Assessment:\n${additionalAssessment}\n\n`;
+        if (additionalAssessment) progressNote += `Assessment:\n${additionalAssessment}\n\n`;
 
         progressNote += "RESPONSE:\n";
         if (response) progressNote += `${response}\n\n`;
@@ -744,7 +627,16 @@
     }
 
     function copyDarpToClipboard() {
+        const gv = document.getElementById('goalVerification');
+        if (gv && !gv.checked) {
+            alert('Cannot generate note: please verify that the Goals tab has been updated to proceed.');
+            return;
+        }
         const note = document.getElementById('progressNote');
+        if (!note || !note.value.trim()) {
+            alert('No progress note to copy.');
+            return;
+        }
         note.select();
         document.execCommand("copy");
         alert("Progress note copied to clipboard!");
@@ -930,6 +822,10 @@
                 input.type = 'text';
                 input.placeholder = 'Add new intervention';
                 input.className = 'flex-grow p-1 text-sm border border-gray-300 rounded';
+                input.setAttribute('autocomplete', 'off');
+                input.setAttribute('autocorrect', 'off');
+                input.setAttribute('autocapitalize', 'none');
+                input.setAttribute('spellcheck', 'false');
                 input.onkeydown = (e) => {
                     if(e.key === 'Enter') {
                         e.preventDefault();
@@ -1019,6 +915,7 @@
                     }
                 }, 0);
             });
+            applyNoPredictiveText(container);
         } catch (error) {
             console.error("Error rendering interventions:", error);
         }
@@ -1122,10 +1019,9 @@
         if(typeof setScrollTopVisibility === 'function') setScrollTopVisibility('MSE');
         
         // DARP Init
-        if(typeof addTreatmentGoalRow === 'function') addTreatmentGoalRow();
-        
         // Initialize dynamic interventions
         renderInterventions();
+        applyNoPredictiveText();
         
         // *** NEW: Load intern info and set up buttons ***
         if(typeof loadInternInfo === 'function') loadInternInfo(); 
@@ -1160,23 +1056,6 @@
             });
         }
         
-        // *** NEW: Pre-populate session date with current date ***
-        const sessionDateInput = document.getElementById('sessionDate');
-        if (sessionDateInput) {
-            const today = new Date();
-            const year = today.getFullYear();
-            const month = String(today.getMonth() + 1).padStart(2, '0');
-            const day = String(today.getDate()).padStart(2, '0');
-            sessionDateInput.value = `${year}-${month}-${day}`;
-            // Sync the date to treatment goals
-            if(typeof syncSessionDateToGoals === 'function') syncSessionDateToGoals(sessionDateInput.value);
-        }
-        // *** END NEW ***
-        
         // Final update to ensure note is correct on load
         updateDarpProgressNote();
     });
-</script>
-</body>
-</html>
-
