@@ -299,8 +299,8 @@
         }
         .oasas-crisis-form .triage-grid {
             display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 28px;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
         }
         .oasas-crisis-form .triage-card {
             border: 1px solid #d7deea;
@@ -308,6 +308,9 @@
             padding: 14px;
             background: #fdfefe;
             min-width: 0;
+        }
+        .oasas-crisis-form .triage-card.suicide-risk-card {
+            grid-column: 1 / -1;
         }
         .oasas-crisis-form .triage-card .triage-label {
             margin-bottom: 10px;
@@ -324,6 +327,53 @@
             width: auto;
             font-size: 13px;
             line-height: 1.2;
+        }
+        .oasas-crisis-form .suicide-risk-row {
+            display: grid;
+            grid-template-columns: minmax(180px, 1fr) auto;
+            gap: 14px;
+            align-items: start;
+        }
+        .oasas-crisis-form .suicide-risk-details {
+            display: grid;
+            gap: 8px;
+            min-width: 220px;
+        }
+        .oasas-crisis-form .suicide-risk-details-title {
+            margin: 0;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            color: #334155;
+        }
+        .oasas-crisis-form .suicide-risk-detail-row {
+            display: grid;
+            grid-template-columns: 58px auto;
+            gap: 10px;
+            align-items: center;
+        }
+        .oasas-crisis-form .suicide-risk-detail-label {
+            margin: 0;
+            font-size: 12px;
+            font-weight: 700;
+            color: #334155;
+            white-space: nowrap;
+        }
+        .oasas-crisis-form .suicide-risk-detail-radios {
+            display: flex;
+            gap: 12px;
+        }
+        .oasas-crisis-form .triage-card .suicide-risk-detail-radios .radio-item {
+            font-size: 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+        }
+        .oasas-crisis-form .disposition-hint {
+            margin-top: 6px;
+            font-size: 12px;
+            color: #5b6472;
         }
         .oasas-crisis-form .mse-row {
             display: flex;
@@ -485,6 +535,12 @@
             }
             .oasas-crisis-form .triage-grid {
                 grid-template-columns: 1fr;
+            }
+            .oasas-crisis-form .suicide-risk-row {
+                grid-template-columns: 1fr;
+            }
+            .oasas-crisis-form .suicide-risk-details {
+                min-width: 0;
             }
         }
         .copy-area-container {
@@ -1204,13 +1260,41 @@
                             <div class="section">
                                 <h3>Triage and assessment</h3>
                                 <div class="triage-grid">
-                                    <div class="triage-card">
-                                        <label class="triage-label">Suicide risk</label>
-                                        <div class="inline-radios">
-                                            <label class="radio-item"><input type="radio" name="ci-suicide-risk" value="none" /> None</label>
-                                            <label class="radio-item"><input type="radio" name="ci-suicide-risk" value="low" /> Low</label>
-                                            <label class="radio-item"><input type="radio" name="ci-suicide-risk" value="moderate" /> Moderate</label>
-                                            <label class="radio-item"><input type="radio" name="ci-suicide-risk" value="high" /> High</label>
+                                    <div class="triage-card suicide-risk-card">
+                                        <div class="suicide-risk-row">
+                                            <div>
+                                                <label class="triage-label">Suicide risk</label>
+                                                <div class="inline-radios">
+                                                    <label class="radio-item"><input type="radio" name="ci-suicide-risk" value="none" /> None</label>
+                                                    <label class="radio-item"><input type="radio" name="ci-suicide-risk" value="low" /> Low</label>
+                                                    <label class="radio-item"><input type="radio" name="ci-suicide-risk" value="moderate" /> Moderate</label>
+                                                    <label class="radio-item"><input type="radio" name="ci-suicide-risk" value="high" /> High</label>
+                                                </div>
+                                            </div>
+                                            <div class="suicide-risk-details" role="group" aria-label="Suicide risk details">
+                                                <div class="suicide-risk-details-title">SI Risk Indicators</div>
+                                                <div class="suicide-risk-detail-row">
+                                                    <span class="suicide-risk-detail-label">Thoughts</span>
+                                                    <div class="suicide-risk-detail-radios">
+                                                        <label class="radio-item"><input type="radio" name="ci-suicide-thoughts" value="yes" /> Yes</label>
+                                                        <label class="radio-item"><input type="radio" name="ci-suicide-thoughts" value="no" /> No</label>
+                                                    </div>
+                                                </div>
+                                                <div class="suicide-risk-detail-row">
+                                                    <span class="suicide-risk-detail-label">Plan</span>
+                                                    <div class="suicide-risk-detail-radios">
+                                                        <label class="radio-item"><input type="radio" name="ci-suicide-plan" value="yes" /> Yes</label>
+                                                        <label class="radio-item"><input type="radio" name="ci-suicide-plan" value="no" /> No</label>
+                                                    </div>
+                                                </div>
+                                                <div class="suicide-risk-detail-row">
+                                                    <span class="suicide-risk-detail-label">Intent</span>
+                                                    <div class="suicide-risk-detail-radios">
+                                                        <label class="radio-item"><input type="radio" name="ci-suicide-intent" value="yes" /> Yes</label>
+                                                        <label class="radio-item"><input type="radio" name="ci-suicide-intent" value="no" /> No</label>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="triage-card">
@@ -1273,6 +1357,7 @@
                                     </div>
                                     <div>
                                         <label for="ci-disposition">Disposition / outcome</label>
+                                        <div class="disposition-hint"><em>What was the client's commitment to safety?</em></div>
                                         <textarea id="ci-disposition" rows="3" placeholder="Stabilized in place, transferred to ED, mobile crisis dispatched..."></textarea>
                                     </div>
                                 </div>
