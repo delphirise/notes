@@ -680,7 +680,77 @@ if ('scrollRestoration' in history) {
         }
     ];
 
-    let darpModalities = JSON.parse(JSON.stringify(DEFAULT_MODALITIES));
+    const DARP_MODALITIES_STORAGE_KEY = 'darpModalities';
+
+    function cloneDefaultModalities() {
+        return JSON.parse(JSON.stringify(DEFAULT_MODALITIES));
+    }
+
+    function normalizeStoredModalities(value) {
+        if (!Array.isArray(value)) {
+            return null;
+        }
+
+        const normalized = value
+            .map((modality) => {
+                if (!modality || typeof modality !== 'object') {
+                    return null;
+                }
+
+                const title = typeof modality.title === 'string' ? modality.title.trim() : '';
+                if (!title) {
+                    return null;
+                }
+
+                const rawItems = Array.isArray(modality.items) ? modality.items : [];
+                const items = Array.from(new Set(
+                    rawItems
+                        .filter((item) => typeof item === 'string')
+                        .map((item) => item.trim())
+                        .filter(Boolean)
+                ));
+
+                return {
+                    title,
+                    items,
+                    ...(modality.isCustom ? { isCustom: true } : {})
+                };
+            })
+            .filter(Boolean);
+
+        return normalized.length ? normalized : null;
+    }
+
+    function loadModalitiesFromStorage() {
+        try {
+            const raw = localStorage.getItem(DARP_MODALITIES_STORAGE_KEY);
+            if (!raw) {
+                return null;
+            }
+
+            const parsed = JSON.parse(raw);
+            const normalized = normalizeStoredModalities(parsed);
+            if (!normalized) {
+                localStorage.removeItem(DARP_MODALITIES_STORAGE_KEY);
+                return null;
+            }
+
+            return normalized;
+        } catch (error) {
+            console.warn('Unable to load saved DARP modalities:', error);
+            return null;
+        }
+    }
+
+    function saveModalitiesToStorage() {
+        try {
+            localStorage.setItem(DARP_MODALITIES_STORAGE_KEY, JSON.stringify(darpModalities));
+        } catch (error) {
+            console.warn('Unable to save DARP modalities:', error);
+        }
+    }
+
+    let darpModalities = loadModalitiesFromStorage() || cloneDefaultModalities();
 
     // --- State Persistence Logic ---
     function captureInterventionState() {
@@ -755,6 +825,7 @@ if ('scrollRestoration' in history) {
     function saveModalities(preCapturedState) {
         try {
             const currentState = preCapturedState || captureInterventionState();
+            saveModalitiesToStorage();
             renderInterventions();
             restoreInterventionState(currentState);
         } catch (error) {
@@ -764,7 +835,7 @@ if ('scrollRestoration' in history) {
 
     function resetModalitiesToDefault() {
         if(confirm("Are you sure you want to reset all intervention categories to default? This will clear your custom changes.")){
-            darpModalities = JSON.parse(JSON.stringify(DEFAULT_MODALITIES));
+            darpModalities = cloneDefaultModalities();
             saveModalities();
         }
     }
